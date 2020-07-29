@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "custom-fog",
+  "version": "${version}",
+  "name": "Custom Fog",
+  "description": "Allowing configuration of fog settings.",
+  "authors": [
+    "Setadokalo"
+  ],
+  "contributors": [],
+  "contact": {
+    "sources": "https://github.com/DarkEnchanter1/old-fog"
+  },
+  "license": "MIT",
+  "icon": "assets/custom-fog/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "customfog.CustomFog"
+    ],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "custom-fog.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.9.0",
+    "fabric": "*"
+  }
+}

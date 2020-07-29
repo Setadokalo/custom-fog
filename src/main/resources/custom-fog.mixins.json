@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "customfog.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
