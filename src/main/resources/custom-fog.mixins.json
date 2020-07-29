@@ -3,7 +3,7 @@
   "package": "customfog.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [],
-  "client": [],
+  "client": ["RendererMixin"],
   "server": [],
   "injectors": {
     "defaultRequire": 1

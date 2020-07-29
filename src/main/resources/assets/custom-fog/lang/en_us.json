@@ -1,0 +1,6 @@
+{
+  "text.autoconfig.customfog.option.linearFogMultiplier": "Linear Fog Start Distance Multiplier",
+  "text.autoconfig.customfog.option.expFogMultiplier": "Exponential Fog Density Multiplier",
+  "text.autoconfig.customfog.option.exp2FogMultiplier": "Exponential^2 Fog Density Multiplier",
+  "text.autoconfig.customfog.title": "Custom Fog Settings"
+}

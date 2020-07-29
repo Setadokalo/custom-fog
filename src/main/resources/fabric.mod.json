@@ -19,7 +19,10 @@
       "customfog.CustomFog"
     ],
     "client": [],
-    "server": []
+    "server": [],
+    "modmenu": [
+      "customfog.CustomFogModMenuProvider"
+    ]
   },
   "mixins": [
     "custom-fog.mixins.json"

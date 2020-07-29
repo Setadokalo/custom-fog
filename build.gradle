@@ -20,6 +20,15 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	modCompile "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
+	modCompile "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
+	modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
+
+	// optional but recommended: jar-in-jar
+	// make sure you're on Loom 0.2.1 or later
+	include "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
+	include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
 }
 
 processResources {
