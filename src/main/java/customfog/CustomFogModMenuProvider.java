@@ -10,6 +10,11 @@ import java.util.function.Supplier;
 
 public class CustomFogModMenuProvider implements ModMenuApi {
 	@Override
+	public String getModId() {
+		return CustomFog.MOD_ID;
+	}
+
+	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
 		return (screen) -> {
 			return AutoConfig.getConfigScreen(CustomFogConfig.class, screen).get();

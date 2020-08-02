@@ -13,11 +13,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.FluidTags;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(BackgroundRenderer.class)
 // This mod shouldn't even be installed on a server but w/e
@@ -29,9 +27,14 @@ public class RendererMixin {
 		return viewDistance * CustomFog.config.linearFogMultiplier;
 	}
 
-	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setupNvFogDistance()V"), locals = LocalCapture.CAPTURE_FAILSOFT)
-	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci, FluidState fluidState, Entity entity, float u) {
-		if (! (fluidState.isIn(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
+	// Mojang likes to mark functions and Enums as deprecated just because they made a wrapper function (that very often needs to be worked around);
+	// In this case, FogMode
+	@SuppressWarnings("deprecation")
+	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setupNvFogDistance()V"))
+	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
+		FluidState fluidState = camera.getSubmergedFluidState();
+		Entity entity = camera.getFocusedEntity();
+		if (! (fluidState.matches(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 
 			if (CustomFog.config.fogType == CustomFogConfig.FogType.LINEAR)
 				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
