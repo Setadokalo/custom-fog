@@ -3,7 +3,7 @@ package customfog;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 
-@Config(name = "customfog")
+@Config(name = CustomFog.MOD_ID)
 public class CustomFogConfig implements ConfigData {
 	public float linearFogMultiplier = 0.25F;
 	public float expFogMultiplier = 3.00F;
