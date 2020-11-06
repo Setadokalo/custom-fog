@@ -8,13 +8,16 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+
 @Environment(EnvType.CLIENT)
 public class CustomFog implements ClientModInitializer {
-    public static Logger LOGGER = LogManager.getLogger();
+    static Logger LOGGER = LogManager.getLogger();
 
     public static final String MOD_ID = "custom-fog";
     public static final String MOD_NAME = "Custom Fog";
     public static CustomFogConfig config;
+    static File file;
 
     @Override
     public void onInitializeClient() {

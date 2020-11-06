@@ -19,21 +19,30 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.Arrays;
+import java.util.function.Predicate;
+
 @Mixin(BackgroundRenderer.class)
 // This mod shouldn't even be installed on a server but w/e
 @Environment(EnvType.CLIENT)
 public class RendererMixin {
-	@ModifyVariable(method = "applyFog", name = "u", at = @At(value = "CONSTANT", args = "floatValue=0.75", shift = At.Shift.BY, by = 3))
-	private static float controlFog(float s, Camera _c, BackgroundRenderer.FogType _fT, float viewDistance, boolean _tF) {
-//		s = viewDistance * 0.25F;
-		return viewDistance * CustomFog.config.linearFogMultiplier;
-	}
-//
 	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setupNvFogDistance()V"), locals = LocalCapture.CAPTURE_FAILSOFT)
 	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci, FluidState fluidState, Entity entity) {
 		if (! (fluidState.isIn(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
-			if (CustomFog.config.fogType == CustomFogConfig.FogType.LINEAR)
+			for (String dimension: CustomFog.config.dimensionsList) {
+				if (dimension.equals(entity.getEntityWorld().getRegistryKey().getValue().toString())) {
+					if (CustomFog.config.listMode == CustomFogConfig.ListMode.WHITELIST) {
+						break;
+					} else {
+						return;
+					}
+				}
+			}
+			if (CustomFog.config.fogType == CustomFogConfig.FogType.LINEAR) {
+				RenderSystem.fogStart(viewDistance * CustomFog.config.linearFogStartMultiplier);
+				RenderSystem.fogEnd(viewDistance * CustomFog.config.linearFogEndMultiplier);
 				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
+			}
 			else if (CustomFog.config.fogType == CustomFogConfig.FogType.EXPONENTIAL) {
 				RenderSystem.fogDensity(CustomFog.config.expFogMultiplier / viewDistance);
 				RenderSystem.fogMode(GlStateManager.FogMode.EXP);

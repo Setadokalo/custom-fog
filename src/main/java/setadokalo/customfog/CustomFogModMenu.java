@@ -34,9 +34,11 @@ public class CustomFogModMenu implements ModMenuApi {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent) //TODO: actual parent screen comes from somewhere
                 .setTitle(new TranslatableText("title.customfog.config"))
-                .setTransparentBackground(true);
+                .setTransparentBackground(true)
+                .setSavingRunnable(() -> {
+                    CustomFog.config.saveConfig();
+                });
         ConfigEntryBuilder eB = builder.entryBuilder();
-        long currentValue = longify(CustomFog.config.linearFogMultiplier);
         ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("category.customfog.general"));
         general.addEntry(eB.startDropdownMenu(
                 new TranslatableText("dropdown.customfog.fogtype"),
@@ -47,15 +49,29 @@ public class CustomFogModMenu implements ModMenuApi {
                 .setSelections(Arrays.asList(new CustomFogConfig.FogType[] {CustomFogConfig.FogType.LINEAR, CustomFogConfig.FogType.EXPONENTIAL, CustomFogConfig.FogType.EXPONENTIAL_TWO}))
                 .build()
         );
+        long currentValue = longify(CustomFog.config.linearFogStartMultiplier);
         general.addEntry(eB.startLongSlider(new TranslatableText("option.customfog.linearslider"), currentValue, 0, 999)
                 .setDefaultValue(currentValue)
                 .setTooltip(new TranslatableText("tooltip.customfog.linearslider"))
                 .setTextGetter((val -> {
-                    CustomFog.config.linearFogMultiplier = delongify(val);
+                    CustomFog.config.linearFogStartMultiplier = delongify(val);
                     return new LiteralText(String.format("%.1f%%", delongify(val) * 100.0F));
                 }))
                 .setSaveConsumer(n -> {
-                    CustomFog.config.linearFogMultiplier = delongify(n);
+                    CustomFog.config.linearFogStartMultiplier = delongify(n);
+                })
+                .build()
+        );
+        currentValue = longify(CustomFog.config.linearFogEndMultiplier);
+        general.addEntry(eB.startLongSlider(new TranslatableText("option.customfog.linearendslider"), currentValue, 1, 1000)
+                .setDefaultValue(currentValue)
+                .setTooltip(new TranslatableText("tooltip.customfog.linearendslider"))
+                .setTextGetter((val -> {
+                    CustomFog.config.linearFogEndMultiplier = delongify(val);
+                    return new LiteralText(String.format("%.1f%%", delongify(val) * 100.0F));
+                }))
+                .setSaveConsumer(n -> {
+                    CustomFog.config.linearFogEndMultiplier = delongify(n);
                 })
                 .build()
         );
