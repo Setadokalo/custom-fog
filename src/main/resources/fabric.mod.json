@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "custom-fog",
+  "version": "${version}",
+  "name": "Custom Fog",
+  "description": "Allowing configuration of fog settings.",
+  "authors": ["Setadokalo"],
+  "contact": {
+    "sources": "https://github.com/DarkEnchanter1/custom-fog"
+  },
+  "license": "MIT",
+  "icon": "assets/custom-fog/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "setadokalo.customfog.CustomFog"
+    ],
+    "modmenu": [
+      "setadokalo.customfog.CustomFogModMenu"
+    ]
+  },
+  "mixins": [
+    "custom-fog.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.10.6+build.214",
+    "modmenu": ">=1.14.6+build.31",
+    "fabric": "*",
+    "minecraft": "1.16.4"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "option.customfog.linearslider": "Linear Fog Start Distance",
+  "tooltip.customfog.linearslider": "The percentage of your render distance to start the linear fog fade out at.",
+  "text.autoconfig.customfog.option.expFogMultiplier": "Exponential Fog Density Multiplier",
+  "text.autoconfig.customfog.option.exp2FogMultiplier": "Exponential^2 Fog Density Multiplier",
+  "title.customfog.config": "Custom Fog Settings"
+}
