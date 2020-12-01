@@ -49,8 +49,11 @@ public class CustomFogConfig {
 				String[] _temp = new String[tempA.size()];
 				dimensionsList = tempA.toArray(_temp);
 			}
+		} else {
+			saveConfig();
 		}
 	}
+	
 	public void saveConfig() {
 		TomlWriter tWr = new TomlWriter();
 		try {
@@ -59,10 +62,14 @@ public class CustomFogConfig {
 			e.printStackTrace();
 		}
 	}
-	public float linearFogStartMultiplier = 0.25F;
-	public float linearFogEndMultiplier = 1.00F;
-	public float expFogMultiplier = 3.00F;
-	public float exp2FogMultiplier = 1.75F;
+	public static final float DEFAULT_LINEAR_START_MULT = 0.25F;
+	public float linearFogStartMultiplier = DEFAULT_LINEAR_START_MULT;
+	public static final float DEFAULT_LINEAR_END_MULT = 1.00F;
+	public float linearFogEndMultiplier = DEFAULT_LINEAR_END_MULT;
+	public static final float DEFAULT_EXP_MULT = 3.00F;
+	public float expFogMultiplier = DEFAULT_EXP_MULT;
+	public static final float DEFAULT_EXP2_MULT = 1.75F;
+	public float exp2FogMultiplier = DEFAULT_EXP2_MULT;
 	public enum ListMode {
 		WHITELIST,
 		BLACKLIST

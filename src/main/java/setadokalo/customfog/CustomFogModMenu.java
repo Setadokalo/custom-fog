@@ -51,7 +51,7 @@ public class CustomFogModMenu implements ModMenuApi {
         );
         long currentValue = longify(CustomFog.config.linearFogStartMultiplier);
         general.addEntry(eB.startLongSlider(new TranslatableText("option.customfog.linearslider"), currentValue, 0, 999)
-                .setDefaultValue(currentValue)
+                .setDefaultValue(longify(CustomFogConfig.DEFAULT_LINEAR_START_MULT))
                 .setTooltip(new TranslatableText("tooltip.customfog.linearslider"))
                 .setTextGetter((val -> {
                     CustomFog.config.linearFogStartMultiplier = delongify(val);
@@ -64,7 +64,7 @@ public class CustomFogModMenu implements ModMenuApi {
         );
         currentValue = longify(CustomFog.config.linearFogEndMultiplier);
         general.addEntry(eB.startLongSlider(new TranslatableText("option.customfog.linearendslider"), currentValue, 1, 1000)
-                .setDefaultValue(currentValue)
+                .setDefaultValue(longify(CustomFogConfig.DEFAULT_LINEAR_END_MULT))
                 .setTooltip(new TranslatableText("tooltip.customfog.linearendslider"))
                 .setTextGetter((val -> {
                     CustomFog.config.linearFogEndMultiplier = delongify(val);
@@ -77,7 +77,7 @@ public class CustomFogModMenu implements ModMenuApi {
         );
         currentValue = longify(CustomFog.config.expFogMultiplier);
         general.addEntry(eB.startLongSlider(new TranslatableText("option.customfog.expslider"), currentValue, 0, 10000)
-                .setDefaultValue(currentValue)
+                .setDefaultValue(longify(CustomFogConfig.DEFAULT_EXP_MULT))
                 .setTooltip(new TranslatableText("tooltip.customfog.expslider"))
                 .setTextGetter((val -> {
                     CustomFog.config.expFogMultiplier = delongify(val);
@@ -90,7 +90,7 @@ public class CustomFogModMenu implements ModMenuApi {
         );
         currentValue = longify(CustomFog.config.exp2FogMultiplier);
         general.addEntry(eB.startLongSlider(new TranslatableText("option.customfog.exp2slider"), currentValue, 0, 10000)
-                .setDefaultValue(currentValue)
+                .setDefaultValue(longify(CustomFogConfig.DEFAULT_EXP2_MULT))
                 .setTooltip(new TranslatableText("tooltip.customfog.exp2slider"))
                 .setTextGetter((val -> {
                     CustomFog.config.exp2FogMultiplier = delongify(val);
@@ -100,7 +100,7 @@ public class CustomFogModMenu implements ModMenuApi {
                     CustomFog.config.exp2FogMultiplier = delongify(n);
                 })
                 .build()
-        );
+		  );
         return builder.build();
     }
     private static float delongify(long val) {

@@ -1,0 +1,12 @@
+{
+  "option.customfog.linearslider": "Linear Fog Start Distance",
+  "tooltip.customfog.linearslider": "The percentage of your render distance to start the linear fog fade out at.",
+  "option.customfog.linearendslider": "Linear Fog End Distance",
+  "tooltip.customfog.linearendslider": "The percentage of your render distance to end the linear fog fade out at.",
+  "option.customfog.expslider": "Exponential Fog Density",
+  "tooltip.customfog.expslider": "The density of fog when in EXPONENTIAL fog mode.",
+  "option.customfog.exp2slider": "Exponential^2 Fog Density",
+  "tooltip.customfog.exp2slider": "The density of fog when in EXPONENTIAL_TWO fog mode.",
+  "dropdown.customfog.fogtype": "Fog Mode",
+  "title.customfog.config": "Custom Fog Settings"
+}
