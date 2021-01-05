@@ -17,7 +17,6 @@ public class CustomFog implements ClientModInitializer {
 	public static final String MOD_NAME = "Custom Fog";
 	protected static final String LOG_STRING = "[" + MOD_NAME + "] {}"; 
 	public static CustomFogConfig config;
-	static File file;
 
 	@Override
 	public void onInitializeClient() {
@@ -25,7 +24,7 @@ public class CustomFog implements ClientModInitializer {
 
 		// AutoConfig.register(CustomFogConfig.class, JanksonConfigSerializer::new);
 		// config = AutoConfig.getConfigHolder(CustomFogConfig.class).getConfig();
-		config = new CustomFogConfig();
+		config = CustomFogConfig.getConfig();
 	}
 
 	public static void log(Level level, String message) {
