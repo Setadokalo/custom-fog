@@ -1,67 +1,93 @@
 package setadokalo.customfog;
 
-
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
+import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CustomFogConfig {
-	public CustomFogConfig() {
-		CustomFog.file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
-		if (CustomFog.file.exists()) {
-			Toml config = new Toml().read(CustomFog.file);
-			linearFogStartMultiplier = config.getDouble("linearFogStartMultiplier", (double)linearFogStartMultiplier).floatValue();
-			linearFogEndMultiplier = config.getDouble("linearFogEndMultiplier", (double)linearFogEndMultiplier).floatValue();
-			expFogMultiplier = config.getDouble("expFogMultiplier", (double)expFogMultiplier).floatValue();
-			exp2FogMultiplier = config.getDouble("exp2FogMultiplier", (double)exp2FogMultiplier).floatValue();
-			String tempS = config.getString("fogType");
-			if (tempS != null) {
-				fogType = FogType.valueOf(config.getString("fogType"));
+	private CustomFogConfig() {
+	}
+
+	public static CustomFogConfig getConfig() {
+		CustomFog.log(Level.INFO, "Loading config file");
+		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
+		if (file.exists()) {
+			Toml configToml = new Toml().read(file);
+			CustomFogConfig config = configToml.to(CustomFogConfig.class);
+			config.file = file;
+			List<String> copy = new ArrayList<>();
+			config.dimensions.keySet().stream().forEach(copy::add);
+			for (String key : copy) {
+				String strippedKey = key.substring(1, key.length() - 1);
+				changeKey(config, key, strippedKey);
 			}
-			tempS = config.getString("listMode");
-			if (tempS != null) {
-				listMode = ListMode.valueOf(config.getString("listMode"));
-			}
-			List<String> tempA = config.getList("dimensionsList");
-			if (tempA != null) {
-				String[] tempSA = new String[tempA.size()];
-				dimensionsList = tempA.toArray(tempSA);
-			}
+			return config;
 		} else {
-			saveConfig();
+			CustomFogConfig config = new CustomFogConfig();
+			config.file = file;
+			config.dimensions.put("minecraft:the_nether",
+					new DimensionConfig(false, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2));
+			config.saveConfig();
+			return config;
 		}
 	}
-	
+
+	public static void changeKey(CustomFogConfig config, String originalKey, String newKey) {
+		DimensionConfig dConfig = config.dimensions.get(originalKey);
+		if (dConfig == null) {
+			throw new NullPointerException("Key invalid");
+		}
+		config.dimensions.remove(originalKey);
+		config.dimensions.put(newKey, dConfig);
+	}
+
+	public static void add(CustomFogConfig config, String key, DimensionConfig dimCfg) {
+		config.dimensions.put(key, dimCfg);
+	}
+
 	public void saveConfig() {
 		TomlWriter tWr = new TomlWriter();
 		try {
-			tWr.write(this, CustomFog.file);
+			tWr.write(this, file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	public static final float DEFAULT_LINEAR_START_MULT = 0.25F;
-	public float linearFogStartMultiplier = DEFAULT_LINEAR_START_MULT;
-	public static final float DEFAULT_LINEAR_END_MULT = 1.00F;
-	public float linearFogEndMultiplier = DEFAULT_LINEAR_END_MULT;
-	public static final float DEFAULT_EXP_MULT = 3.00F;
-	public float expFogMultiplier = DEFAULT_EXP_MULT;
-	public static final float DEFAULT_EXP2_MULT = 1.75F;
-	public float exp2FogMultiplier = DEFAULT_EXP2_MULT;
-	public enum ListMode {
-		WHITELIST,
-		BLACKLIST
-	};
-	public ListMode listMode = ListMode.BLACKLIST;
-	public String[] dimensionsList = new String[] {"minecraft:the_end"};
+
+	private transient File file;
+	public static final float LINEAR_START = 0.25F;
+	public static final float LINEAR_END = 1.00F;
+	public static final float EXP = 3.00F;
+	public static final float EXP2 = 1.75F;
+	@NotNull
+	public DimensionConfig defaultConfig = new DimensionConfig(true, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2);
+	@Nullable
+	public DimensionConfig overrideConfig = null;
+	public Map<String, DimensionConfig> dimensions = new HashMap<>();
 	public enum FogType {
 		LINEAR,
 		EXPONENTIAL,
-		EXPONENTIAL_TWO,
+		EXPONENTIAL_TWO,;
+
+		public FogType next() {
+			if (this.equals(FogType.LINEAR))
+				return FogType.EXPONENTIAL;
+			else if (this.equals(FogType.EXPONENTIAL))
+				return FogType.EXPONENTIAL_TWO;
+			else if (this.equals(FogType.EXPONENTIAL_TWO))
+				return FogType.LINEAR;
+			return null;
+		}
 	}
-	public FogType fogType = FogType.LINEAR;
 }
