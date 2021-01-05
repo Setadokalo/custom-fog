@@ -14,8 +14,18 @@ public class CustomFogConfig {
 	public static CustomFogConfig getConfig() {
 		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
 		if (file.exists()) {
-			Toml config = new Toml().read(file);
-			return config.to(CustomFogConfig.class);
+			Toml configToml = new Toml().read(file);
+			CustomFogConfig config = configToml.to(CustomFogConfig.class);
+			for (String key: config.dimensions.keySet()) {
+				String strippedKey = key.substring(1, key.length() - 1);
+				DimensionConfig dConfig = config.dimensions.get(key);
+				if (dConfig == null) {
+					throw new NullPointerException("Key should always be valid?!?!");
+				}
+				config.dimensions.remove(key);
+				config.dimensions.put(strippedKey, dConfig);
+			}
+			return config;
 		} else {
 			CustomFogConfig config = new CustomFogConfig();
 			config.file = file;
