@@ -3,15 +3,9 @@ package setadokalo.customfog;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
-import me.shedaniel.clothconfig2.api.ConfigBuilder;
-import me.shedaniel.clothconfig2.api.ConfigCategory;
-import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,22 +14,10 @@ public class CustomFogConfig {
 		CustomFog.file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
 		if (CustomFog.file.exists()) {
 			Toml config = new Toml().read(CustomFog.file);
-			Double temp = config.getDouble("linearFogStartMultiplier");
-			if (temp != null) {
-				linearFogStartMultiplier = temp.floatValue();
-			}
-			temp = config.getDouble("linearFogEndMultiplier");
-			if (temp != null) {
-				linearFogEndMultiplier = temp.floatValue();
-			}
-			temp = config.getDouble("expFogMultiplier");
-			if (temp != null) {
-				expFogMultiplier = temp.floatValue();
-			}
-			temp = config.getDouble("exp2FogMultiplier");
-			if (temp != null) {
-				exp2FogMultiplier = temp.floatValue();
-			}
+			linearFogStartMultiplier = config.getDouble("linearFogStartMultiplier", (double)linearFogStartMultiplier).floatValue();
+			linearFogEndMultiplier = config.getDouble("linearFogEndMultiplier", (double)linearFogEndMultiplier).floatValue();
+			expFogMultiplier = config.getDouble("expFogMultiplier", (double)expFogMultiplier).floatValue();
+			exp2FogMultiplier = config.getDouble("exp2FogMultiplier", (double)exp2FogMultiplier).floatValue();
 			String tempS = config.getString("fogType");
 			if (tempS != null) {
 				fogType = FogType.valueOf(config.getString("fogType"));
@@ -46,8 +28,8 @@ public class CustomFogConfig {
 			}
 			List<String> tempA = config.getList("dimensionsList");
 			if (tempA != null) {
-				String[] _temp = new String[tempA.size()];
-				dimensionsList = tempA.toArray(_temp);
+				String[] tempSA = new String[tempA.size()];
+				dimensionsList = tempA.toArray(tempSA);
 			}
 		} else {
 			saveConfig();

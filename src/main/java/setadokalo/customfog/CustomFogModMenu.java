@@ -19,7 +19,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public class CustomFogModMenu implements ModMenuApi {
-    @Override
+	 @Override
+	 @Deprecated
     public String getModId() {
         return CustomFog.MOD_ID;
     }
