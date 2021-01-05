@@ -55,7 +55,7 @@ public class CustomFogConfig {
 	public enum ListMode {
 		WHITELIST,
 		BLACKLIST
-	};
+	}
 	public ListMode listMode = ListMode.BLACKLIST;
 	public String[] dimensionsList = new String[] {"minecraft:the_end"};
 	public enum FogType {
