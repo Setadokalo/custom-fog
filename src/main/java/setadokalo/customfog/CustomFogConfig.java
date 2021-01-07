@@ -2,6 +2,9 @@ package setadokalo.customfog;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
+
+import org.apache.logging.log4j.Level;
+
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
@@ -12,6 +15,7 @@ import java.util.Map;
 public class CustomFogConfig {
 	private CustomFogConfig() {}
 	public static CustomFogConfig getConfig() {
+		CustomFog.log(Level.INFO, "Loading config file");
 		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
 		if (file.exists()) {
 			Toml configToml = new Toml().read(file);
@@ -35,6 +39,7 @@ public class CustomFogConfig {
 		}
 	}
 	
+
 	public void saveConfig() {
 		TomlWriter tWr = new TomlWriter();
 		try {
@@ -49,7 +54,7 @@ public class CustomFogConfig {
 	public static final float EXP = 3.00F;
 	public static final float EXP2 = 1.75F;
 	public DimensionConfig defaultConfig = new DimensionConfig(true, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2);
-	public Map<String, DimensionConfig> dimensions = new HashMap<String, DimensionConfig>();
+	public Map<String, DimensionConfig> dimensions = new HashMap<>();
 	public enum FogType {
 		LINEAR,
 		EXPONENTIAL,

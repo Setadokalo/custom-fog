@@ -22,12 +22,4 @@ public class CustomFogModMenu implements ModMenuApi {
 	private static Screen genConfig(Screen parent) {
 		return new CustomFogConfigScreen(parent);
 	}
-
-	private static float delongify(long val) {
-		return ((float) val) / RESOLUTION;
-	}
-
-	private static long longify(float val) {
-		return (long) (val * RESOLUTION);
-	}
 }

@@ -1,8 +1,5 @@
 {
-  "button.customfog.test": "Test Button",
-  "button.customfog.test.pressed": "And now, I am unforgivable",
-  "button.customfog.test2": "Test Button 2: Electric Boogaloo",
-  "button.customfog.test3": "Test Button 3: Triple Tragedy",
+  "button.customfog.load": "Reload Config",
   "option.customfog.linearslider": "Linear Fog Start Distance",
   "tooltip.customfog.linearslider": "The percentage of your render distance to start the linear fog fade out at.",
   "option.customfog.linearendslider": "Linear Fog End Distance",
