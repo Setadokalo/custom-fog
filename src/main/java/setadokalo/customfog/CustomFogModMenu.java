@@ -3,6 +3,7 @@ package setadokalo.customfog;
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
 import net.minecraft.client.gui.screen.Screen;
+import setadokalo.customfog.gui.CustomFogConfigScreen;
 
 public class CustomFogModMenu implements ModMenuApi {
 	protected static final float RESOLUTION = 1000.0F;

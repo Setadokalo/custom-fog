@@ -2,14 +2,15 @@ package setadokalo.customfog;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
-
 import org.apache.logging.log4j.Level;
 
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CustomFogConfig {
@@ -20,14 +21,12 @@ public class CustomFogConfig {
 		if (file.exists()) {
 			Toml configToml = new Toml().read(file);
 			CustomFogConfig config = configToml.to(CustomFogConfig.class);
-			for (String key: config.dimensions.keySet()) {
+			config.file = file;
+			List<String> copy = new ArrayList<>(); 
+			config.dimensions.keySet().stream().forEach(copy::add);
+			for (String key: copy){
 				String strippedKey = key.substring(1, key.length() - 1);
-				DimensionConfig dConfig = config.dimensions.get(key);
-				if (dConfig == null) {
-					throw new NullPointerException("Key should always be valid?!?!");
-				}
-				config.dimensions.remove(key);
-				config.dimensions.put(strippedKey, dConfig);
+				changeKey(config, key, strippedKey);
 			}
 			return config;
 		} else {
@@ -38,7 +37,18 @@ public class CustomFogConfig {
 			return config;
 		}
 	}
+	public static void changeKey(CustomFogConfig config, String originalKey, String newKey) {
+		DimensionConfig dConfig = config.dimensions.get(originalKey);
+		if (dConfig == null) {
+			throw new NullPointerException("Key invalid");
+		}
+		config.dimensions.remove(originalKey);
+		config.dimensions.put(newKey, dConfig);
+	}
 	
+	public static void add(CustomFogConfig config, String key, DimensionConfig dimCfg) {
+		config.dimensions.put(key, dimCfg);
+	}
 
 	public void saveConfig() {
 		TomlWriter tWr = new TomlWriter();

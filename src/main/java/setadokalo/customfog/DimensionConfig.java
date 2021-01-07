@@ -20,6 +20,10 @@ public class DimensionConfig {
 		exp2FogMult = exp2;
 	}
 	
+	public DimensionConfig copy() {
+		return new DimensionConfig(this.enabled, this.type, this.linearFogStartMult, this.linearFogEndMult, this.expFogMult, this.exp2FogMult);
+	}
+
 	public boolean getEnabled() {
 		return enabled;
 	}

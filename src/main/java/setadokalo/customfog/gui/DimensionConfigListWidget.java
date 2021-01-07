@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Level;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.render.BufferBuilder;
@@ -23,6 +22,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 	private Screen parent;
 	private boolean renderSelection;
 	private TextRenderer textRenderer;
+	private boolean scrolling;
 
 	public DimensionConfigListWidget(MinecraftClient minecraftClient, int x, int y, int width, int height,
 			int itemheight, Screen parent, TextRenderer textRenderer) {
@@ -35,7 +35,13 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 		this.setRenderSelection(false);
 		this.parent = parent;
 		this.textRenderer = textRenderer;
-		// this.method_31323(false); // this disables rendering a bugged background above the scroll list
+		//this.method_31323(false); // this disables rendering a background above and below the scroll list - useful for debugging
+	}
+
+	public void tick() {
+		for (DimensionConfigEntry entry : this.children()) {
+			entry.tick();
+		}
 	}
 
 	public TextRenderer getTextRenderer() {
@@ -49,6 +55,9 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 	public void add(DimensionConfigEntry entry) {
 		this.addEntry(entry);
 	}
+	public void remove(DimensionConfigEntry entry) {
+		this.removeEntry(entry);
+	}
 
 	@Override
 	public void setRenderSelection(boolean renderSelection) {
@@ -56,13 +65,17 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 		this.renderSelection = renderSelection;
 	}
 
+	@Override
+   public boolean changeFocus(boolean lookForwards) {
+		CustomFog.log(Level.INFO, "Focus Changed on list widget");
+		return super.changeFocus(lookForwards);
+	}
 
 	@Override
 	protected void renderList(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
 		int itemCount = this.getItemCount();
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
-		// this is probably a bad idea, but bite me okay? okay
 		for (int index = 0; index < itemCount; ++index) {
 			int entryTop = this.getRowTop(index) + 2;
 			int entryBottom = this.getRowTop(index) + this.itemHeight;
@@ -72,7 +85,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 				int rowWidth = this.getRowWidth();
 				int entryLeft;
 				if (this.renderSelection && this.isSelectedItem(index)) {
-					entryLeft = getRowLeft() - 2 + entry.getXOffset();
+					entryLeft = getRowLeft() - 2;
 					int selectionRight = x + rowWidth + 2;
 					RenderSystem.disableTexture();
 					float bgIntensity = this.isFocused() ? 1.0F : 0.5F;
@@ -101,17 +114,55 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 
 	}
 
+	// // We're overriding this so that when it calls `Entry#mouseClicked` it localizes the mouseY coordinate
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int btn_idx) {
-		CustomFog.log(Level.INFO, "clicked in the list");
-		return super.mouseClicked(mouseX, mouseY, btn_idx);
-	}
+   public boolean mouseClicked(double mouseX, double mouseY, int button) {
+      this.updateScrollingState(mouseX, mouseY, button);
+      if (!this.isMouseOver(mouseX, mouseY)) {
+         return false;
+      } else {
+			for (DimensionConfigEntry entry : this.children()) {
+				if (entry.dimNameWidget != null)
+					entry.dimNameWidget.setSelected(false);
+			}
+			DimensionConfigEntry entry = this.getEntryAtPosition(mouseX, mouseY);
+         if (entry != null) {
+				this.setSelected(entry);
+            if (entry.mouseClicked(mouseX, mouseY, button)) {
+					this.setFocused(entry);
+               this.setDragging(true);
+               return true;
+            }
+         } else if (button == 0) {
+            this.clickedHeader((int)(mouseX - (double)(this.left + this.width / 2 - this.getRowWidth() / 2)), (int)(mouseY - (double)this.top) + (int)this.getScrollAmount() - 4);
+            return true;
+         }
 
+         return this.scrolling;
+      }
+   }
+
+
+	public final int toEntryPos(double yScreenspace) {
+		int heightInList = MathHelper.floor(yScreenspace - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
+		return heightInList % this.itemHeight;
+	}
+	
+	public final int toEntryIndex(double yScreenspace) {
+		int heightInList = MathHelper.floor(yScreenspace - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
+		return heightInList / this.itemHeight;
+	}
 
 	public final DimensionConfigEntry getEntryAtPos(double x, double y) {
 		int heightInList = MathHelper.floor(y - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
 		int index = heightInList / this.itemHeight;
 		return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && heightInList >= 0 && index < this.getItemCount() ? this.children().get(index) : null;
+	}
+
+	@Override
+   protected void updateScrollingState(double mouseX, double mouseY, int button) {
+		this.scrolling = button == 0 && mouseX >= (double)this.getScrollbarPositionX() && mouseX < (double)(this.getScrollbarPositionX() + 6);
+		super.updateScrollingState(mouseX, mouseY, button);
 	}
 
 	@Override

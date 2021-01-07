@@ -1,5 +1,8 @@
 {
   "button.customfog.load": "Reload Config",
+  "button.customfog.add": "Add Dimension",
+  "button.customfog.configure": "Configure...",
+  "button.customfog.saveandquit": "Save and Quit",
   "option.customfog.linearslider": "Linear Fog Start Distance",
   "tooltip.customfog.linearslider": "The percentage of your render distance to start the linear fog fade out at.",
   "option.customfog.linearendslider": "Linear Fog End Distance",
