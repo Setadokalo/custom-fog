@@ -17,6 +17,8 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.FluidTags;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,13 +29,25 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 // This mod shouldn't even be installed on a server but w/e
 @Environment(EnvType.CLIENT)
 public class RendererMixin {
+	@NotNull
+	private static <T> T requireNonNullElse(@Nullable T nullable, @NotNull T defaultT) {
+		if (nullable != null) {
+			return nullable;
+		} else if (defaultT != null) {
+			return defaultT;
+		} else {
+			throw new NullPointerException("defaultT should always be non-null");
+		}
+	}
+
+
 	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setupNvFogDistance()V"), locals = LocalCapture.CAPTURE_FAILSOFT)
 	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci, FluidState fluidState, Entity entity) {
 		if (! (fluidState.isIn(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
-			DimensionConfig config = Objects.requireNonNullElse(
+			DimensionConfig config = requireNonNullElse(
 				CustomFog.config.overrideConfig, 
-				Objects.requireNonNullElse(
+				requireNonNullElse(
 					CustomFog.config.dimensions.get(entity.getEntityWorld().getRegistryKey().getValue().toString()), 
 					CustomFog.config.defaultConfig
 				)
