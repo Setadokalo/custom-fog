@@ -2,13 +2,11 @@ package setadokalo.customfog.gui;
 
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.Nullable;
 
-import me.lambdaurora.spruceui.SpruceButtonWidget;
-import me.lambdaurora.spruceui.Tooltip;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import setadokalo.customfog.CustomFog;
@@ -40,14 +38,14 @@ public class CustomFogConfigScreen extends Screen {
 			this.children.add(lWidget);
 		}
 		// Add load button.
-		this.addButton(new SpruceButtonWidget(9, this.height - 29, 80, 20, new TranslatableText("button.customfog.load"),
+		this.addButton(new ButtonWidget(9, this.height - 29, 80, 20, new TranslatableText("button.customfog.load"),
 				  btn -> {
 					  CustomFog.config = CustomFogConfig.getConfig();
 					  this.createList(HEADER_HEIGHT, FOOTER_HEIGHT);
 				  }));
 		// Add done button.
 		int doneButtonX = Math.max(this.width / 2 - 100, 94);
-		this.addButton(new SpruceButtonWidget(doneButtonX, this.height - 29, Math.min(200, this.width - (doneButtonX + 5)), 20, new TranslatableText("button.customfog.saveandquit"),
+		this.addButton(new ButtonWidget(doneButtonX, this.height - 29, Math.min(200, this.width - (doneButtonX + 5)), 20, new TranslatableText("button.customfog.saveandquit"),
 					btn -> saveDimensionNames()));
   }
 
@@ -117,8 +115,6 @@ public class CustomFogConfigScreen extends Screen {
 		super.render(matrices, mouseX, mouseY, delta);
 		// Draw the title text.
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		// Render all the tooltips.
-		Tooltip.renderAll(matrices);
   }
 
 public void openScreen(DimensionConfigScreen dimensionConfigScreen) {

@@ -32,8 +32,12 @@ public class RendererMixin {
 		if (! (fluidState.isIn(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
 			DimensionConfig config = Objects.requireNonNullElse(
-				CustomFog.config.dimensions.get(entity.getEntityWorld().getRegistryKey().getValue().toString()), 
-				CustomFog.config.defaultConfig);
+				CustomFog.config.overrideConfig, 
+				Objects.requireNonNullElse(
+					CustomFog.config.dimensions.get(entity.getEntityWorld().getRegistryKey().getValue().toString()), 
+					CustomFog.config.defaultConfig
+				)
+			);
 			changeFalloff(viewDistance, config);
 		}
 	}

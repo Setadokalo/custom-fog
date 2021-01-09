@@ -3,9 +3,9 @@ package setadokalo.customfog.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
@@ -82,7 +82,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 		configureWidget = new ButtonWidget(-20000, -20000, 
 		removable ? 80 : 84 + REMOVE_WIDGET_WIDTH, 20, 
 		new TranslatableText("button.customfog.configure"), 
-		btn -> ((CustomFogConfigScreen)this.parentList.getParent()).openScreen(new DimensionConfigScreen(this.parentList.getParent())));
+		btn -> ((CustomFogConfigScreen)this.parentList.getParent()).openScreen(new DimensionConfigScreen(this.parentList.getParent(), this)));
 		children.add(configureWidget);
 	}
 	public DimensionConfigEntry(DimensionConfigListWidget parent) {

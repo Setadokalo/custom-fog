@@ -3,6 +3,8 @@ package setadokalo.customfog;
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
 import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -14,7 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CustomFogConfig {
-	private CustomFogConfig() {}
+	private CustomFogConfig() {
+	}
+
 	public static CustomFogConfig getConfig() {
 		CustomFog.log(Level.INFO, "Loading config file");
 		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
@@ -22,9 +26,9 @@ public class CustomFogConfig {
 			Toml configToml = new Toml().read(file);
 			CustomFogConfig config = configToml.to(CustomFogConfig.class);
 			config.file = file;
-			List<String> copy = new ArrayList<>(); 
+			List<String> copy = new ArrayList<>();
 			config.dimensions.keySet().stream().forEach(copy::add);
-			for (String key: copy){
+			for (String key : copy) {
 				String strippedKey = key.substring(1, key.length() - 1);
 				changeKey(config, key, strippedKey);
 			}
@@ -32,11 +36,13 @@ public class CustomFogConfig {
 		} else {
 			CustomFogConfig config = new CustomFogConfig();
 			config.file = file;
-			config.dimensions.put("minecraft:the_nether", new DimensionConfig(false, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2));
+			config.dimensions.put("minecraft:the_nether",
+					new DimensionConfig(false, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2));
 			config.saveConfig();
 			return config;
 		}
 	}
+
 	public static void changeKey(CustomFogConfig config, String originalKey, String newKey) {
 		DimensionConfig dConfig = config.dimensions.get(originalKey);
 		if (dConfig == null) {
@@ -45,7 +51,7 @@ public class CustomFogConfig {
 		config.dimensions.remove(originalKey);
 		config.dimensions.put(newKey, dConfig);
 	}
-	
+
 	public static void add(CustomFogConfig config, String key, DimensionConfig dimCfg) {
 		config.dimensions.put(key, dimCfg);
 	}
@@ -58,16 +64,30 @@ public class CustomFogConfig {
 			e.printStackTrace();
 		}
 	}
+
 	private transient File file;
 	public static final float LINEAR_START = 0.25F;
 	public static final float LINEAR_END = 1.00F;
 	public static final float EXP = 3.00F;
 	public static final float EXP2 = 1.75F;
+	@NotNull
 	public DimensionConfig defaultConfig = new DimensionConfig(true, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2);
+	@Nullable
+	public DimensionConfig overrideConfig = null;
 	public Map<String, DimensionConfig> dimensions = new HashMap<>();
 	public enum FogType {
 		LINEAR,
 		EXPONENTIAL,
-		EXPONENTIAL_TWO,
+		EXPONENTIAL_TWO,;
+
+		public FogType next() {
+			if (this.equals(FogType.LINEAR))
+				return FogType.EXPONENTIAL;
+			else if (this.equals(FogType.EXPONENTIAL))
+				return FogType.EXPONENTIAL_TWO;
+			else if (this.equals(FogType.EXPONENTIAL_TWO))
+				return FogType.LINEAR;
+			return null;
+		}
 	}
 }
