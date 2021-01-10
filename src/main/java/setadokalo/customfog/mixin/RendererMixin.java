@@ -52,23 +52,32 @@ public class RendererMixin {
 					CustomFog.config.defaultConfig
 				)
 			);
-			changeFalloff(viewDistance, config);
+			
+			changeFalloff(viewDistance, config, fogType);
 		}
 	}
 
-	private static void changeFalloff(float viewDistance, DimensionConfig config) {
+	private static void changeFalloff(float viewDistance, DimensionConfig config, BackgroundRenderer.FogType fogType) {
 		if (config.getEnabled()) {
-			if (config.getType() == CustomFogConfig.FogType.LINEAR) {
-				RenderSystem.fogStart(viewDistance * config.getLinearStart());
-				RenderSystem.fogEnd(viewDistance * config.getLinearEnd());
+			// Try applying fog for sky
+			if (fogType == BackgroundRenderer.FogType.FOG_SKY) {
+				RenderSystem.fogStart(0.0f);
+				RenderSystem.fogEnd(viewDistance);
 				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
-			}
-			else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
-				RenderSystem.fogDensity(config.getExp() / viewDistance);
-				RenderSystem.fogMode(GlStateManager.FogMode.EXP);
-			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
-				RenderSystem.fogDensity(config.getExp2() / viewDistance);
-				RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
+			} else {
+				// Otherwise, apply terrain fog
+				if (config.getType() == CustomFogConfig.FogType.LINEAR) {
+					RenderSystem.fogStart(viewDistance * config.getLinearStart());
+					RenderSystem.fogEnd(viewDistance * config.getLinearEnd());
+					RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
+				}
+				else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
+					RenderSystem.fogDensity(config.getExp() / viewDistance);
+					RenderSystem.fogMode(GlStateManager.FogMode.EXP);
+				} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
+					RenderSystem.fogDensity(config.getExp2() / viewDistance);
+					RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
+				}
 			}
 		}
 	}
