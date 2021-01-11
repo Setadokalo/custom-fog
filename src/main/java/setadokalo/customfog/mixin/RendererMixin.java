@@ -43,7 +43,12 @@ public class RendererMixin {
 
 	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setupNvFogDistance()V"), locals = LocalCapture.CAPTURE_FAILSOFT)
 	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci, FluidState fluidState, Entity entity) {
-		if (! (fluidState.isIn(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
+		// Try applying fog for sky, otherwise apply custom terrain fog
+		if (fogType == BackgroundRenderer.FogType.FOG_SKY) {
+			RenderSystem.fogStart(0.0f);
+			RenderSystem.fogEnd(viewDistance);
+			RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
+		} else if (! (fluidState.isIn(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
 			DimensionConfig config = requireNonNullElse(
 				CustomFog.config.overrideConfig, 
@@ -59,25 +64,17 @@ public class RendererMixin {
 
 	private static void changeFalloff(float viewDistance, DimensionConfig config, BackgroundRenderer.FogType fogType) {
 		if (config.getEnabled()) {
-			// Try applying fog for sky
-			if (fogType == BackgroundRenderer.FogType.FOG_SKY) {
-				RenderSystem.fogStart(0.0f);
-				RenderSystem.fogEnd(viewDistance);
+			if (config.getType() == CustomFogConfig.FogType.LINEAR) {
+				RenderSystem.fogStart(viewDistance * config.getLinearStart());
+				RenderSystem.fogEnd(viewDistance * config.getLinearEnd());
 				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
-			} else {
-				// Otherwise, apply terrain fog
-				if (config.getType() == CustomFogConfig.FogType.LINEAR) {
-					RenderSystem.fogStart(viewDistance * config.getLinearStart());
-					RenderSystem.fogEnd(viewDistance * config.getLinearEnd());
-					RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
-				}
-				else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
-					RenderSystem.fogDensity(config.getExp() / viewDistance);
-					RenderSystem.fogMode(GlStateManager.FogMode.EXP);
-				} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
-					RenderSystem.fogDensity(config.getExp2() / viewDistance);
-					RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
-				}
+			}
+			else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
+				RenderSystem.fogDensity(config.getExp() / viewDistance);
+				RenderSystem.fogMode(GlStateManager.FogMode.EXP);
+			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
+				RenderSystem.fogDensity(config.getExp2() / viewDistance);
+				RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
 			}
 		}
 	}
