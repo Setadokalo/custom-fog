@@ -43,7 +43,12 @@ public class RendererMixin {
 
 	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setupNvFogDistance()V"), locals = LocalCapture.CAPTURE_FAILSOFT)
 	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci, FluidState fluidState, Entity entity) {
-		if (! (fluidState.isIn(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
+		// Try applying fog for sky, otherwise apply custom terrain fog
+		if (fogType == BackgroundRenderer.FogType.FOG_SKY) {
+			RenderSystem.fogStart(0.0f);
+			RenderSystem.fogEnd(viewDistance);
+			RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
+		} else if (! (fluidState.isIn(FluidTags.LAVA)) || (entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
 			DimensionConfig config = requireNonNullElse(
 				CustomFog.config.overrideConfig, 
@@ -52,11 +57,12 @@ public class RendererMixin {
 					CustomFog.config.defaultConfig
 				)
 			);
-			changeFalloff(viewDistance, config);
+			
+			changeFalloff(viewDistance, config, fogType);
 		}
 	}
 
-	private static void changeFalloff(float viewDistance, DimensionConfig config) {
+	private static void changeFalloff(float viewDistance, DimensionConfig config, BackgroundRenderer.FogType fogType) {
 		if (config.getEnabled()) {
 			if (config.getType() == CustomFogConfig.FogType.LINEAR) {
 				RenderSystem.fogStart(viewDistance * config.getLinearStart());
