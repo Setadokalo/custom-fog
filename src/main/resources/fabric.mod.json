@@ -6,7 +6,9 @@
   "description": "Allowing configuration of fog settings.",
   "authors": ["Setadokalo"],
   "contact": {
-    "sources": "https://github.com/DarkEnchanter1/custom-fog"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/custom-fog",
+    "issues": "https://github.com/Setadokalo/custom-fog/issues",
+    "sources": "https://github.com/Setadokalo/custom-fog"
   },
   "license": "MIT",
   "icon": "assets/custom-fog/icon.png",
@@ -24,6 +26,6 @@
   ],
   "depends": {
     "fabricloader": ">=0.10.6+build.214",
-    "minecraft": "1.16.4"
+    "minecraft": "~1.16.4"
   }
 }
