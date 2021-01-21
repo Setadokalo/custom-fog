@@ -1,0 +1,20 @@
+{
+  "button.customfog.load": "Laadi seadistus uuesti",
+  "button.customfog.add": "Lisa dimensioon",
+  "button.customfog.configure": "Seadista...",
+  "button.customfog.saveandquit": "Salvesta ja välju",
+  "option.customfog.linearslider": "Lineaarne udu algus: %.2f%%",
+  "tooltip.customfog.linearslider": "Nähtavuskauguse protsent, millest alata lineaarse udu hajumist.",
+  "option.customfog.linearendslider": "Lineaarne udu lõpp: %.2f%%",
+  "tooltip.customfog.linearendslider": "Nähtavuskauguse protsent, millega lõpetada lineaarse udu hajumine.",
+  "option.customfog.expslider": "Eksponentsiaalne tihedus: %.2f",
+  "tooltip.customfog.expslider": "Udu tihedus EXPONENTIAL režiimis.",
+  "option.customfog.exp2slider": "Eksponentsiaalne tihedus: %.2f",
+  "tooltip.customfog.exp2slider": "Udu tihedus EXPONENTIAL_TWO režiimis.",
+  "button.customfog.linear": "Udu režiim: lineaarne",
+  "button.customfog.exponential": "Udu režiim: eksponentsiaalne",
+  "button.customfog.exponential2": "Udu režiim: eksponentsiaalne^2",
+  "button.customfog.enabled": "Keela",
+  "button.customfog.disabled": "Luba", 
+  "screen.customfog.config": "Custom Fog seaded"
+}
