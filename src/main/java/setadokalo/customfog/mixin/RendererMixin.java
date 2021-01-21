@@ -1,7 +1,5 @@
 package setadokalo.customfog.mixin;
 
-import java.util.Objects;
-
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import setadokalo.customfog.CustomFog;
@@ -58,11 +56,11 @@ public class RendererMixin {
 				)
 			);
 			
-			changeFalloff(viewDistance, config, fogType);
+			changeFalloff(viewDistance, config);
 		}
 	}
 
-	private static void changeFalloff(float viewDistance, DimensionConfig config, BackgroundRenderer.FogType fogType) {
+	private static void changeFalloff(float viewDistance, DimensionConfig config) {
 		if (config.getEnabled()) {
 			if (config.getType() == CustomFogConfig.FogType.LINEAR) {
 				RenderSystem.fogStart(viewDistance * config.getLinearStart());
