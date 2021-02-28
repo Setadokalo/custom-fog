@@ -11,6 +11,7 @@
   "tooltip.customfog.expslider": "The density of fog when in EXPONENTIAL fog mode.",
   "option.customfog.exp2slider": "Exponential^2 Density: %.2f",
   "tooltip.customfog.exp2slider": "The density of fog when in EXPONENTIAL_TWO fog mode.",
+  "button.customfog.menu": "Configure Fog",
   "button.customfog.linear": "Fog Mode: Linear",
   "button.customfog.exponential": "Fog Mode: Exponential",
   "button.customfog.exponential2": "Fog Mode: Exponential^2",

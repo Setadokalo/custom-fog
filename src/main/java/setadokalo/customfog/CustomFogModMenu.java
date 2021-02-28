@@ -17,6 +17,7 @@ public class CustomFogModMenu implements ModMenuApi {
 
 	@Override
 	public ConfigScreenFactory<?> getModConfigScreenFactory() {
+        CustomFog.modMenuPresent = true;
 		return CustomFogModMenu::genConfig;
 	}
 

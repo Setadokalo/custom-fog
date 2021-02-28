@@ -6,7 +6,8 @@
   "mixins": [
   ],
   "client": [
-    "RendererMixin"
+    "RendererMixin",
+    "VideoOptionsMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
