@@ -3,6 +3,8 @@ package setadokalo.customfog;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screen.Screen;
+import setadokalo.customfog.gui.CustomFogConfigScreen;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -29,5 +31,8 @@ public class CustomFog implements ClientModInitializer {
 
 	public static void log(Level level, String message) {
 		LOGGER.log(level, LOG_STRING, message);
+	}
+	public static Screen configScreen(Screen parent) {
+		return new CustomFogConfigScreen(parent);
 	}
 }
