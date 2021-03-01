@@ -103,7 +103,7 @@ public class DimensionConfigScreen extends Screen {
 			);
 			this.addButton(slider1);
 			slider2 = null;
-		} else {
+		} else if (type.equals(FogType.EXPONENTIAL_TWO)) {
 			slider1 = new BetterDoubleSliderWidget(9, this.height - 29, sliderWidth, 20, this.entry.config.getExp2(), 0.0, 20.0,
 				nVal -> this.entry.config.setExp2(nVal.floatValue()), 
 				s -> new TranslatableText(
@@ -125,6 +125,8 @@ public class DimensionConfigScreen extends Screen {
 			return "button.customfog.exponential";
 		} else if (type.equals(FogType.EXPONENTIAL_TWO)) {
 			return "button.customfog.exponential2";
+		} else if (type.equals(FogType.NONE)) {
+			return "button.customfog.none";
 		}
 		throw new NullPointerException("Invalid state");
 	}

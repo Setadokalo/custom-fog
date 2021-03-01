@@ -62,7 +62,11 @@ public class RendererMixin {
 
 	private static void changeFalloff(float viewDistance, DimensionConfig config) {
 		if (config.getEnabled()) {
-			if (config.getType() == CustomFogConfig.FogType.LINEAR) {
+			if (config.getType() == CustomFogConfig.FogType.NONE) {
+				RenderSystem.fogStart(40000000000.0F);
+				RenderSystem.fogEnd(  80000000000.0F);
+				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
+			} else if (config.getType() == CustomFogConfig.FogType.LINEAR) {
 				RenderSystem.fogStart(viewDistance * config.getLinearStart());
 				RenderSystem.fogEnd(viewDistance * config.getLinearEnd());
 				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);

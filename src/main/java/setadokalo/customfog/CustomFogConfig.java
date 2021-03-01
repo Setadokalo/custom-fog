@@ -78,14 +78,22 @@ public class CustomFogConfig {
 	public enum FogType {
 		LINEAR,
 		EXPONENTIAL,
-		EXPONENTIAL_TWO,;
+		EXPONENTIAL_TWO,
+		NONE
+		;
 
+		/**
+		 * Gets the next FogType in the enum, allowing for easily cycling between them.
+		 * @return The next FogType.
+		 */
 		public FogType next() {
 			if (this.equals(FogType.LINEAR))
 				return FogType.EXPONENTIAL;
 			else if (this.equals(FogType.EXPONENTIAL))
 				return FogType.EXPONENTIAL_TWO;
 			else if (this.equals(FogType.EXPONENTIAL_TWO))
+				return FogType.NONE;
+			else if (this.equals(FogType.NONE))
 				return FogType.LINEAR;
 			return null;
 		}

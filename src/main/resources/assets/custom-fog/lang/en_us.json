@@ -15,6 +15,7 @@
   "button.customfog.linear": "Fog Mode: Linear",
   "button.customfog.exponential": "Fog Mode: Exponential",
   "button.customfog.exponential2": "Fog Mode: Exponential^2",
+  "button.customfog.none": "Fog Mode: None",
   "button.customfog.enabled": "Disable",
   "button.customfog.disabled": "Enable", 
   "screen.customfog.config": "Custom Fog Settings"
