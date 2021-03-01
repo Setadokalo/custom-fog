@@ -26,7 +26,7 @@ public abstract class VideoOptionsMixin extends GameOptionsScreen {
 
 	@Inject(method = "init", at = @At(value = "RETURN"))
 	protected void addCustomFogButton(CallbackInfo ci) {
-		// if (!CustomFog.modMenuPresent)
+		if (!CustomFog.modMenuPresent)
 			this.addButton(
 				new ButtonWidget(
 					this.width - 108, 
