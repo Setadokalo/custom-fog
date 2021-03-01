@@ -11,9 +11,11 @@
   "tooltip.customfog.expslider": "Udu tihedus EXPONENTIAL režiimis.",
   "option.customfog.exp2slider": "Eksponentsiaalne tihedus: %.2f",
   "tooltip.customfog.exp2slider": "Udu tihedus EXPONENTIAL_TWO režiimis.",
+  "button.customfog.menu": "Seadistage udu",
   "button.customfog.linear": "Udu režiim: lineaarne",
   "button.customfog.exponential": "Udu režiim: eksponentsiaalne",
   "button.customfog.exponential2": "Udu režiim: eksponentsiaalne^2",
+  "button.customfog.none": "Udu režiim: Puudub",
   "button.customfog.enabled": "Keela",
   "button.customfog.disabled": "Luba", 
   "screen.customfog.config": "Custom Fog seaded"
