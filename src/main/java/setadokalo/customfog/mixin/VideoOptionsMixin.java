@@ -7,21 +7,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.VideoOptionsScreen;
 import net.minecraft.client.gui.screen.options.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.options.GameOptions;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import setadokalo.customfog.CustomFog;
-import setadokalo.customfog.gui.CustomFogConfigScreen;
 
 @Mixin(VideoOptionsScreen.class)
 public abstract class VideoOptionsMixin extends GameOptionsScreen {
 
-	private VideoOptionsMixin(Screen parent, GameOptions gameOptions, Text title) {
-		super(parent, gameOptions, title);
+	private VideoOptionsMixin() {
+		super(null, null, null);
 	}
 
 	@Inject(method = "init", at = @At(value = "RETURN"))
@@ -41,8 +37,8 @@ public abstract class VideoOptionsMixin extends GameOptionsScreen {
 
 	@ModifyConstant(method = "init", constant = @Constant(intValue = 100))
 	protected int fixDoneButtonPos(int curVal) {
-		int menuBPos = width - 108;
-		int doneBEnd = (width / 2 - curVal) + 208;
-		return curVal + Math.max(0, doneBEnd - menuBPos);
+		int maxBStart = width - 316;
+		int curBStart = (width / 2) - curVal;
+		return curVal + Math.max(0, curBStart - maxBStart);
 	}
 }
