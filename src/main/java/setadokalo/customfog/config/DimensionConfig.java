@@ -1,6 +1,6 @@
-package setadokalo.customfog;
+package setadokalo.customfog.config;
 
-import setadokalo.customfog.CustomFogConfig.FogType;
+import setadokalo.customfog.config.CustomFogConfig.FogType;
 
 public class DimensionConfig {
 	protected boolean enabled;
@@ -9,7 +9,7 @@ public class DimensionConfig {
 	protected float linearFogEndMult;
 	protected float expFogMult;
 	protected float exp2FogMult;
-	
+
 
 	public DimensionConfig(boolean enabled, FogType type, float linearStart, float linearEnd, float exp, float exp2) {
 		this.enabled = enabled;

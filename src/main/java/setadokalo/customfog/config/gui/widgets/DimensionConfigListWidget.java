@@ -1,4 +1,4 @@
-package setadokalo.customfog.gui;
+package setadokalo.customfog.config.gui.widgets;
 
 import java.util.Objects;
 
@@ -59,6 +59,26 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 		this.removeEntry(entry);
 	}
 
+	public void addNonDimEntries(boolean addSpacers) {
+		// The Add Button - constructed by a magic constructor. I know it's bad, shut up.
+		this.add(new DimensionConfigEntry(this, false));
+		// A spacer element at the bottom, so the Add Button doesn't get covered up by the config overridden notice.
+		// Again, shut up.
+		if (addSpacers) {
+			this.add(new DimensionConfigEntry(this, true));
+			this.add(new DimensionConfigEntry(this, true));
+		}
+	}
+
+	public void removeNonDimEntries() {
+		int currentTarget = this.getEntryCount() - 1;
+		while (this.getEntry(currentTarget).nonDimensionEntry) {
+			this.remove(currentTarget);
+			currentTarget -= 1;
+		}
+	}
+
+
 	@Override
 	public void setRenderSelection(boolean renderSelection) {
 		super.setRenderSelection(renderSelection);
@@ -73,7 +93,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 
 	@Override
 	protected void renderList(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
-		int itemCount = this.getItemCount();
+		int itemCount = this.getEntryCount();
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
 		for (int index = 0; index < itemCount; ++index) {
@@ -84,7 +104,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 				DimensionConfigEntry entry = this.getEntry(index);
 				int rowWidth = this.getRowWidth();
 				int entryLeft;
-				if (this.renderSelection && this.isSelectedItem(index)) {
+				if (this.renderSelection && this.isSelectedEntry(index)) {
 					entryLeft = getRowLeft() - 2;
 					int selectionRight = x + rowWidth + 2;
 					RenderSystem.disableTexture();
@@ -123,7 +143,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
       } else {
 			for (DimensionConfigEntry entry : this.children()) {
 				if (entry.dimNameWidget != null)
-					entry.dimNameWidget.setSelected(false);
+					entry.dimNameWidget.setTextFieldFocused(false);
 			}
 			DimensionConfigEntry entry = this.getEntryAtPosition(mouseX, mouseY);
          if (entry != null) {
@@ -156,7 +176,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 	public final DimensionConfigEntry getEntryAtPos(double x, double y) {
 		int heightInList = MathHelper.floor(y - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
 		int index = heightInList / this.itemHeight;
-		return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && heightInList >= 0 && index < this.getItemCount() ? this.children().get(index) : null;
+		return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && heightInList >= 0 && index < this.getEntryCount() ? this.children().get(index) : null;
 	}
 
 	@Override

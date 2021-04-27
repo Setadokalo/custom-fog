@@ -1,4 +1,4 @@
-package setadokalo.customfog.gui;
+package setadokalo.customfog.config.gui.widgets;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

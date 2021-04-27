@@ -12,10 +12,15 @@
   },
   "license": "MIT",
   "icon": "assets/custom-fog/icon.png",
-  "environment": "client",
   "entrypoints": {
     "client": [
+      "setadokalo.customfog.CustomFogClient"
+    ],
+    "main": [
       "setadokalo.customfog.CustomFog"
+    ],
+    "server": [
+      "setadokalo.customfog.CustomFogServer"
     ],
     "modmenu": [
       "setadokalo.customfog.CustomFogModMenu"

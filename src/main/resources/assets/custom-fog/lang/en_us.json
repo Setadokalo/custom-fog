@@ -1,4 +1,6 @@
 {
+  "modid.customfog": "[Custom Fog] ",
+  "chat.customfog.reloaded": "Config Reloaded!",
   "button.customfog.load": "Reload Config",
   "button.customfog.add": "Add Dimension",
   "button.customfog.configure": "Configure...",
@@ -18,5 +20,6 @@
   "button.customfog.none": "Fog Mode: None",
   "button.customfog.enabled": "Disable",
   "button.customfog.disabled": "Enable", 
-  "screen.customfog.config": "Custom Fog Settings"
+  "screen.customfog.config": "Custom Fog Settings",
+  "button.customfog.toggleVOptions": "Video Options Button: %s"
 }

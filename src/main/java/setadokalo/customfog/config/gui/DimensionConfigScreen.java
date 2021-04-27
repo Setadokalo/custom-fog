@@ -1,5 +1,8 @@
-package setadokalo.customfog.gui;
+package setadokalo.customfog.config.gui;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.screen.Screen;
@@ -7,8 +10,10 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
-import setadokalo.customfog.CustomFog;
-import setadokalo.customfog.CustomFogConfig.FogType;
+import setadokalo.customfog.CustomFogClient;
+import setadokalo.customfog.config.CustomFogConfig.FogType;
+import setadokalo.customfog.config.gui.widgets.BetterDoubleSliderWidget;
+import setadokalo.customfog.config.gui.widgets.DimensionConfigEntry;
 
 public class DimensionConfigScreen extends Screen {
 	private final Screen parent;
@@ -22,32 +27,42 @@ public class DimensionConfigScreen extends Screen {
 		super(new TranslatableText("screen.customfog.config"));
 		this.parent = parent;
 		this.entry = entry;
-		CustomFog.config.overrideConfig = entry.config;
+		CustomFogClient.config.overrideConfig = entry.config;
 	}
 
 	@Override
 	protected void init() {
 		super.init();
+		MinecraftClient minecraftClient = MinecraftClient.getInstance();
+		TextRenderer textRenderer = minecraftClient.textRenderer;
+		Text saveAndQuitText = new TranslatableText("button.customfog.saveandquit");
+		Text fogModeText = new TranslatableText(getKeyForFogMode());
+		Text enabledText = new TranslatableText(getKeyForEnabled());
+//		int combinedWidth = textRenderer.getWidth(saveAndQuitText.asOrderedText()) + 64 +
+//			textRenderer.getWidth(fogModeText.asOrderedText()) + 60 +
+//			textRenderer.getWidth(enabledText.asOrderedText()) + 64;
+		int modeRowHeight = addSliders() ? this.height - 57 : this.height - 86;
+
 		this.addButton(new ButtonWidget(this.width - DONE_WIDTH - 9, this.height - 29, DONE_WIDTH, 20,
-				new TranslatableText("button.customfog.saveandquit"), btn -> {
-					CustomFog.config.overrideConfig = null;
-					this.client.openScreen(this.parent);
+				saveAndQuitText, btn -> {
+					CustomFogClient.config.overrideConfig = null;
+					if (this.client != null)
+						this.client.openScreen(this.parent);
 				}));
-		this.addButton(new ButtonWidget(9, this.height - 58, 150, 20,
-			new TranslatableText(getKeyForFogMode()), btn -> {
+		this.addButton(new ButtonWidget(9, modeRowHeight, 150, 20,
+			fogModeText, btn -> {
 				this.entry.config.setType(this.entry.config.getType().next());
 				btn.setMessage(new TranslatableText(getKeyForFogMode())); 
 				removeSliders();
 				addSliders();
 			}
 		));
-		this.addButton(new ButtonWidget(18 + 150, this.height - 58, 75, 20,
-			new TranslatableText(getKeyForEnabled()), btn -> {
+		this.addButton(new ButtonWidget(18 + 150, modeRowHeight, 75, 20,
+			enabledText, btn -> {
 				this.entry.config.setEnabled(!this.entry.config.getEnabled());
 				btn.setMessage(new TranslatableText(getKeyForEnabled()));
 			}
 		));
-		addSliders();
 	}
 
 	private String getKeyForEnabled() {
@@ -72,12 +87,18 @@ public class DimensionConfigScreen extends Screen {
 		return ((double)(int)(value * 100.0)) / 100.0;
 	}
 
-	protected void addSliders() {
+	protected boolean addSliders() {
 		FogType type = this.entry.config.getType();
 		int sliderWidth = 150;
+		int sliderHeight = this.height - 29;
 		if (type.equals(FogType.LINEAR)) {
-			sliderWidth = Math.min(sliderWidth, (this.width - (DONE_WIDTH + 26)) / 2);
-			slider1 = new BetterDoubleSliderWidget(9, this.height - 29, sliderWidth, 20, this.entry.config.getLinearStart(), 0.0, 1.0,
+			if (this.width > 260 + DONE_WIDTH)
+				sliderWidth = Math.min(sliderWidth, (this.width - (DONE_WIDTH + 26)) / 2);
+			else {
+				sliderWidth = Math.min(sliderWidth, (this.width - 16) / 2);
+				sliderHeight -= 29;
+			}
+			slider1 = new BetterDoubleSliderWidget(9, sliderHeight, sliderWidth, 20, this.entry.config.getLinearStart(), 0.0, 1.0,
 				nVal -> this.entry.config.setLinearStart(nVal.floatValue()), 
 				s -> new TranslatableText(
 					"option.customfog.linearslider", 
@@ -85,7 +106,7 @@ public class DimensionConfigScreen extends Screen {
 				)
 			);
 			this.addButton(slider1);
-			slider2 = new BetterDoubleSliderWidget(13 + sliderWidth, this.height - 29, sliderWidth, 20, this.entry.config.getLinearEnd(), 0.0, 1.0,
+			slider2 = new BetterDoubleSliderWidget(13 + sliderWidth, sliderHeight, sliderWidth, 20, this.entry.config.getLinearEnd(), 0.0, 1.0,
 			nVal -> this.entry.config.setLinearEnd(nVal.floatValue()), 
 			s -> new TranslatableText(
 				"option.customfog.linearendslider", 
@@ -94,7 +115,7 @@ public class DimensionConfigScreen extends Screen {
 		);
 			this.addButton(slider2);
 		} else if (type.equals(FogType.EXPONENTIAL)) {
-			slider1 = new BetterDoubleSliderWidget(9, this.height - 29, sliderWidth, 20, this.entry.config.getExp(), 0.0, 20.0,
+			slider1 = new BetterDoubleSliderWidget(9, sliderHeight, sliderWidth, 20, this.entry.config.getExp(), 0.0, 20.0,
 				nVal -> this.entry.config.setExp(nVal.floatValue()), 
 				s -> new TranslatableText(
 					"option.customfog.expslider", 
@@ -104,7 +125,7 @@ public class DimensionConfigScreen extends Screen {
 			this.addButton(slider1);
 			slider2 = null;
 		} else if (type.equals(FogType.EXPONENTIAL_TWO)) {
-			slider1 = new BetterDoubleSliderWidget(9, this.height - 29, sliderWidth, 20, this.entry.config.getExp2(), 0.0, 20.0,
+			slider1 = new BetterDoubleSliderWidget(9, sliderHeight, sliderWidth, 20, this.entry.config.getExp2(), 0.0, 20.0,
 				nVal -> this.entry.config.setExp2(nVal.floatValue()), 
 				s -> new TranslatableText(
 					"option.customfog.exp2slider", 
@@ -114,7 +135,7 @@ public class DimensionConfigScreen extends Screen {
 			this.addButton(slider1);
 			slider2 = null;
 		}
-
+		return sliderHeight == this.height - 29;
 	}
 
 	private String getKeyForFogMode() {
