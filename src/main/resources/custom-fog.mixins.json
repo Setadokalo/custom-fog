@@ -1,16 +1,15 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "setadokalo.customfog.mixin",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
-  "client": [
-    "RendererMixin",
-    "VideoOptionsMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1,
-    "maxShiftBy": 5
-  }
+	"required": true,
+	"minVersion": "0.8",
+	"package": "setadokalo.customfog.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"client": [
+		"RendererMixin",
+		"ClientMixin",
+		"VideoOptionsMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1,
+		"maxShiftBy": 5
+	}
 }

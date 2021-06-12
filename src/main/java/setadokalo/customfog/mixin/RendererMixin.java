@@ -38,7 +38,10 @@ public class RendererMixin {
 			RenderSystem.fogStart(0.0f);
 			RenderSystem.fogEnd(viewDistance);
 			RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
-		} else if (!(entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
+		} else if (
+			fluidState.isEmpty() &&
+			!(entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))
+		) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
 			DimensionConfig config = Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
 
