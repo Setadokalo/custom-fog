@@ -45,18 +45,18 @@ public class CustomFogConfigScreen extends Screen {
 			createList(HEADER_HEIGHT, FOOTER_HEIGHT);
 		} else {
 			lWidget.updateSize(width, height, HEADER_HEIGHT, height - FOOTER_HEIGHT);
-			this.children.add(lWidget);
+			this.addDrawableChild(lWidget);
 		}
 
 		if (Utils.universalOverride()) {
-			this.addChild(new WarningWidget(
+			this.addDrawable(new WarningWidget(
 				this.width / 2 - 120, this.height - 72, 235,
 				new LiteralText("Config Overridden!").formatted(Formatting.YELLOW, Formatting.BOLD),
 				new LiteralText("This config is overridden by the server!").formatted(Formatting.RED)));
 		}
 
 		// Add load button.
-		this.addButton(new ButtonWidget(9, this.height - 29, 80, 20, new TranslatableText("button.customfog.load"),
+		this.addDrawableChild(new ButtonWidget(9, this.height - 29, 80, 20, new TranslatableText("button.customfog.load"),
 				  btn -> {
 					  CustomFogClient.config = CustomFogConfig.getConfig();
 					  this.createList(HEADER_HEIGHT, FOOTER_HEIGHT);
@@ -64,9 +64,9 @@ public class CustomFogConfigScreen extends Screen {
 		// Add done button.
 		int doneButtonX = Math.max(this.width / 2 - 100, 94);
 		int doneButtonWidth = Math.min(200, this.width - (doneButtonX + 5 + 160 + 8));
-		this.addButton(new ButtonWidget(doneButtonX, this.height - 29, doneButtonWidth, 20, new TranslatableText("button.customfog.saveandquit"),
+		this.addDrawableChild(new ButtonWidget(doneButtonX, this.height - 29, doneButtonWidth, 20, new TranslatableText("button.customfog.saveandquit"),
 			btn -> saveDimensionNames()));
-		this.addButton(new ButtonWidget(this.width - 165, this.height - 29, 160, 20, new TranslatableText("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)),
+		this.addDrawableChild(new ButtonWidget(this.width - 165, this.height - 29, 160, 20, new TranslatableText("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)),
 			btn -> {
 			CustomFogClient.config.videoOptionsButton = !CustomFogClient.config.videoOptionsButton;
 			btn.setMessage(new TranslatableText("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)));
@@ -105,7 +105,7 @@ public class CustomFogConfigScreen extends Screen {
 	}
 
 	private void createList(int headerHeight, int footerHeight) {
-		this.children.remove(lWidget);
+		this.remove(lWidget);
 		DimensionConfigListWidget list = new DimensionConfigListWidget(
 			client, // the client
 			0, // x pos
@@ -124,7 +124,7 @@ public class CustomFogConfigScreen extends Screen {
 		lWidget = list;
 		// while rendering is done manually, it is important that the list widget is in the list of children
 		// without adding it to the list, click and scroll events do not propogate
-		this.addChild(lWidget);
+		this.addDrawableChild(lWidget);
 	}
 	
 	@Override
@@ -139,11 +139,6 @@ public class CustomFogConfigScreen extends Screen {
 		this.renderBackground(matrices);
 		lWidget.render(matrices, mouseX, mouseY, delta);
 		super.render(matrices, mouseX, mouseY, delta);
-		for (Element child : this.children) {
-			if (child instanceof Drawable) {
-				((Drawable) child).render(matrices, mouseX, mouseY, delta);
-			}
-		}
 		// Draw the title text.
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
   }

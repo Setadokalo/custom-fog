@@ -2,6 +2,7 @@ package setadokalo.customfog.mixin;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.render.CameraSubmersionType;
 import setadokalo.customfog.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,17 +28,17 @@ import setadokalo.customfog.config.ServerConfig;
 public class RendererMixin {
 
 
-	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setupNvFogDistance()V"), locals = LocalCapture.CAPTURE_FAILSOFT)
-	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci, FluidState fluidState, Entity entity) {
+	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setShaderFogEnd(F)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT)
+	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity) {
 		ServerConfig serverConfig = CustomFogClient.serverConfig;
 		if (serverConfig != null && !serverConfig.baseModAllowed) {
 			return;
 		}
 		// Try applying fog for sky, otherwise apply custom terrain fog
 		if (fogType == BackgroundRenderer.FogType.FOG_SKY) {
-			RenderSystem.fogStart(0.0f);
-			RenderSystem.fogEnd(viewDistance);
-			RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
+			RenderSystem.setShaderFogStart(0.0f);
+			RenderSystem.setShaderFogEnd(viewDistance);
+//			RenderSystem.setShaderFogMode(GlStateManager.FogMode.LINEAR);
 		} else if (!(entity instanceof LivingEntity && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
 			DimensionConfig config = Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
@@ -50,22 +51,9 @@ public class RendererMixin {
 
 	private static void changeFalloff(float viewDistance, DimensionConfig config) {
 		if (config.getEnabled()) {
-			if (config.getType() == CustomFogConfig.FogType.NONE) {
-				RenderSystem.fogStart(40000000000.0F);
-				RenderSystem.fogEnd(  80000000000.0F);
-				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
-			} else if (config.getType() == CustomFogConfig.FogType.LINEAR) {
-				RenderSystem.fogStart(viewDistance * config.getLinearStart());
-				RenderSystem.fogEnd(viewDistance * config.getLinearEnd());
-				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
-			}
-			else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
-				RenderSystem.fogDensity(config.getExp() / viewDistance);
-				RenderSystem.fogMode(GlStateManager.FogMode.EXP);
-			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
-				RenderSystem.fogDensity(config.getExp2() / viewDistance);
-				RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
-			}
+			RenderSystem.setShaderFogStart(viewDistance * config.getLinearStart());
+			RenderSystem.setShaderFogEnd(viewDistance * config.getLinearEnd());
+//			RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
 		}
 	}
 }

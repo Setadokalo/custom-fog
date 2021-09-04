@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,7 +117,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 		if (dimNameWidget == null) return;
 		if (MinecraftClient.getInstance().world != null) {
 			if (
-				!MinecraftClient.getInstance().world.getRegistryManager().getDimensionTypes().containsId(
+				!MinecraftClient.getInstance().world.getRegistryManager().get(Registry.DIMENSION_TYPE_KEY).containsId(
 					Identifier.tryParse(dimNameWidget.getText())
 				)
 			)
@@ -158,7 +159,6 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	@Override
 	public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX,
 			int mouseY, boolean hovered, float tickDelta) {
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		if (nonDimensionEntry) {
 			if (addWidget != null) {
 				addWidget.setWidth(Math.min(200, entryWidth - 10));
@@ -221,5 +221,10 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	@Override
 	public void setFocused(@Nullable Element focused) {
 		this.focused = focused;
+	}
+
+	@Override
+	public Text method_37006() {
+		return new LiteralText("No clue what this is for");
 	}
 }

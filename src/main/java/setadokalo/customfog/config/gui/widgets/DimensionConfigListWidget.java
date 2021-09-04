@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.render.VertexFormat;
 import org.apache.logging.log4j.Level;
 
 import net.minecraft.client.MinecraftClient;
@@ -109,20 +110,26 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 					int selectionRight = x + rowWidth + 2;
 					RenderSystem.disableTexture();
 					float bgIntensity = this.isFocused() ? 1.0F : 0.5F;
-					RenderSystem.color4f(bgIntensity, bgIntensity, bgIntensity, 1.0F);
 					Matrix4f matrix = matrices.peek().getModel();
-					buffer.begin(7, VertexFormats.POSITION);
-					buffer.vertex(matrix, entryLeft, entryTop + entryHeight + 2, 0.0F).next();
-					buffer.vertex(matrix, selectionRight, entryTop + entryHeight + 2, 0.0F).next();
-					buffer.vertex(matrix, selectionRight, entryTop - 2, 0.0F).next();
-					buffer.vertex(matrix, entryLeft, entryTop - 2, 0.0F).next();
+					buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+					buffer.vertex(matrix, entryLeft, entryTop + entryHeight + 2, 0.0F)
+							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
+					buffer.vertex(matrix, selectionRight, entryTop + entryHeight + 2, 0.0F)
+							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
+					buffer.vertex(matrix, selectionRight, entryTop - 2, 0.0F)
+							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
+					buffer.vertex(matrix, entryLeft, entryTop - 2, 0.0F)
+							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
 					tessellator.draw();
-					RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
-					buffer.begin(7, VertexFormats.POSITION);
-					buffer.vertex(matrix, entryLeft + 1, entryTop + entryHeight + 1, 0.0F).next();
-					buffer.vertex(matrix, selectionRight - 1, entryTop + entryHeight + 1, 0.0F).next();
-					buffer.vertex(matrix, selectionRight - 1, entryTop - 1, 0.0F).next();
-					buffer.vertex(matrix, entryLeft + 1, entryTop - 1, 0.0F).next();
+					buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+					buffer.vertex(matrix, entryLeft + 1, entryTop + entryHeight + 1, 0.0F)
+							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
+					buffer.vertex(matrix, selectionRight - 1, entryTop + entryHeight + 1, 0.0F)
+							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
+					buffer.vertex(matrix, selectionRight - 1, entryTop - 1, 0.0F)
+							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
+					buffer.vertex(matrix, entryLeft + 1, entryTop - 1, 0.0F)
+							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
 					tessellator.draw();
 					RenderSystem.enableTexture();
 				}

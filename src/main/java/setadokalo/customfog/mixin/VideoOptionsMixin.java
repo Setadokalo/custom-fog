@@ -1,5 +1,7 @@
 package setadokalo.customfog.mixin;
 
+import net.minecraft.client.gui.screen.option.GameOptionsScreen;
+import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -7,8 +9,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.screen.VideoOptionsScreen;
-import net.minecraft.client.gui.screen.options.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.TranslatableText;
 import setadokalo.customfog.CustomFog;
@@ -24,7 +24,7 @@ public abstract class VideoOptionsMixin extends GameOptionsScreen {
 	@Inject(method = "init", at = @At(value = "RETURN"))
 	protected void addCustomFogButton(CallbackInfo ci) {
 		if (CustomFogClient.config.videoOptionsButton && client != null)
-			this.addButton(
+			this.addDrawableChild(
 				new ButtonWidget(
 					this.width - 108, 
 					this.height - 27, 
