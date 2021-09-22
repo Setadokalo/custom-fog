@@ -20,14 +20,14 @@ import net.minecraft.util.math.Matrix4f;
 import setadokalo.customfog.CustomFog;
 
 public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<DimensionConfigEntry> {
-	private Screen parent;
+	private final Screen parent;
 	private boolean renderSelection;
-	private TextRenderer textRenderer;
+	private final TextRenderer textRenderer;
 	private boolean scrolling;
 
 	public DimensionConfigListWidget(MinecraftClient minecraftClient, int x, int y, int width, int height,
-			int itemheight, Screen parent, TextRenderer textRenderer) {
-		super(minecraftClient, width, height, y, y + height, itemheight);
+			int itemHeight, Screen parent, TextRenderer textRenderer) {
+		super(minecraftClient, width, height, y, y + height, itemHeight);
 		this.left = x;
 		this.right = x + width;
 		this.top = y;
@@ -169,7 +169,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
       }
    }
 
-
+/* shut up, analyzer
 	public final int toEntryPos(double yScreenspace) {
 		int heightInList = MathHelper.floor(yScreenspace - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
 		return heightInList % this.itemHeight;
@@ -179,7 +179,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 		int heightInList = MathHelper.floor(yScreenspace - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
 		return heightInList / this.itemHeight;
 	}
-
+*/
 	public final DimensionConfigEntry getEntryAtPos(double x, double y) {
 		int heightInList = MathHelper.floor(y - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
 		int index = heightInList / this.itemHeight;

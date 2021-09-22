@@ -15,6 +15,10 @@ repositories {
         name = 'ModMenu'
         url = 'https://maven.terraformersmc.com/releases/'
     }
+    maven { url 'https://jitpack.io' }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -23,15 +27,15 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-    // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-    // You may need to force-disable transitiveness on them.
-    modImplementation("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
-    include "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
+
+    // Removed to reduce binary size (this was 36% of the entire binary at the time of removal)
+    // modImplementation("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
+    //include "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
+    modCompileOnly name: 'sodium-fabric-mc1.17.1'
 }
 
 processResources {
@@ -66,21 +70,9 @@ jar {
 
 // configure the maven publication
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-        }
-    }
-
     // select the repositories you want to publish to
     repositories {
         // uncomment to publish to the local maven
-        // mavenLocal()
+//         mavenLocal()
     }
 }

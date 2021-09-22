@@ -6,22 +6,17 @@ import org.jetbrains.annotations.Nullable;
 import setadokalo.customfog.config.DimensionConfig;
 import setadokalo.customfog.config.ServerConfig;
 
+import java.util.Objects;
+
 public class Utils {
 	@NotNull
-	private static <T> T requireNonNullElse(@Nullable T nullable, @NotNull T defaultT) {
-		if (nullable != null) {
-			return nullable;
-		} else if (defaultT != null) {
-			return defaultT;
-		} else {
-			throw new NullPointerException("defaultT should always be non-null");
-		}
-	}
-
 	public static DimensionConfig getDimensionConfigFor(@Nullable Identifier value) {
 		ServerConfig serverConfig = CustomFogClient.serverConfig;
 		if (CustomFogClient.config.overrideConfig != null)
 			return CustomFogClient.config.overrideConfig;
+		if (value != null && value.toString().equals("customfog:water")) {
+			return Objects.requireNonNullElse(serverConfig != null ? serverConfig.waterOverride : null, CustomFogClient.config.waterConfig);
+		}
 		if (serverConfig != null) {
 			if (serverConfig.overrides.get(value) != null)
 				return serverConfig.overrides.get(value);
@@ -29,9 +24,9 @@ public class Utils {
 				return serverConfig.universalOverride;
 		}
 
-		return requireNonNullElse(
+		return Objects.requireNonNullElse(
 			CustomFogClient.config.dimensions.get(value),
-			requireNonNullElse(serverConfig == null ? null : serverConfig.defaultOverride,
+			Objects.requireNonNullElse(serverConfig == null ? null : serverConfig.defaultOverride,
 				CustomFogClient.config.defaultConfig
 			)
 		);

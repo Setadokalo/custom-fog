@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import setadokalo.customfog.CustomFog;
 
@@ -50,19 +51,18 @@ public class ServerConfig {
 	private transient File file;
 
 	public boolean baseModAllowed = true;
-	//TODO: Implement water and lava configuration
-//	public boolean waterConfigAllowed = true;
-//	public boolean lavaConfigAllowed = false;
+	//TODO: Implement lava configuration
 
 	@Nullable
 	public DimensionConfig defaultOverride = null;
+	@Nullable
+	public DimensionConfig waterOverride = null;
 	@Nullable
 	public DimensionConfig universalOverride = null;
 
 	public Map<Identifier, DimensionConfig> overrides = new HashMap<>();
 
-
-	@Nullable
+	@NotNull
 	public static ServerConfig getConfig() {
 		CustomFog.log(Level.INFO, "Loading server config file");
 		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + "-server.json");

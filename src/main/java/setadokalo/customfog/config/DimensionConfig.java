@@ -31,7 +31,7 @@ public class DimensionConfig {
 		this.enabled = enabled;
 	}
 	public FogType getType() {
-		return type;
+		return type != null ? type : FogType.LINEAR;
 	}
 	public void setType(FogType type) {
 		this.type = type;

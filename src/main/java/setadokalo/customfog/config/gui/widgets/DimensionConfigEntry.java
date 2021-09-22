@@ -3,8 +3,6 @@ package setadokalo.customfog.config.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
@@ -45,6 +43,8 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	public Identifier originalDimId;
 	@Nullable
 	public Identifier dimensionId;
+	@Nullable
+	public Text name;
 	public DimensionConfig config;
 	protected List<Element> children = new ArrayList<>();
 	@Nullable
@@ -54,7 +54,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	protected ButtonWidget configureWidget;
 
 	public DimensionConfigEntry(DimensionConfigListWidget parent, boolean removable, @Nullable Identifier dimId,
-								DimensionConfig config) {
+										 DimensionConfig config) {
 		nonDimensionEntry = false;
 		this.removable = removable;
 		parentList = parent;
@@ -72,22 +72,27 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 			});
 			children.add(dimNameWidget);
 			removeWidget = new TexturedButtonWidget(
-				-20000, -20000, 
-				REMOVE_WIDGET_WIDTH, 20, 
-				0, 0, 
-				20, 
-				new Identifier("custom-fog", "textures/gui/minus.png"), 
-				20, 40,
-				btn -> {
-					// there should never be an entry that has a visible remove widget 
-					// that is not also in the dimensions array with the originalDimId key
-					CustomFogClient.config.dimensions.remove(this.originalDimId);
-					parentList.remove(this);
-				}
+					-20000, -20000,
+					REMOVE_WIDGET_WIDTH, 20,
+					0, 20,
+					20,
+					new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
+					256, 256,
+					btn -> {
+						// there should never be an entry that has a visible remove widget
+						// that is not also in the dimensions array with the originalDimId key
+						CustomFogClient.config.dimensions.remove(this.originalDimId);
+						parentList.remove(this);
+					}
 			);
 			children.add(removeWidget);
 		}
 		setupConfigureButton();
+	}
+	public DimensionConfigEntry(DimensionConfigListWidget parent, boolean removable, @Nullable Identifier dimId,
+										  DimensionConfig config, @Nullable Text nameOverride) {
+		this(parent, removable, dimId, config);
+		name = nameOverride;
 	}
 
 	private void setupConfigureButton() {
@@ -121,7 +126,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 					Identifier.tryParse(dimNameWidget.getText())
 				)
 			)
-				dimNameWidget.setEditableColor(0xFF0000);
+				dimNameWidget.setEditableColor(0xFF5555);
 			else
 				dimNameWidget.setEditableColor(0xFFFFFF);
 		}
@@ -181,7 +186,9 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 
 		} else {
 			configureWidget.x = x + entryWidth - 8 - configureWidget.getWidth();
-			drawText(matrices, textRenderer, new LiteralText(dimensionId == null ? "Default" : dimensionId.toString()), x + 12, y + 4, 0xFFFFFF);
+			drawText(matrices, textRenderer, name != null ?
+					name :
+					new LiteralText(dimensionId == null ? "Default" : dimensionId.toString()), x + 12, y + 4, 0xFFFFFF);
 		}
 		configureWidget.y = y;
 		configureWidget.render(matrices, mouseX, mouseY, tickDelta);
@@ -225,6 +232,6 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 
 	@Override
 	public Text method_37006() {
-		return new LiteralText("No clue what this is for");
+		return new LiteralText(dimensionId == null ? "Default" : dimensionId.toString());
 	}
 }

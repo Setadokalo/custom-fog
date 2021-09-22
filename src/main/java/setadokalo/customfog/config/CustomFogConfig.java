@@ -3,8 +3,6 @@ package setadokalo.customfog.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.moandjiezana.toml.Toml;
-import com.moandjiezana.toml.TomlWriter;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
@@ -22,24 +20,19 @@ public class CustomFogConfig {
 		.enableComplexMapKeySerialization()
 		.setPrettyPrinting()
 		.create();
-	private static class OldTomlConfig {
-		public static final float LINEAR_START = 0.25F;
-		public static final float LINEAR_END = 1.00F;
-		public static final float EXP = 3.00F;
-		public static final float EXP2 = 1.75F;
-		@NotNull
-		public DimensionConfig defaultConfig = new DimensionConfig(true, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2);
-		public Map<String, DimensionConfig> dimensions = new HashMap<>();
-	}
 
 	public CustomFogConfig() {}
 	public CustomFogConfig(File file) {
 		this.file = file;
 	}
 
-	@Nullable
+	@NotNull
 	public static CustomFogConfig getConfig() {
-		CustomFog.log(Level.INFO, "Loading config file");
+		File tomlFile = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
+		if (tomlFile.exists()) {
+			CustomFog.log(Level.WARN, "Old config file detected; mod no longer supports loading this format");
+		}
+		CustomFog.log(Level.DEBUG, "Loading config file");
 		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".json");
 		if (file.exists()) {
 			try {
@@ -52,47 +45,20 @@ public class CustomFogConfig {
 				}
 				return c;
 			} catch (FileNotFoundException | JsonSyntaxException e) {
-				return null;
+				return makeConfig(file);
 			}
 		} else {
-			File tomlFile = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
-			if (tomlFile.exists()) {
-				try {
-					Toml configToml = new Toml().read(tomlFile);
-					OldTomlConfig oldConfig = configToml.to(OldTomlConfig.class);
-					CustomFogConfig config = new CustomFogConfig(file);
-					config.defaultConfig = oldConfig.defaultConfig;
-					// convert the string keys from the toml config to the new json config
-					Map<String, DimensionConfig> newDimensions = new HashMap<>();
-					for (Map.Entry<String, DimensionConfig> row : oldConfig.dimensions.entrySet()) {
-						String strippedKey = row.getKey().substring(1, row.getKey().length() - 1);
-						config.dimensions.put(new Identifier(strippedKey), row.getValue());
-						newDimensions.put(strippedKey, row.getValue());
-					}
-					oldConfig.dimensions = newDimensions;
-					// prepend a deprecation warning to the outdated config file
-					try (FileWriter writer = new FileWriter(tomlFile)) {
-						writer.write("" +
-							"# WARNING: This config file is now deprecated, in a future version support for converting from it will be disabled.\n" +
-							"# This config file will no longer be read from. To configure Custom Fog, use the new `custom-fog.json` file instead.\n"
-						);
-						new TomlWriter().write(oldConfig, writer);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					config.saveConfig();
-					return config;
-				} catch (IllegalStateException e) {
-					return null;
-				}
-			} else {
-				CustomFogConfig config = new CustomFogConfig(file);
-				config.dimensions.put(new Identifier("minecraft:the_nether"),
-					new DimensionConfig(false, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2));
-				config.saveConfig();
-				return config;
-			}
+			return makeConfig(file);
 		}
+	}
+
+	@NotNull
+	private static CustomFogConfig makeConfig(File file) {
+		CustomFogConfig config = new CustomFogConfig(file);
+		config.dimensions.put(new Identifier("minecraft:the_nether"),
+			new DimensionConfig(false, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2));
+		config.saveConfig();
+		return config;
 	}
 
 	public static void add(CustomFogConfig config, Identifier key, DimensionConfig dimCfg) {
@@ -128,11 +94,15 @@ public class CustomFogConfig {
 	@NotNull
 	public DimensionConfig defaultConfig = new DimensionConfig(true, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2);
 
+	@NotNull
+	public DimensionConfig waterConfig = new DimensionConfig(true, FogType.EXPONENTIAL, LINEAR_START, LINEAR_END, 2.0F, 0.05F);
+
 	// should not be exposed in the config files, I think it was previously though oops
 	@Nullable
 	public transient DimensionConfig overrideConfig = null;
 	public Map<Identifier, DimensionConfig> dimensions = new HashMap<>();
 	public boolean videoOptionsButton = true;
+	public boolean hasClosedToast = false;
 
 
 	public enum FogType {
