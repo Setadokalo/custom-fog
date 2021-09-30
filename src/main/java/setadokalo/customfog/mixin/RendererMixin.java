@@ -49,7 +49,7 @@ public class RendererMixin {
 		) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
 			DimensionConfig config = cameraSubmersionType == CameraSubmersionType.WATER ?
-					Utils.getDimensionConfigFor(new Identifier("customfog:water")) :
+					Utils.getDimensionConfigFor(new Identifier(Utils.WATER_CONFIG)) :
 					Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
 
 			changeFalloff(viewDistance, config);
@@ -64,13 +64,13 @@ public class RendererMixin {
 //				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
 			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
 				RenderSystem.setShaderFogStart(-512.0F);
-				RenderSystem.setShaderFogEnd(config.getExp() / 50.0F);
+				RenderSystem.setShaderFogEnd(config.getExp() / (0.3F * viewDistance));
 			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
 				RenderSystem.setShaderFogStart(-1024.0F);
-				RenderSystem.setShaderFogEnd(config.getExp2() / 10000.0F);
+				RenderSystem.setShaderFogEnd(config.getExp2() / (50.0F * viewDistance));
 			} else {
-				RenderSystem.setShaderFogStart(1000000.0F);
-				RenderSystem.setShaderFogEnd(1000000.0F);
+				RenderSystem.setShaderFogStart(990000.0F);
+				RenderSystem.setShaderFogEnd( 1000000.0F);
 			}
 		}
 	}

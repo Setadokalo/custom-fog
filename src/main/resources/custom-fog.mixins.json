@@ -3,8 +3,6 @@
   "minVersion": "0.8",
   "package": "setadokalo.customfog.mixin",
   "compatibilityLevel": "JAVA_16",
-  "mixins": [
-  ],
   "client": [
     "RendererMixin",
     "VideoOptionsMixin"

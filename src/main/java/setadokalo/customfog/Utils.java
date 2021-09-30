@@ -9,12 +9,15 @@ import setadokalo.customfog.config.ServerConfig;
 import java.util.Objects;
 
 public class Utils {
+
+	public static final String WATER_CONFIG = "_customfog_internal:__/water/__";
+
 	@NotNull
 	public static DimensionConfig getDimensionConfigFor(@Nullable Identifier value) {
 		ServerConfig serverConfig = CustomFogClient.serverConfig;
 		if (CustomFogClient.config.overrideConfig != null)
 			return CustomFogClient.config.overrideConfig;
-		if (value != null && value.toString().equals("customfog:water")) {
+		if (value != null && value.toString().equals(Utils.WATER_CONFIG)) {
 			return Objects.requireNonNullElse(serverConfig != null ? serverConfig.waterOverride : null, CustomFogClient.config.waterConfig);
 		}
 		if (serverConfig != null) {
