@@ -2,6 +2,7 @@
   "modid.customfog": "[Custom Fog] ",
   "chat.customfog.reloaded": "Config Reloaded!",
   "config.customfog.water": "Water",
+  "config.customfog.snow": "Snow",
   "button.customfog.load": "Reload Config",
   "button.customfog.add": "Add Dimension",
   "button.customfog.configure": "Configure...",

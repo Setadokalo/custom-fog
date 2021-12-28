@@ -97,6 +97,9 @@ public class CustomFogConfig {
 	@NotNull
 	public DimensionConfig waterConfig = new DimensionConfig(true, FogType.EXPONENTIAL, LINEAR_START, LINEAR_END, 2.0F, 0.05F);
 
+	@NotNull
+	public DimensionConfig snowConfig = new DimensionConfig(true, FogType.EXPONENTIAL, LINEAR_START, LINEAR_END, 2.0F, 0.05F);
+
 	// should not be exposed in the config files, I think it was previously though oops
 	@Nullable
 	public transient DimensionConfig overrideConfig = null;

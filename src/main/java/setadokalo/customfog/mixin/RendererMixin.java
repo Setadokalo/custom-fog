@@ -42,14 +42,16 @@ public class RendererMixin {
 			RenderSystem.setShaderFogStart(0.0f);
 			RenderSystem.setShaderFogEnd(viewDistance);
 //			RenderSystem.setShaderFogMode(GlStateManager.FogMode.LINEAR);
-		//else if (camera isn't in lava) AND entity isn't blind
-		} else if (cameraSubmersionType != CameraSubmersionType.LAVA && !((entity instanceof LivingEntity) && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))
-		) {
+		} else if (cameraSubmersionType != CameraSubmersionType.LAVA && !((entity instanceof LivingEntity) && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
-			DimensionConfig config = cameraSubmersionType == CameraSubmersionType.WATER ?
-					Utils.getDimensionConfigFor(new Identifier(Utils.WATER_CONFIG)) :
-					Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
-
+			DimensionConfig config;
+			if (cameraSubmersionType == CameraSubmersionType.WATER) {
+				config = Utils.getDimensionConfigFor(new Identifier(Utils.WATER_CONFIG));
+			} else if (cameraSubmersionType == CameraSubmersionType.POWDER_SNOW) {
+				config = Utils.getDimensionConfigFor(new Identifier(Utils.POWDER_SNOW_CONFIG));
+			} else {
+				config = Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
+			}
 			changeFalloff(viewDistance, config);
 		}
 	}

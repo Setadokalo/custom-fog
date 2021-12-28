@@ -113,6 +113,8 @@ public class CustomFogConfigScreen extends Screen {
 		if (entry.dimensionId != null) {
 			if (entry.dimensionId.toString().equals(Utils.WATER_CONFIG)) {
 				CustomFogClient.config.waterConfig = entry.config;
+			} else if (entry.dimensionId.toString().equals(Utils.POWDER_SNOW_CONFIG)) {
+				CustomFogClient.config.snowConfig = entry.config;
 			} else if (entry.originalDimId != null) {
 				try {
 					CustomFogConfig.changeKey(CustomFogClient.config, entry.originalDimId, entry.dimensionId);
@@ -146,6 +148,7 @@ public class CustomFogConfigScreen extends Screen {
 		lWidget.children().clear();
 		lWidget.add(new DimensionConfigEntry(lWidget, CustomFogClient.config.defaultConfig));
 		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(Utils.WATER_CONFIG), CustomFogClient.config.waterConfig, new TranslatableText("config.customfog.water")));
+		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(Utils.POWDER_SNOW_CONFIG), CustomFogClient.config.snowConfig, new TranslatableText("config.customfog.snow")));
 		for (Map.Entry<Identifier, DimensionConfig> config : CustomFogClient.config.dimensions.entrySet()) {
 			lWidget.add(new DimensionConfigEntry(lWidget, true, config.getKey(), config.getValue()));
 		}
