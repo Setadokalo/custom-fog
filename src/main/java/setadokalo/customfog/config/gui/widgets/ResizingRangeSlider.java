@@ -320,7 +320,7 @@ public class ResizingRangeSlider extends SliderWidget {
 				RenderSystem.setShader(GameRenderer::getPositionColorShader);
 				BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 				bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-				Matrix4f mat = matrices.peek().getModel();
+				Matrix4f mat = matrices.peek().getPositionMatrix();
 				bufferBuilder.vertex(mat, (float)startX, (float)(this.y + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)
 						.color(255, 255, 255, 255).next();
 				bufferBuilder.vertex(mat, (float)endX, (float)(this.y + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)

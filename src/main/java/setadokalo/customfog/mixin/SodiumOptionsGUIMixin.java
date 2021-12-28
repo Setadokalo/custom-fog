@@ -29,7 +29,7 @@ public class SodiumOptionsGUIMixin extends Screen {
 				new TranslatableText("button.customfog.menu"),
 				() -> {
 					if (this.client != null) {
-						this.client.openScreen(new CustomFogConfigScreen(this));
+						this.client.setScreen(new CustomFogConfigScreen(this));
 					}
 				}
 		);

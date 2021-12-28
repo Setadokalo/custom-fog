@@ -110,7 +110,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 					int selectionRight = x + rowWidth + 2;
 					RenderSystem.disableTexture();
 					float bgIntensity = this.isFocused() ? 1.0F : 0.5F;
-					Matrix4f matrix = matrices.peek().getModel();
+					Matrix4f matrix = matrices.peek().getPositionMatrix();
 					buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 					buffer.vertex(matrix, entryLeft, entryTop + entryHeight + 2, 0.0F)
 							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();

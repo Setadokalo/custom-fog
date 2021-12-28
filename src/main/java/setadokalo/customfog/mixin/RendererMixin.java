@@ -42,10 +42,8 @@ public class RendererMixin {
 			RenderSystem.setShaderFogStart(0.0f);
 			RenderSystem.setShaderFogEnd(viewDistance);
 //			RenderSystem.setShaderFogMode(GlStateManager.FogMode.LINEAR);
-		} else if (
-				cameraSubmersionType != CameraSubmersionType.LAVA &&
-				!((entity instanceof LivingEntity)
-					&& ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))
+		//else if (camera isn't in lava) AND entity isn't blind
+		} else if (cameraSubmersionType != CameraSubmersionType.LAVA && !((entity instanceof LivingEntity) && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))
 		) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
 			DimensionConfig config = cameraSubmersionType == CameraSubmersionType.WATER ?

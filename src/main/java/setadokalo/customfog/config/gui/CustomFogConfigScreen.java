@@ -105,7 +105,7 @@ public class CustomFogConfigScreen extends Screen {
 		}
 		CustomFogClient.config.saveConfig();
 		if (this.client != null) {
-			this.client.openScreen(this.parent);
+			this.client.setScreen(this.parent);
 		}
 	}
 
@@ -170,7 +170,7 @@ public class CustomFogConfigScreen extends Screen {
 
 public void openScreen(DimensionConfigScreen dimensionConfigScreen) {
 	if (client != null) {
-		client.openScreen(dimensionConfigScreen);
+		client.setScreen(dimensionConfigScreen);
 	}
 }
 

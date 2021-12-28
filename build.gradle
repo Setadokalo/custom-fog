@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.8-SNAPSHOT'
+    id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -35,7 +35,7 @@ dependencies {
     // Removed to reduce binary size (this was 36% of the entire binary at the time of removal)
     // modImplementation("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
     //include "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
-    modCompileOnly name: 'sodium-fabric-mc1.17.1'
+    modCompileOnly name: 'sodium-fabric'
 }
 
 processResources {
