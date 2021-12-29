@@ -33,6 +33,7 @@ public class CustomFogConfig {
 			CustomFog.log(Level.WARN, "Old config file detected; mod no longer supports loading this format");
 		}
 		CustomFog.log(Level.DEBUG, "Loading config file");
+		
 		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".json");
 		if (file.exists()) {
 			try {
@@ -91,14 +92,17 @@ public class CustomFogConfig {
 	public static final float LINEAR_END = 1.00F;
 	public static final float EXP = 3.00F;
 	public static final float EXP2 = 1.75F;
+	public static final float SNOW_LINEAR_START = 0.0F;
+	public static final float SNOW_LINEAR_END = 1.40F;
 	@NotNull
 	public DimensionConfig defaultConfig = new DimensionConfig(true, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2);
 
 	@NotNull
 	public DimensionConfig waterConfig = new DimensionConfig(true, FogType.EXPONENTIAL, LINEAR_START, LINEAR_END, 2.0F, 0.05F);
 
+	// these exp and exp2 values are made to be close to linear, couldn't think of a better default value.
 	@NotNull
-	public DimensionConfig snowConfig = new DimensionConfig(true, FogType.EXPONENTIAL, LINEAR_START, LINEAR_END, 2.0F, 0.05F);
+	public DimensionConfig snowConfig = new DimensionConfig(true, FogType.LINEAR, SNOW_LINEAR_START, SNOW_LINEAR_END, 85.0F, 9800.05F);
 
 	// should not be exposed in the config files, I think it was previously though oops
 	@Nullable
