@@ -15,6 +15,14 @@ repositories {
         name = 'ModMenu'
         url = 'https://maven.terraformersmc.com/releases/'
     }
+    // taken from FlashyReese/sodium-extra-fabric
+    maven {
+    name = "Modrinth (for Sodium)"
+    url = "https://api.modrinth.com/maven"
+    content {
+            includeGroup "maven.modrinth"
+        }
+    }
     maven { url 'https://jitpack.io' }
     flatDir {
         dirs 'libs'
@@ -35,7 +43,7 @@ dependencies {
     // Removed to reduce binary size (this was 36% of the entire binary at the time of removal)
     // modImplementation("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
     //include "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
-    modCompileOnly name: 'sodium-fabric'
+    modImplementation "maven.modrinth:sodium:${project.sodium_version}"
 }
 
 processResources {
