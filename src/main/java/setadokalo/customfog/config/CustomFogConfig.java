@@ -95,7 +95,7 @@ public class CustomFogConfig {
 	public static final float SNOW_LINEAR_START = 0.0F;
 	public static final float SNOW_LINEAR_END = 1.40F;
 	@NotNull
-	public DimensionConfig defaultConfig = new DimensionConfig(true, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2);
+	public final DimensionConfig defaultConfig = new DimensionConfig(true, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2);
 
 	@NotNull
 	public DimensionConfig waterConfig = new DimensionConfig(true, FogType.EXPONENTIAL, LINEAR_START, LINEAR_END, 2.0F, 0.05F);
@@ -105,9 +105,10 @@ public class CustomFogConfig {
 	public DimensionConfig snowConfig = new DimensionConfig(true, FogType.LINEAR, SNOW_LINEAR_START, SNOW_LINEAR_END, 85.0F, 9800.05F);
 
 	// should not be exposed in the config files, I think it was previously though oops
+	// used by the client to show the config being edited in the config gui regardless of the dimension/state
 	@Nullable
 	public transient DimensionConfig overrideConfig = null;
-	public Map<Identifier, DimensionConfig> dimensions = new HashMap<>();
+	public final Map<Identifier, DimensionConfig> dimensions = new HashMap<>();
 	public boolean videoOptionsButton = true;
 	public boolean hasClosedToast = false;
 

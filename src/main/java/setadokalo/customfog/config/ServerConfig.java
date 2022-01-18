@@ -87,16 +87,4 @@ public class ServerConfig {
 			return config;
 		}
 	}
-
-//	public enum TriState {
-//		ALLOWED,
-//		NEUTRAL,
-//		DENIED;
-//		public boolean asOptIn() {
-//			return this == ALLOWED;
-//		}
-//		public boolean asOptOut() {
-//			return this != DENIED;
-//		}
-//	}
 }

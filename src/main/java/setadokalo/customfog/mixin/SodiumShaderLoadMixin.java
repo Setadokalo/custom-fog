@@ -1,9 +1,6 @@
 package setadokalo.customfog.mixin;
 
-import it.unimi.dsi.fastutil.bytes.ByteArrays;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;

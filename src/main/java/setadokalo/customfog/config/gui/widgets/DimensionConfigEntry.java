@@ -39,14 +39,14 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	public final boolean removable;
 	protected final boolean nonDimensionEntry; // I'm lazy as hell and I'm not gonna implement this properly
 	protected TextRenderer textRenderer;
-	protected DimensionConfigListWidget parentList;
-	public Identifier originalDimId;
+	protected final DimensionConfigListWidget parentList;
+	public final Identifier originalDimId;
 	@Nullable
 	public Identifier dimensionId;
 	@Nullable
 	public Text name;
 	public DimensionConfig config;
-	protected List<Element> children = new ArrayList<>();
+	protected final List<Element> children = new ArrayList<>();
 	@Nullable
 	protected TextFieldWidget dimNameWidget;
 	protected TexturedButtonWidget removeWidget;

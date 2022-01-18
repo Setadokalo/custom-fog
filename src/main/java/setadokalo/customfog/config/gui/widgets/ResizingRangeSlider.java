@@ -18,11 +18,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ResizingRangeSlider extends SliderWidget {
-	boolean displayPercent;
+	final boolean displayPercent;
 	final double defaultMax;
 	double max;
-	Consumer<Double> setter;
-	Function<Double, Text> displayTextProducer;
+	final Consumer<Double> setter;
+	final Function<Double, Text> displayTextProducer;
 
 	public ResizingRangeSlider(
 			int x, int y,

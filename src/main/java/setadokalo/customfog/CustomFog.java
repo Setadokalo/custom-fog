@@ -17,7 +17,7 @@ public class CustomFog implements ModInitializer {
 	public static final Identifier SERVER_CONFIG_PACKET_ID = new Identifier(CustomFog.MOD_ID, "server_config");
 
 	protected static final String LOG_STRING = "[" + MOD_NAME + "] {}";
-	static Logger LOGGER = LogManager.getLogger();
+	static final Logger LOGGER = LogManager.getLogger();
 
 	public static void log(Level level, String message) {
 		LOGGER.log(level, LOG_STRING, message);

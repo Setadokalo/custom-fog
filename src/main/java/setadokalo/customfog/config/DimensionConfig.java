@@ -9,6 +9,7 @@ public class DimensionConfig {
 	protected float linearFogEndMult;
 	protected float expFogMult;
 	protected float exp2FogMult;
+	protected boolean cylinderFog;
 
 
 	public DimensionConfig(boolean enabled, FogType type, float linearStart, float linearEnd, float exp, float exp2) {

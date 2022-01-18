@@ -6,11 +6,9 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.command.CommandException;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.Level;
@@ -32,16 +30,15 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 				);
 			CustomFog.log(Level.INFO, "Sending packet");
 		});
-		CommandRegistrationCallback.EVENT.register((dis, ded) -> {
-			dis.register(CommandManager.literal("customfog")
+		CommandRegistrationCallback.EVENT.register(
+			(dis, ded) -> dis.register(CommandManager.literal("customfog")
 				.requires(source -> source.hasPermissionLevel(4))
-				.then(CommandManager.literal("reload").executes(CustomFogServer::customFogReload)));
-		});
+				.then(CommandManager.literal("reload").executes(CustomFogServer::customFogReload))
+			)
+		);
 	}
 	private static int customFogReload(CommandContext<ServerCommandSource> ctx) {
 		config = ServerConfig.getConfig();
-		if (config == null)
-			throw new CommandException(new LiteralText("Invalid Config File"));
 		String serialized =	config.serialize();
 		for (ServerPlayerEntity entity : ctx.getSource().getServer().getPlayerManager().getPlayerList()) {
 			if (ServerPlayNetworking.canSend(entity, CustomFog.SERVER_CONFIG_PACKET_ID))

@@ -7,6 +7,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.screen.Screen;
@@ -29,7 +31,8 @@ public class CustomFogConfigScreen extends Screen {
 	private static final int HEADER_HEIGHT = 25;
 	private static final int FOOTER_HEIGHT = 40;
 
-	protected int notificationHeight = 0;
+	// the Y coordinate of the bottom of the next notification
+	protected int nextNotifBottom = 0;
 
 	public CustomFogConfigScreen(@Nullable Screen parent) {
 		super(new TranslatableText("screen.customfog.config"));
@@ -44,8 +47,8 @@ public class CustomFogConfigScreen extends Screen {
 	public void pushNotification(WarningWidget notification) {
 		this.addDrawable(notification);
 		notification.setX((width - notification.getWidth())/2);
-		notificationHeight = notificationHeight - notification.getHeight();
-		notification.setY(notificationHeight);
+		nextNotifBottom = nextNotifBottom - notification.getHeight() - 2;
+		notification.setY(nextNotifBottom + 2);
 	}
 
 	@Override
@@ -59,7 +62,11 @@ public class CustomFogConfigScreen extends Screen {
 			lWidget.updateSize(width, height, HEADER_HEIGHT, height - FOOTER_HEIGHT);
 			this.addDrawableChild(lWidget);
 		}
-		notificationHeight = this.height - 40;
+		// A couple "subtle" things can cause very unexpected behavior for users, so
+		// we show them these notifications in the main config screen to warn them.
+		nextNotifBottom = this.height - 40;
+		// If canvas is loaded without the canvas-specific compatibility pack, EXP and EXP2 fog can't work right.
+		// Warn the user to enable the canvasfog pack or only use linear/disabled.
 		if (FabricLoader.getInstance().isModLoaded("canvas")
 				&& !MinecraftClient.getInstance().getResourcePackManager().getEnabledNames().contains("customfog/canvasfog")) {
 			pushNotification(new WarningWidget(
@@ -68,6 +75,8 @@ public class CustomFogConfigScreen extends Screen {
 					new TranslatableText("notice.customfog.canvaspack2").formatted(Formatting.WHITE),
 					new TranslatableText("notice.customfog.canvaspack3").formatted(Formatting.WHITE)));
 		}
+		// If a universal override is applied by the server, none of the configs the user sets will be visible outside
+		// the config gui. Warn them they can't change their fog on this server.
 		if (Utils.universalOverride()) {
 			pushNotification(new WarningWidget(
 					235,
@@ -83,11 +92,17 @@ public class CustomFogConfigScreen extends Screen {
 					  createList();
 				  }));
 		// Add done button.
-		int doneButtonX = Math.max(this.width / 2 - 100, 94);
-		int doneButtonWidth = Math.min(200, this.width - (doneButtonX + 5 + 160 + 8));
-		this.addDrawableChild(new ButtonWidget(doneButtonX, this.height - 29, doneButtonWidth, 20, new TranslatableText("button.customfog.saveandquit"),
-			btn -> saveDimensionNames()));
-		this.addDrawableChild(new ButtonWidget(this.width - 165, this.height - 29, 160, 20, new TranslatableText("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)),
+		int saveBtnX = Math.max(this.width / 2 - 100, 94);
+		int saveBtnWidth = Math.min(200, this.width - (saveBtnX + 5 + 160 + 8));
+		this.addDrawableChild(new ButtonWidget(
+				saveBtnX, this.height - 29,
+				saveBtnWidth, 20,
+				new TranslatableText("button.customfog.saveandquit"),
+			btn -> saveDimensions()));
+		this.addDrawableChild(new ButtonWidget(
+				this.width - 165, this.height - 29,
+				160, 20,
+				new TranslatableText("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)),
 			btn -> {
 			CustomFogClient.config.videoOptionsButton = !CustomFogClient.config.videoOptionsButton;
 			btn.setMessage(new TranslatableText("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)));
@@ -95,13 +110,14 @@ public class CustomFogConfigScreen extends Screen {
   }
 
 
-	public static String boolToEnabled(boolean in) {
+	@Contract(pure = true)
+	public static @NotNull String boolToEnabled(boolean in) {
 		return in ? "Enabled" : "Disabled";
 	}
 
-	private void saveDimensionNames() {
+	private void saveDimensions() {
 		for (DimensionConfigEntry entry : this.lWidget.children()) {
-			saveDimensionName(entry);
+			saveDimension(entry);
 		}
 		CustomFogClient.config.saveConfig();
 		if (this.client != null) {
@@ -109,8 +125,11 @@ public class CustomFogConfigScreen extends Screen {
 		}
 	}
 
-	private void saveDimensionName(DimensionConfigEntry entry) {
+	private void saveDimension(DimensionConfigEntry entry) {
 		if (entry.dimensionId != null) {
+			// We do water/powdered snow fog config with a hack, by pretending it's a dimension with
+			// a weird identifier. Here we check for the special identifiers and write their configs where they
+			// actually belong.
 			if (entry.dimensionId.toString().equals(Utils.WATER_CONFIG)) {
 				CustomFogClient.config.waterConfig = entry.config;
 			} else if (entry.dimensionId.toString().equals(Utils.POWDER_SNOW_CONFIG)) {
@@ -127,6 +146,7 @@ public class CustomFogConfigScreen extends Screen {
 		}
 	}
 
+	// reset or create the dimension config list widget and add all dimensions from the config file.
 	private void createList() {
 //		this.remove(lWidget);
 		if (lWidget == null) {
@@ -140,8 +160,6 @@ public class CustomFogConfigScreen extends Screen {
 					this, // parent screen (of the widget)
 					this.textRenderer // text renderer to use
 			);
-			// while rendering is done manually, it is important that the list widget is in the list of children
-			// without adding it to the list, click and scroll events do not propogate
 			this.addDrawableChild(lWidget);
 		}
 
@@ -158,6 +176,7 @@ public class CustomFogConfigScreen extends Screen {
 	@Override
 	public void tick() {
 		super.tick();
+		// lWidget ticks so the text boxes can have a blinking cursor
 		this.lWidget.tick();
 	}
 
@@ -165,7 +184,6 @@ public class CustomFogConfigScreen extends Screen {
   public void render(MatrixStack matrices, int mouseX, int mouseY, float delta)
   {
 		this.renderBackground(matrices);
-//		lWidget.render(matrices, mouseX, mouseY, delta);
 		super.render(matrices, mouseX, mouseY, delta);
 		// Draw the title text.
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);

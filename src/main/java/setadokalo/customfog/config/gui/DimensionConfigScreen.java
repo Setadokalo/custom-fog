@@ -19,7 +19,7 @@ import setadokalo.customfog.config.gui.widgets.WarningWidget;
 public class DimensionConfigScreen extends Screen {
 	private final Screen parent;
 	public static final int DONE_WIDTH = 100;
-	protected DimensionConfigEntry entry;
+	protected final DimensionConfigEntry entry;
 	protected ResizingRangeSlider slider1;
 	@Nullable
 	protected ResizingRangeSlider slider2 = null;

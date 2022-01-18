@@ -19,7 +19,7 @@ public class WarningWidget implements Drawable, Element {
 	public enum Type {
 		WARNING(0),
 		ERROR(40);
-		int texturePos;
+		final int texturePos;
 		Type(int pos) {
 			texturePos = pos;
 		}

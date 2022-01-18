@@ -40,10 +40,9 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-    // Removed to reduce binary size (this was 36% of the entire binary at the time of removal)
-    // modImplementation("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
-    //include "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
-    modImplementation "maven.modrinth:sodium:${project.sodium_version}"
+    modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
+    // This is supposed to load with sodium, but doesn't seem to want to in the dev environment
+    runtimeOnly 'org.joml:joml:1.10.2'
 }
 
 processResources {
