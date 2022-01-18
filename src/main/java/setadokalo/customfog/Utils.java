@@ -11,6 +11,7 @@ import java.util.Objects;
 public class Utils {
 
 	public static final String WATER_CONFIG = "_customfog_internal:__/water/__";
+	public static final String POWDER_SNOW_CONFIG = "_customfog_internal:__/snow/__";
 
 	@NotNull
 	public static DimensionConfig getDimensionConfigFor(@Nullable Identifier value) {
@@ -19,6 +20,8 @@ public class Utils {
 			return CustomFogClient.config.overrideConfig;
 		if (value != null && value.toString().equals(Utils.WATER_CONFIG)) {
 			return Objects.requireNonNullElse(serverConfig != null ? serverConfig.waterOverride : null, CustomFogClient.config.waterConfig);
+		} else if (value != null && value.toString().equals(Utils.POWDER_SNOW_CONFIG)) {
+			return Objects.requireNonNullElse(serverConfig != null ? serverConfig.snowOverride : null, CustomFogClient.config.snowConfig);
 		}
 		if (serverConfig != null) {
 			if (serverConfig.overrides.get(value) != null)

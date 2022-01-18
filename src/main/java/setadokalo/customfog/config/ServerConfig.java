@@ -58,6 +58,8 @@ public class ServerConfig {
 	@Nullable
 	public DimensionConfig waterOverride = null;
 	@Nullable
+	public DimensionConfig snowOverride = null;
+	@Nullable
 	public DimensionConfig universalOverride = null;
 
 	public Map<Identifier, DimensionConfig> overrides = new HashMap<>();

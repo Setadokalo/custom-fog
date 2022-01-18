@@ -64,7 +64,7 @@ public class DimensionConfigScreen extends Screen {
 				saveAndQuitText, btn -> {
 					CustomFogClient.config.overrideConfig = null;
 					if (this.client != null)
-						this.client.openScreen(this.parent);
+						this.client.setScreen(this.parent);
 				}));
 		this.addDrawableChild(new ButtonWidget(9, modeRowHeight, 150, 20,
 			new TranslatableText(getKeyForType(this.entry.config.getType())), btn -> {

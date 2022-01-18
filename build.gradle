@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.8-SNAPSHOT'
+    id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -14,6 +14,14 @@ repositories {
     maven {
         name = 'ModMenu'
         url = 'https://maven.terraformersmc.com/releases/'
+    }
+    // taken from FlashyReese/sodium-extra-fabric
+    maven {
+    name = "Modrinth (for Sodium)"
+    url = "https://api.modrinth.com/maven"
+    content {
+            includeGroup "maven.modrinth"
+        }
     }
     maven { url 'https://jitpack.io' }
     flatDir {
@@ -35,7 +43,7 @@ dependencies {
     // Removed to reduce binary size (this was 36% of the entire binary at the time of removal)
     // modImplementation("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
     //include "com.moandjiezana.toml:toml4j:${project.toml4j_version}"
-    modCompileOnly name: 'sodium-fabric-mc1.17.1'
+    modImplementation "maven.modrinth:sodium:${project.sodium_version}"
 }
 
 processResources {
@@ -52,7 +60,7 @@ processResources {
 tasks.withType(JavaCompile) {
     it.options.encoding = "UTF-8"
 
-    it.options.release = 16
+    it.options.release = 17
 }
 
 java {

@@ -43,7 +43,7 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 		if (config == null)
 			throw new CommandException(new LiteralText("Invalid Config File"));
 		String serialized =	config.serialize();
-		for (ServerPlayerEntity entity : ctx.getSource().getMinecraftServer().getPlayerManager().getPlayerList()) {
+		for (ServerPlayerEntity entity : ctx.getSource().getServer().getPlayerManager().getPlayerList()) {
 			if (ServerPlayNetworking.canSend(entity, CustomFog.SERVER_CONFIG_PACKET_ID))
 				ServerPlayNetworking.send(entity, CustomFog.SERVER_CONFIG_PACKET_ID, PacketByteBufs.create().writeString(serialized));
 		}

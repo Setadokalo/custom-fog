@@ -231,7 +231,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	}
 
 	@Override
-	public Text method_37006() {
+	public Text getNarration() {
 		return new LiteralText(dimensionId == null ? "Default" : dimensionId.toString());
 	}
 }

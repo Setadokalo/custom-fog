@@ -34,7 +34,7 @@ public abstract class VideoOptionsMixin extends GameOptionsScreen {
 					100,
 					20,
 					new TranslatableText("button.customfog.menu"),
-					btn -> client.openScreen(CustomFog.getConfigScreen(this))
+					btn -> client.setScreen(CustomFog.getConfigScreen(this))
 				)
 			);
 		}
