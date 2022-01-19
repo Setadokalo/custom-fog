@@ -1,6 +1,7 @@
 {
   "modid.customfog": "[Custom Fog] ",
   "chat.customfog.reloaded": "Config Reloaded!",
+  "config.customfog.default": "Default",
   "config.customfog.water": "Water",
   "config.customfog.snow": "Snow",
   "button.customfog.load": "Reload Config",
@@ -15,6 +16,8 @@
   "tooltip.customfog.expslider": "The density of fog when in EXPONENTIAL fog mode.",
   "option.customfog.exp2slider": "Exponential^2 Density: %.2f",
   "tooltip.customfog.exp2slider": "The density of fog when in EXPONENTIAL_TWO fog mode.",
+  "tooltip.customfog.pushtoserver": "Push config to server (requires op)",
+  "tooltip.customfog.pushtouniversal": "Push config to server as universal override (requires op)",
   "button.customfog.menu": "Configure Fog",
   "button.customfog.linear": "Fog Mode: Linear",
   "button.customfog.exponential": "Fog Mode: Exponential",

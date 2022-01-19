@@ -39,7 +39,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-
+    // Compile only so it's not present when running in dev env by default;
+    // allows testing with canvas/indigo renderers
     modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
     // This is supposed to load with sodium, but doesn't seem to want to in the dev environment
     runtimeOnly 'org.joml:joml:1.10.2'

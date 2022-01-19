@@ -15,6 +15,7 @@ public class CustomFog implements ModInitializer {
 	public static final String MOD_NAME = "Custom Fog";
 
 	public static final Identifier SERVER_CONFIG_PACKET_ID = new Identifier(CustomFog.MOD_ID, "server_config");
+	public static final Identifier OP_UPDATE_CONFIG_PACKET_ID = new Identifier(CustomFog.MOD_ID, "op_update_config");
 
 	protected static final String LOG_STRING = "[" + MOD_NAME + "] {}";
 	static final Logger LOGGER = LogManager.getLogger();

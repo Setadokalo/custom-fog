@@ -3,7 +3,10 @@ package setadokalo.customfog.config.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +25,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import setadokalo.customfog.CustomFog;
 import setadokalo.customfog.CustomFogClient;
 import setadokalo.customfog.Utils;
 import setadokalo.customfog.config.DimensionConfig;
@@ -52,6 +56,8 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	protected TexturedButtonWidget removeWidget;
 	protected ButtonWidget addWidget;
 	protected ButtonWidget configureWidget;
+	protected ButtonWidget pushToServerWidget;
+	protected ButtonWidget pushAsOverrideWidget;
 
 	public DimensionConfigEntry(DimensionConfigListWidget parent, boolean removable, @Nullable Identifier dimId,
 										 DimensionConfig config) {
@@ -77,7 +83,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 					0, 20,
 					20,
 					new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
-					256, 256,
+					128, 128,
 					btn -> {
 						// there should never be an entry that has a visible remove widget
 						// that is not also in the dimensions array with the originalDimId key
@@ -87,12 +93,102 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 			);
 			children.add(removeWidget);
 		}
+		if (CustomFogClient.serverConfig != null
+			&& MinecraftClient.getInstance().player != null
+			&& MinecraftClient.getInstance().player.hasPermissionLevel(3)) {
+			pushToServerWidget = new TexturedButtonWidget(
+				-20000, -20000,
+				20, 20,
+				40, 0,
+				20,
+				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
+				128, 128,
+				btn -> sendToServer(null),
+				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtoserver"), mouseX, mouseY),
+					new LiteralText(""));
+			children.add(pushToServerWidget);
+		}
 		setupConfigureButton();
 	}
+
+	private void sendToServer(@Nullable Identifier as) {
+		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeIdentifier(as != null ? as : (
+			this.dimensionId != null ? this.dimensionId : new Identifier("_customfog_internal:__/default/__")
+		));
+		buf.writeBoolean(config.getEnabled());
+		buf.writeEnumConstant(config.getType());
+		buf.writeFloat(config.getLinearStart());
+		buf.writeFloat(config.getLinearEnd());
+		buf.writeFloat(config.getExp());
+		buf.writeFloat(config.getExp2());
+		ClientPlayNetworking.send(
+			CustomFog.OP_UPDATE_CONFIG_PACKET_ID,
+			buf
+		);
+	}
+
 	public DimensionConfigEntry(DimensionConfigListWidget parent, boolean removable, @Nullable Identifier dimId,
 										  DimensionConfig config, @Nullable Text nameOverride) {
 		this(parent, removable, dimId, config);
 		name = nameOverride;
+	}
+
+	public DimensionConfigEntry(DimensionConfigListWidget parent, boolean trueDummy) {
+		originalDimId = Identifier.tryParse("");
+		parentList = parent;
+		nonDimensionEntry = true;
+		removable = false;
+		if (!trueDummy) {
+			addWidget = new ButtonWidget(-20000, -20000,
+					80, 20,
+					new TranslatableText("button.customfog.add"), btn -> {
+				parentList.removeNonDimEntries();
+				parentList.add(new DimensionConfigEntry(parentList, true, null, CustomFogClient.config.defaultConfig.copy()));
+				parentList.addNonDimEntries(Utils.universalOverride());
+			}
+			);
+			children.add(addWidget);
+		}
+	}
+
+	// Special case constructor for the "Default" entry
+	public DimensionConfigEntry(@NotNull DimensionConfigListWidget parent, DimensionConfig config) {
+		nonDimensionEntry = false;
+		parentList = parent;
+		this.textRenderer = parent.getTextRenderer();
+		dimensionId = null;
+		originalDimId = null;
+		this.config = config;
+		this.removable = false;
+		setupConfigureButton();
+
+		if (CustomFogClient.serverConfig != null
+			&& MinecraftClient.getInstance().player != null
+			&& MinecraftClient.getInstance().player.hasPermissionLevel(3)) {
+			pushToServerWidget = new TexturedButtonWidget(
+				-20000, -20000,
+				20, 20,
+				40, 0,
+				20,
+				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
+				128, 128,
+				btn -> sendToServer(null),
+				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtoserver"), mouseX, mouseY),
+				new LiteralText(""));
+			children.add(pushToServerWidget);
+			pushAsOverrideWidget = new TexturedButtonWidget(
+				-20000, -20000,
+				20, 20,
+				60, 0,
+				20,
+				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
+				128, 128,
+				btn -> sendToServer(new Identifier("_customfog_internal:__/universal/__")),
+				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtouniversal"), mouseX, mouseY),
+				new LiteralText(""));
+			children.add(pushAsOverrideWidget);
+		}
 	}
 
 	private void setupConfigureButton() {
@@ -132,35 +228,6 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 		}
 	}
 
-	public DimensionConfigEntry(DimensionConfigListWidget parent, boolean trueDummy) {
-		originalDimId = Identifier.tryParse("");
-		parentList = parent;
-		nonDimensionEntry = true;
-		removable = false;
-		if (!trueDummy) {
-			addWidget = new ButtonWidget(-20000, -20000,
-				80, 20,
-				new TranslatableText("button.customfog.add"), btn -> {
-					parentList.removeNonDimEntries();
-					parentList.add(new DimensionConfigEntry(parentList, true, null, CustomFogClient.config.defaultConfig.copy()));
-					parentList.addNonDimEntries(Utils.universalOverride());
-				}
-			);
-			children.add(addWidget);
-		}
-	}
-
-	public DimensionConfigEntry(@NotNull DimensionConfigListWidget parent, DimensionConfig config) {
-		nonDimensionEntry = false;
-		parentList = parent;
-		this.textRenderer = parent.getTextRenderer();
-		dimensionId = null;
-		originalDimId = null;
-		this.config = config;
-		this.removable = false;
-		setupConfigureButton();
-	}
-
 	@Override
 	public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX,
 			int mouseY, boolean hovered, float tickDelta) {
@@ -182,16 +249,26 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 			dimNameWidget.y = y;
 			dimNameWidget.render(matrices, mouseX, mouseY, tickDelta);
 
-			configureWidget.x = x + entryWidth - 12 - REMOVE_WIDGET_WIDTH - configureWidget.getWidth();
+			configureWidget.x = removeWidget.x - 4 - configureWidget.getWidth();
 
 		} else {
 			configureWidget.x = x + entryWidth - 8 - configureWidget.getWidth();
 			drawText(matrices, textRenderer, name != null ?
 					name :
-					new LiteralText(dimensionId == null ? "Default" : dimensionId.toString()), x + 12, y + 4, 0xFFFFFF);
+				dimensionId == null ? new TranslatableText("config.customfog.default") : new LiteralText(dimensionId.toString()), x + 12, y + 4, 0xFFFFFF);
 		}
 		configureWidget.y = y;
 		configureWidget.render(matrices, mouseX, mouseY, tickDelta);
+		if (pushToServerWidget != null) {
+			pushToServerWidget.y = y;
+			pushToServerWidget.x = configureWidget.x - 4 - pushToServerWidget.getWidth();
+			pushToServerWidget.render(matrices, mouseX, mouseY, tickDelta);
+			if (pushAsOverrideWidget != null) {
+				pushAsOverrideWidget.y = y;
+				pushAsOverrideWidget.x = pushToServerWidget.x - 4 - pushAsOverrideWidget.getWidth();
+				pushAsOverrideWidget.render(matrices, mouseX, mouseY, tickDelta);
+			}
+		}
 	}
 
 	public static void drawText(MatrixStack matrices, TextRenderer textRenderer, Text text, int x, int y, int color) {
