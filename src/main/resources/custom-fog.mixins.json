@@ -5,10 +5,12 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "RendererMixin",
+    "RendererMixinAggressive",
     "VideoOptionsMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
     "maxShiftBy": 5
-  }
+  },
+  "plugin": "setadokalo.customfog.mixin.FogMixinPlugin"
 }

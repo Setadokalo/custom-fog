@@ -6,7 +6,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.CameraSubmersionType;
-import net.minecraft.client.render.FogShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
@@ -16,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
 import setadokalo.customfog.CustomFogClient;
 import setadokalo.customfog.Utils;
 import setadokalo.customfog.config.CustomFogConfig;
@@ -24,14 +22,14 @@ import setadokalo.customfog.config.DimensionConfig;
 import setadokalo.customfog.config.ServerConfig;
 
 
-@Mixin(value = BackgroundRenderer.class, priority = 1500)
+@Mixin(value = BackgroundRenderer.class, priority = 500)
 // This mod shouldn't even be installed on a server but w/e
 @Environment(EnvType.CLIENT)
-public class RendererMixin {
+public class RendererMixinAggressive {
 
-
-
-	@Inject(method = "applyFog", at=@At("RETURN"))
+	// I prefer to use the nicer inject-at-tail, but every other damn mod that messes with fog
+	// injects at head and cancels early unconditionally so HERE WE FUCKING ARE I GUESS
+	@Inject(method = "applyFog", at=@At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
 	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci) {
 		CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
 		Entity entity = camera.getFocusedEntity();
@@ -45,6 +43,7 @@ public class RendererMixin {
 		if (fogType == BackgroundRenderer.FogType.FOG_SKY) {
 			RenderSystem.setShaderFogStart(0.0f);
 			RenderSystem.setShaderFogEnd(viewDistance);
+			ci.cancel();
 //			RenderSystem.setShaderFogMode(GlStateManager.FogMode.LINEAR);
 		} else if (cameraSubmersionType != CameraSubmersionType.LAVA && !((entity instanceof LivingEntity) && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
@@ -57,6 +56,7 @@ public class RendererMixin {
 				config = Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
 			}
 			changeFalloff(viewDistance, config);
+			ci.cancel();
 		}
 	}
 

@@ -17,6 +17,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Level;
+import setadokalo.customfog.config.ConfigLoader;
 import setadokalo.customfog.config.CustomFogConfig;
 import setadokalo.customfog.config.DimensionConfig;
 import setadokalo.customfog.config.ServerConfig;
@@ -24,18 +25,17 @@ import setadokalo.customfog.config.ServerConfig;
 import java.util.Objects;
 
 public class CustomFogServer implements DedicatedServerModInitializer {
-	public static ServerConfig config;
+	public static ServerConfig config = ServerConfig.getConfig();
 
 	@Override
 	public void onInitializeServer() {
-		config = ServerConfig.getConfig();
 		CustomFog.log(Level.INFO, "Initializing packet sender");
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			if (ServerPlayNetworking.canSend(handler, CustomFog.SERVER_CONFIG_PACKET_ID))
 				ServerPlayNetworking.send(
 					handler.player,
 					CustomFog.SERVER_CONFIG_PACKET_ID,
-					PacketByteBufs.create().writeString(config.serialize())
+					PacketByteBufs.create().writeString(ConfigLoader.serialize(config))
 				);
 			CustomFog.log(Level.INFO, "Sending packet");
 		});
@@ -85,7 +85,7 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 	}
 
 	private static void sendUpdatedConfig(MinecraftServer server) {
-		String serialized =	config.serialize();
+		String serialized = ConfigLoader.serialize(config);
 		for (ServerPlayerEntity entity : server.getPlayerManager().getPlayerList()) {
 			if (ServerPlayNetworking.canSend(entity, CustomFog.SERVER_CONFIG_PACKET_ID))
 				ServerPlayNetworking.send(entity, CustomFog.SERVER_CONFIG_PACKET_ID, PacketByteBufs.create().writeString(serialized));

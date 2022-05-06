@@ -53,7 +53,7 @@ public class DimensionConfigScreen extends Screen {
 					new TranslatableText("notice.customfog.slidervalue2").formatted(Formatting.WHITE),
 					new TranslatableText("notice.customfog.slidervalue3").formatted(Formatting.WHITE)));
 			this.addDrawableChild(new TexturedButtonWidget(this.width / 2 + 142, 20, 8, 8, 0, 60, 8,
-					new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 128, 128, (btn) -> {
+					new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, (btn) -> {
 				CustomFogClient.config.hasClosedToast = true;
 				CustomFogClient.config.saveConfig();
 				remove(w);

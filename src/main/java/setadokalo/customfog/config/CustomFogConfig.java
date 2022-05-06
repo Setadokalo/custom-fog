@@ -9,57 +9,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.loader.api.FabricLoader;
-import setadokalo.customfog.CustomFog;
+import setadokalo.customfog.CustomFogLogger;
 
 import java.io.*;
 import java.util.*;
 
-public class CustomFogConfig {
+public class CustomFogConfig extends BaseConfig {
 	private static final Gson GSON = new GsonBuilder()
 		.registerTypeAdapter(Identifier.class, new Identifier.Serializer())
 		.enableComplexMapKeySerialization()
 		.setPrettyPrinting()
 		.create();
 
-	public CustomFogConfig() {}
 	public CustomFogConfig(File file) {
-		this.file = file;
+		super(file);
+		dimensions.put(new Identifier("minecraft:the_nether"),
+			new DimensionConfig(false, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2));
+		saveConfig();
 	}
 
 	@NotNull
 	public static CustomFogConfig getConfig() {
-		File tomlFile = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".toml");
-		if (tomlFile.exists()) {
-			CustomFog.log(Level.WARN, "Old config file detected; mod no longer supports loading this format");
-		}
-		CustomFog.log(Level.DEBUG, "Loading config file");
-		
-		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + ".json");
-		if (file.exists()) {
-			try {
-				CustomFogConfig c = GSON.fromJson(new FileReader(file), CustomFogConfig.class);
-				if (c == null) {
-					c = new CustomFogConfig(file);
-					c.saveConfig();
-				} else {
-					c.file = file;
-				}
-				return c;
-			} catch (FileNotFoundException | JsonSyntaxException e) {
-				return makeConfig(file);
-			}
-		} else {
-			return makeConfig(file);
-		}
-	}
-
-	@NotNull
-	private static CustomFogConfig makeConfig(File file) {
-		CustomFogConfig config = new CustomFogConfig(file);
-		config.dimensions.put(new Identifier("minecraft:the_nether"),
-			new DimensionConfig(false, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2));
-		config.saveConfig();
-		return config;
+		return ConfigLoader.getConfig(CustomFogConfig.class, CustomFogLogger.MOD_ID);
 	}
 
 	public static void add(CustomFogConfig config, Identifier key, DimensionConfig dimCfg) {
@@ -67,24 +38,16 @@ public class CustomFogConfig {
 	}
 
 	public static void changeKey(CustomFogConfig config, Identifier originalKey, Identifier newKey) {
-			DimensionConfig dConfig = config.dimensions.get(originalKey);
-			if (dConfig == null) {
-				throw new NullPointerException("Key invalid");
-			}
-			config.dimensions.remove(originalKey);
-			config.dimensions.put(newKey, dConfig);
+		DimensionConfig dConfig = config.dimensions.get(originalKey);
+		if (dConfig == null) {
+			throw new NullPointerException("Key invalid");
 		}
+		config.dimensions.remove(originalKey);
+		config.dimensions.put(newKey, dConfig);
+	}
+
 	public void saveConfig() {
-		if (file == null) {
-			CustomFog.log(Level.WARN, "File for config was null: this should not happen with the normal mod");
-			return;
-		}
-		String serialized = GSON.toJson(this);
-		try (FileWriter fR = new FileWriter(file)) {
-			fR.write(serialized);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		ConfigLoader.saveConfig(this);
 	}
 
 	private transient File file;
@@ -109,6 +72,7 @@ public class CustomFogConfig {
 	@Nullable
 	public transient DimensionConfig overrideConfig = null;
 	public final Map<Identifier, DimensionConfig> dimensions = new HashMap<>();
+
 	public boolean videoOptionsButton = true;
 	public boolean hasClosedToast = false;
 

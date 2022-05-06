@@ -1,5 +1,5 @@
 {
-  "required": true,
+  "required": false,
   "minVersion": "0.8",
   "package": "setadokalo.customfog.mixin",
   "compatibilityLevel": "JAVA_16",

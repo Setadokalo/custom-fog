@@ -83,7 +83,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 					0, 20,
 					20,
 					new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
-					128, 128,
+					256, 256,
 					btn -> {
 						// there should never be an entry that has a visible remove widget
 						// that is not also in the dimensions array with the originalDimId key
@@ -102,7 +102,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 				40, 0,
 				20,
 				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
-				128, 128,
+				256, 256,
 				btn -> sendToServer(null),
 				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtoserver"), mouseX, mouseY),
 					new LiteralText(""));
@@ -172,7 +172,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 				40, 0,
 				20,
 				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
-				128, 128,
+				256, 256,
 				btn -> sendToServer(null),
 				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtoserver"), mouseX, mouseY),
 				new LiteralText(""));
@@ -183,7 +183,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 				60, 0,
 				20,
 				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
-				128, 128,
+				256, 256,
 				btn -> sendToServer(new Identifier("_customfog_internal:__/universal/__")),
 				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtouniversal"), mouseX, mouseY),
 				new LiteralText(""));

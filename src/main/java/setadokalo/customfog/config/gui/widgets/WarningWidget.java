@@ -99,57 +99,57 @@ public class WarningWidget implements Drawable, Element {
 				x, y,                            /* x, y */
 				u, v,                            /* u, v */
 				edgeSize, edgeSize,              /* width, height */
-				128, 128); /* textureWidth, textureHeight */
+				256, 256); /* textureWidth, textureHeight */
 
 		DrawableHelper.drawTexture(matrices,
 				x + edgeSize, y,                   /* x, y */
 				width - edgeSize * 2, edgeSize, /* width, height */
 				u + edgeSize, v,                   /* u, v */
 				centerSize, edgeSize,                 /* regionWidth, regionHeight */
-				128, 128);      /* textureWidth, textureHeight */
+				256, 256);      /* textureWidth, textureHeight */
 
 		DrawableHelper.drawTexture(matrices, x + width - edgeSize, y,
 				u + edgeSize + centerSize, v,
 				edgeSize, edgeSize,
-				128, 128);
+				256, 256);
 		/* Middle row */
 		DrawableHelper.drawTexture(matrices,
 				x, y + edgeSize,                   /* x, y */
 				edgeSize, height - edgeSize * 2, /* width, height */
 				u, v + edgeSize,     /* u, v */
 				edgeSize, centerSize,                /* regionWidth, regionHeight */
-				128, 128);      /* textureWidth, textureHeight */
+				256, 256);      /* textureWidth, textureHeight */
 		DrawableHelper.drawTexture(matrices,
 				x + edgeSize, y + edgeSize,                   /* x, y */
 				width - edgeSize * 2, height - edgeSize * 2, /* width, height */
 				u + edgeSize, v + edgeSize,     /* u, v */
 				centerSize, centerSize,                /* regionWidth, regionHeight */
-				128, 128);      /* textureWidth, textureHeight */
+				256, 256);      /* textureWidth, textureHeight */
 
 		DrawableHelper.drawTexture(matrices,
 				x + width - edgeSize, y + edgeSize,                   /* x, y */
 				edgeSize, height - edgeSize * 2, /* width, height */
 				u + edgeSize + centerSize, v + edgeSize,     /* u, v */
 				edgeSize, centerSize,                /* regionWidth, regionHeight */
-				128, 128);      /* textureWidth, textureHeight */
+				256, 256);      /* textureWidth, textureHeight */
 		/* Bottom row */
 		DrawableHelper.drawTexture(matrices,
 				x, y + height - edgeSize, /* x, y */
 				u, v + edgeSize + centerSize, /* u, v */
 				edgeSize, edgeSize, /* width, height */
-				128, 128); /* textureWidth, textureHeight */
+				256, 256); /* textureWidth, textureHeight */
 
 		DrawableHelper.drawTexture(matrices,
 				x + edgeSize, y + height - edgeSize,                   /* x, y */
 				width - edgeSize * 2, edgeSize, /* width, height */
 				u + edgeSize, v + edgeSize + centerSize,     /* u, v */
 				centerSize, edgeSize,                /* regionWidth, regionHeight */
-				128, 128);      /* textureWidth, textureHeight */
+				256, 256);      /* textureWidth, textureHeight */
 
 		DrawableHelper.drawTexture(matrices, x + width - edgeSize, y + height - edgeSize,
 				u + edgeSize + centerSize, v + edgeSize + centerSize,
 				edgeSize, edgeSize,
-				128, 128);
+				256, 256);
 	}
 
 
@@ -164,7 +164,7 @@ public class WarningWidget implements Drawable, Element {
 		DrawableHelper.drawTexture(matrices, this.x + 5, this.y + (this.height - 20)/2,
 				20, type.getTexturePos(),
 				20, 20,
-				128, 128);
+				256, 256);
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		int y = 7;
 		for (Text line : this.warningText) {

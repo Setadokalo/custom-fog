@@ -14,7 +14,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServerConfig {
+public class ServerConfig extends BaseConfig {
+	public static String CONFIG_NAME = CustomFog.MOD_ID + "-server";
 	private static final Gson GSON = new GsonBuilder()
 		.registerTypeAdapter(Identifier.class, new Identifier.Serializer())
 		.enableComplexMapKeySerialization()
@@ -22,31 +23,20 @@ public class ServerConfig {
 		.setPrettyPrinting()
 		.create();
 
-	public ServerConfig() {}
-
 	public ServerConfig(File file) {
-		this.file = file;
+		super(file);
+	}
+
+	public static ServerConfig getConfig() {
+		CustomFog.log(Level.INFO, "Loading server config file");
+		return ConfigLoader.getConfig(ServerConfig.class, CONFIG_NAME, GSON);
 	}
 
 	public void saveConfig() {
-		if (file == null) {
-			CustomFog.log(Level.WARN, "File for config was null: this should not happen with the normal mod");
-			return;
-		}
-		String serialized = GSON.toJson(this);
-		try (FileWriter fR = new FileWriter(file)) {
-			fR.write(serialized);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		ConfigLoader.saveConfig(this);
 	}
 
-	public String serialize() {
-		return GSON.toJson(this);
-	}
-	public static ServerConfig deserialize(String s) {
-		return GSON.fromJson(s, ServerConfig.class);
-	}
+
 
 	private transient File file;
 
@@ -63,28 +53,4 @@ public class ServerConfig {
 	public DimensionConfig universalOverride = null;
 
 	public Map<Identifier, DimensionConfig> overrides = new HashMap<>();
-
-	@NotNull
-	public static ServerConfig getConfig() {
-		CustomFog.log(Level.INFO, "Loading server config file");
-		File file = new File(FabricLoader.getInstance().getConfigDir().toString(), CustomFog.MOD_ID + "-server.json");
-		if (file.exists()) {
-			try {
-				ServerConfig c = GSON.fromJson(new FileReader(file), ServerConfig.class);
-				if (c == null) {
-					c = new ServerConfig(file);
-					c.saveConfig();
-				} else {
-					c.file = file;
-				}
-				return c;
-			} catch (FileNotFoundException | JsonSyntaxException e) {
-				return new ServerConfig(file);
-			}
-		} else {
-			ServerConfig config = new ServerConfig(file);
-			config.saveConfig();
-			return config;
-		}
-	}
 }
