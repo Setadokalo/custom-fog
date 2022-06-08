@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 import setadokalo.customfog.CustomFogClient;
 import setadokalo.customfog.config.CustomFogConfig;
 import setadokalo.customfog.config.gui.widgets.ResizingRangeSlider;
@@ -25,7 +24,7 @@ public class DimensionConfigScreen extends Screen {
 	protected ResizingRangeSlider slider2 = null;
 
 	public DimensionConfigScreen(@Nullable Screen parent, DimensionConfigEntry entry) {
-		super(new TranslatableText("screen.customfog.config"));
+		super(Text.translatable("screen.customfog.config"));
 		this.parent = parent;
 		this.entry = entry;
 		CustomFogClient.config.overrideConfig = entry.config;
@@ -41,17 +40,17 @@ public class DimensionConfigScreen extends Screen {
 	protected void init() {
 		super.init();
 		this.clearChildren();
-		Text saveAndQuitText = new TranslatableText("button.customfog.saveandquit");
-		Text enabledText = new TranslatableText(getKeyForEnabled());
+		Text saveAndQuitText = Text.translatable("button.customfog.saveandquit");
+		Text enabledText = Text.translatable(getKeyForEnabled());
 		int modeRowHeight = addSliders() ? this.height - 57 : this.height - 86;
 
 		if (!CustomFogClient.config.hasClosedToast) {
 			WarningWidget w = this.addDrawable(new WarningWidget(
 					WarningWidget.Type.WARNING,
 					this.width / 2 - 150, 20, 300,
-					new TranslatableText("notice.customfog.slidervalue1").formatted(Formatting.YELLOW, Formatting.BOLD),
-					new TranslatableText("notice.customfog.slidervalue2").formatted(Formatting.WHITE),
-					new TranslatableText("notice.customfog.slidervalue3").formatted(Formatting.WHITE)));
+					Text.translatable("notice.customfog.slidervalue1").formatted(Formatting.YELLOW, Formatting.BOLD),
+					Text.translatable("notice.customfog.slidervalue2").formatted(Formatting.WHITE),
+					Text.translatable("notice.customfog.slidervalue3").formatted(Formatting.WHITE)));
 			this.addDrawableChild(new TexturedButtonWidget(this.width / 2 + 142, 20, 8, 8, 0, 60, 8,
 					new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 128, 128, (btn) -> {
 				CustomFogClient.config.hasClosedToast = true;
@@ -67,9 +66,9 @@ public class DimensionConfigScreen extends Screen {
 						this.client.setScreen(this.parent);
 				}));
 		this.addDrawableChild(new ButtonWidget(9, modeRowHeight, 150, 20,
-			new TranslatableText(getKeyForType(this.entry.config.getType())), btn -> {
+			Text.translatable(getKeyForType(this.entry.config.getType())), btn -> {
 				this.entry.config.setType(this.entry.config.getType().next());
-				btn.setMessage(new TranslatableText(getKeyForType(this.entry.config.getType())));
+				btn.setMessage(Text.translatable(getKeyForType(this.entry.config.getType())));
 				removeSliders();
 				addSliders();
 			}
@@ -77,7 +76,7 @@ public class DimensionConfigScreen extends Screen {
 		this.addDrawableChild(new ButtonWidget(18 + 150, modeRowHeight, 75, 20,
 			enabledText, btn -> {
 				this.entry.config.setEnabled(!this.entry.config.getEnabled());
-				btn.setMessage(new TranslatableText(getKeyForEnabled()));
+				btn.setMessage(Text.translatable(getKeyForEnabled()));
 			}
 		));
 	}
@@ -125,7 +124,7 @@ public class DimensionConfigScreen extends Screen {
 		if (this.entry.config.getType() == CustomFogConfig.FogType.LINEAR) {
 			slider1 = new ResizingRangeSlider(9, sliderHeight, sliderWidth,  20, true, this.entry.config.getLinearStart(), 1.0,
 					nVal -> this.entry.config.setLinearStart(nVal.floatValue()),
-					s -> new TranslatableText(
+					s -> Text.translatable(
 							"option.customfog.linearslider",
 							truncateVal(s)
 					)
@@ -133,7 +132,7 @@ public class DimensionConfigScreen extends Screen {
 			this.addDrawable(this.addSelectableChild(slider1));
 			slider2 = new ResizingRangeSlider(13 + sliderWidth, sliderHeight, sliderWidth, 20, true, this.entry.config.getLinearEnd(), 1.0,
 					nVal -> this.entry.config.setLinearEnd(nVal.floatValue()),
-					s -> new TranslatableText(
+					s -> Text.translatable(
 							"option.customfog.linearendslider",
 							truncateVal(s)
 					)
@@ -142,7 +141,7 @@ public class DimensionConfigScreen extends Screen {
 		} else if (this.entry.config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
 			slider1 = new ResizingRangeSlider(9, sliderHeight, 9 + 225, 20, false, this.entry.config.getExp(), 5.0,
 					nVal -> this.entry.config.setExp(nVal.floatValue()),
-					s -> new TranslatableText(
+					s -> Text.translatable(
 							"option.customfog.expslider",
 							truncateVal(s)
 					)
@@ -151,7 +150,7 @@ public class DimensionConfigScreen extends Screen {
 		} else if (this.entry.config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
 			slider1 = new ResizingRangeSlider(9, sliderHeight, 9 + 225, 20, false, this.entry.config.getExp2(), 5.0,
 					nVal -> this.entry.config.setExp2(nVal.floatValue()),
-					s -> new TranslatableText(
+					s -> Text.translatable(
 							"option.customfog.exp2slider",
 							truncateVal(s)
 					)

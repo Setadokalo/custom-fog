@@ -20,3 +20,19 @@ vec4 _linearFog(vec4 fragColor, float fragDistance, vec4 fogColor, float fogStar
     return fragColor;
 }
 #endif
+
+// everything below is copied straight from the sodium jar (version 1.19-0.4.2+build.16)
+// similarly to the vanilla fog shader, the game will crash when loading into a world without this function being
+// explicitly (re)defined inside of this mod
+// why doesn't it just carry over like before? who knows...
+const int FOG_SHAPE_SPHERICAL = 0;
+const int FOG_SHAPE_CYLINDRICAL = 1;
+
+float getFragDistance(int fogShape, vec3 position) {
+    // Use the maximum of the horizontal and vertical distance to get cylindrical fog if fog shape is cylindrical
+    switch (fogShape) {
+        case FOG_SHAPE_SPHERICAL: return length(position);
+        case FOG_SHAPE_CYLINDRICAL: return max(length(position.xz), abs(position.y));
+        default: return length(position); // This shouldn't be possible to get, but return a sane value just in case
+    }
+}

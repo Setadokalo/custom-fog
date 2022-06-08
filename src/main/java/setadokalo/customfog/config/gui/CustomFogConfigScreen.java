@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Level;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 import setadokalo.customfog.CustomFog;
 import setadokalo.customfog.CustomFogClient;
 import setadokalo.customfog.Utils;
@@ -35,7 +35,7 @@ public class CustomFogConfigScreen extends Screen {
 	protected int nextNotifBottom = 0;
 
 	public CustomFogConfigScreen(@Nullable Screen parent) {
-		super(new TranslatableText("screen.customfog.config"));
+		super(Text.translatable("screen.customfog.config"));
 		this.parent = parent;
 	}
 
@@ -71,22 +71,22 @@ public class CustomFogConfigScreen extends Screen {
 				&& !MinecraftClient.getInstance().getResourcePackManager().getEnabledNames().contains("customfog/canvasfog")) {
 			pushNotification(new WarningWidget(
 					235,
-					new TranslatableText("notice.customfog.canvaspack1").formatted(Formatting.YELLOW, Formatting.BOLD),
-					new TranslatableText("notice.customfog.canvaspack2").formatted(Formatting.WHITE),
-					new TranslatableText("notice.customfog.canvaspack3").formatted(Formatting.WHITE)));
+					Text.translatable("notice.customfog.canvaspack1").formatted(Formatting.YELLOW, Formatting.BOLD),
+					Text.translatable("notice.customfog.canvaspack2").formatted(Formatting.WHITE),
+					Text.translatable("notice.customfog.canvaspack3").formatted(Formatting.WHITE)));
 		}
 		// If a universal override is applied by the server, none of the configs the user sets will be visible outside
 		// the config gui. Warn them they can't change their fog on this server.
 		if (Utils.universalOverride()) {
 			pushNotification(new WarningWidget(
 					235,
-					new TranslatableText("notice.customfog.overridden1").formatted(Formatting.YELLOW, Formatting.BOLD),
-					new TranslatableText("notice.customfog.overridden2").formatted(Formatting.RED)
+					Text.translatable("notice.customfog.overridden1").formatted(Formatting.YELLOW, Formatting.BOLD),
+					Text.translatable("notice.customfog.overridden2").formatted(Formatting.RED)
 			));
 		}
 
 		// Add load button.
-		this.addDrawableChild(new ButtonWidget(9, this.height - 29, 80, 20, new TranslatableText("button.customfog.load"),
+		this.addDrawableChild(new ButtonWidget(9, this.height - 29, 80, 20, Text.translatable("button.customfog.load"),
 				  btn -> {
 					  CustomFogClient.config = CustomFogConfig.getConfig();
 					  createList();
@@ -97,15 +97,15 @@ public class CustomFogConfigScreen extends Screen {
 		this.addDrawableChild(new ButtonWidget(
 				saveBtnX, this.height - 29,
 				saveBtnWidth, 20,
-				new TranslatableText("button.customfog.saveandquit"),
+				Text.translatable("button.customfog.saveandquit"),
 			btn -> saveDimensions()));
 		this.addDrawableChild(new ButtonWidget(
 				this.width - 165, this.height - 29,
 				160, 20,
-				new TranslatableText("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)),
+				Text.translatable("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)),
 			btn -> {
 			CustomFogClient.config.videoOptionsButton = !CustomFogClient.config.videoOptionsButton;
-			btn.setMessage(new TranslatableText("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)));
+			btn.setMessage(Text.translatable("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)));
 			}));
   }
 
@@ -165,8 +165,8 @@ public class CustomFogConfigScreen extends Screen {
 
 		lWidget.children().clear();
 		lWidget.add(new DimensionConfigEntry(lWidget, CustomFogClient.config.defaultConfig));
-		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(Utils.WATER_CONFIG), CustomFogClient.config.waterConfig, new TranslatableText("config.customfog.water")));
-		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(Utils.POWDER_SNOW_CONFIG), CustomFogClient.config.snowConfig, new TranslatableText("config.customfog.snow")));
+		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(Utils.WATER_CONFIG), CustomFogClient.config.waterConfig, Text.translatable("config.customfog.water")));
+		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(Utils.POWDER_SNOW_CONFIG), CustomFogClient.config.snowConfig, Text.translatable("config.customfog.snow")));
 		for (Map.Entry<Identifier, DimensionConfig> config : CustomFogClient.config.dimensions.entrySet()) {
 			lWidget.add(new DimensionConfigEntry(lWidget, true, config.getKey(), config.getValue()));
 		}

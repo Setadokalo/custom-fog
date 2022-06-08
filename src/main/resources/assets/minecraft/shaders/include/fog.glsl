@@ -38,3 +38,16 @@ float cylindrical_distance(mat4 modelViewMat, vec3 pos) {
     float distY = length((modelViewMat * vec4(0.0, pos.y, 0.0, 1.0)).xyz);
     return max(distXZ, distY);
 }
+
+// this function is copied straight from the vanilla jar
+// not including this means the game will "bootloop" because the particle shader can't find this function
+// I don't know why this didn't have to be included before, though...
+float fog_distance(mat4 modelViewMat, vec3 pos, int shape) {
+    if (shape == 0) {
+        return length((modelViewMat * vec4(pos, 1.0)).xyz);
+    } else {
+        float distXZ = length((modelViewMat * vec4(pos.x, 0.0, pos.z, 1.0)).xyz);
+        float distY = length((modelViewMat * vec4(0.0, pos.y, 0.0, 1.0)).xyz);
+        return max(distXZ, distY);
+    }
+}

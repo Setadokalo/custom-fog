@@ -30,7 +30,7 @@ public class RendererMixin {
 
 
 	@Inject(method = "applyFog", at=@At(value = "INVOKE", target = "com/mojang/blaze3d/systems/RenderSystem.setShaderFogEnd(F)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT)
-	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity) {
+	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity) {
 	//	if (true) return;
 		ServerConfig serverConfig = CustomFogClient.serverConfig;
 		if (serverConfig != null && !serverConfig.baseModAllowed) {

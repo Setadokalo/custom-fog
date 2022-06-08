@@ -20,10 +20,8 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import setadokalo.customfog.CustomFog;
 import setadokalo.customfog.CustomFogClient;
@@ -69,7 +67,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 		originalDimId = dimId;
 		this.config = config;
 		if (removable) {
-			dimNameWidget = new TextFieldWidget(textRenderer, 0, 0, 150, 20, new LiteralText(""));
+			dimNameWidget = new TextFieldWidget(textRenderer, 0, 0, 150, 20, Text.literal(""));
 			dimNameWidget.setText(dimensionId == null ? "" : dimensionId.toString());
 			lintInput();
 			dimNameWidget.setChangedListener(str -> {
@@ -104,8 +102,8 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
 				128, 128,
 				btn -> sendToServer(null),
-				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtoserver"), mouseX, mouseY),
-					new LiteralText(""));
+				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, Text.translatable("tooltip.customfog.pushtoserver"), mouseX, mouseY),
+					Text.literal(""));
 			children.add(pushToServerWidget);
 		}
 		setupConfigureButton();
@@ -142,7 +140,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 		if (!trueDummy) {
 			addWidget = new ButtonWidget(-20000, -20000,
 					80, 20,
-					new TranslatableText("button.customfog.add"), btn -> {
+					Text.translatable("button.customfog.add"), btn -> {
 				parentList.removeNonDimEntries();
 				parentList.add(new DimensionConfigEntry(parentList, true, null, CustomFogClient.config.defaultConfig.copy()));
 				parentList.addNonDimEntries(Utils.universalOverride());
@@ -174,8 +172,8 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
 				128, 128,
 				btn -> sendToServer(null),
-				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtoserver"), mouseX, mouseY),
-				new LiteralText(""));
+				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, Text.translatable("tooltip.customfog.pushtoserver"), mouseX, mouseY),
+				Text.literal(""));
 			children.add(pushToServerWidget);
 			pushAsOverrideWidget = new TexturedButtonWidget(
 				-20000, -20000,
@@ -185,8 +183,8 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 				new Identifier("custom-fog", "textures/gui/cfog-gui.png"),
 				128, 128,
 				btn -> sendToServer(new Identifier("_customfog_internal:__/universal/__")),
-				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, new TranslatableText("tooltip.customfog.pushtouniversal"), mouseX, mouseY),
-				new LiteralText(""));
+				(button, matrices, mouseX, mouseY) -> DimensionConfigEntry.this.parentList.getParent().renderTooltip(matrices, Text.translatable("tooltip.customfog.pushtouniversal"), mouseX, mouseY),
+				Text.literal(""));
 			children.add(pushAsOverrideWidget);
 		}
 	}
@@ -194,7 +192,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	private void setupConfigureButton() {
 		configureWidget = new ButtonWidget(-20000, -20000,
 			removable ? 80 : 84 + REMOVE_WIDGET_WIDTH, 20,
-			new TranslatableText("button.customfog.configure"),
+			Text.translatable("button.customfog.configure"),
 			btn -> ((CustomFogConfigScreen)this.parentList.getParent()).openScreen(
 				new DimensionConfigScreen(this.parentList.getParent(), this)
 			),
@@ -206,7 +204,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 					)
 				)
 					this.parentList.getParent().renderTooltip(matrices,
-						new LiteralText("This config is overridden by the server's config!")
+						Text.literal("This config is overridden by the server's config!")
 							.formatted(Formatting.RED),
 						mouseX, mouseY);
 			}
@@ -255,7 +253,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 			configureWidget.x = x + entryWidth - 8 - configureWidget.getWidth();
 			drawText(matrices, textRenderer, name != null ?
 					name :
-				dimensionId == null ? new TranslatableText("config.customfog.default") : new LiteralText(dimensionId.toString()), x + 12, y + 4, 0xFFFFFF);
+				dimensionId == null ? Text.translatable("config.customfog.default") : Text.literal(dimensionId.toString()), x + 12, y + 4, 0xFFFFFF);
 		}
 		configureWidget.y = y;
 		configureWidget.render(matrices, mouseX, mouseY, tickDelta);
@@ -309,6 +307,6 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 
 	@Override
 	public Text getNarration() {
-		return new LiteralText(dimensionId == null ? "Default" : dimensionId.toString());
+		return Text.literal(dimensionId == null ? "Default" : dimensionId.toString());
 	}
 }

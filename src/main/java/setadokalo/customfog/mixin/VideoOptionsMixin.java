@@ -3,6 +3,7 @@ package setadokalo.customfog.mixin;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -11,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.TranslatableText;
 import setadokalo.customfog.CustomFog;
 import setadokalo.customfog.CustomFogClient;
 
@@ -33,7 +33,7 @@ public abstract class VideoOptionsMixin extends GameOptionsScreen {
 					this.height - 27,
 					100,
 					20,
-					new TranslatableText("button.customfog.menu"),
+					Text.translatable("button.customfog.menu"),
 					btn -> client.setScreen(CustomFog.getConfigScreen(this))
 				)
 			);

@@ -79,7 +79,7 @@ public class WarningWidget implements Drawable, Element {
 		this.width = width;
 		TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 		for (Text line : lines) {
-			int sWidth = renderer.getWidth(line.asString()) + 28;
+			int sWidth = renderer.getWidth(line) + 28;
 			if (sWidth > width) {
 				width = sWidth;
 			}

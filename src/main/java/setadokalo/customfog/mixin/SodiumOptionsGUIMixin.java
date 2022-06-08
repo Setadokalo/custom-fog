@@ -10,7 +10,6 @@ import me.jellysquid.mods.sodium.client.gui.widgets.FlatButtonWidget;
 import me.jellysquid.mods.sodium.client.util.Dim2i;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import setadokalo.customfog.CustomFogClient;
 import setadokalo.customfog.config.gui.CustomFogConfigScreen;
 
@@ -26,7 +25,7 @@ public class SodiumOptionsGUIMixin extends Screen {
 			return;
 		var customFogBtn = new FlatButtonWidget(
 				new Dim2i(6, this.height - 26, 100, 20),
-				new TranslatableText("button.customfog.menu"),
+				Text.translatable("button.customfog.menu"),
 				() -> {
 					if (this.client != null) {
 						this.client.setScreen(new CustomFogConfigScreen(this));

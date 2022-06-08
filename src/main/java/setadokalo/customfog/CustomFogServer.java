@@ -2,18 +2,15 @@ package setadokalo.customfog;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Level;
@@ -68,7 +65,7 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 			}
 		);
 		CommandRegistrationCallback.EVENT.register(
-			(dis, ded) -> dis.register(CommandManager.literal("customfog")
+			(dis, ded, __) -> dis.register(CommandManager.literal("customfog")
 				.requires(source -> source.hasPermissionLevel(4))
 				.then(CommandManager.literal("reload").executes(CustomFogServer::customFogReload))
 			)
@@ -78,8 +75,8 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 		config = ServerConfig.getConfig();
 		sendUpdatedConfig(ctx.getSource().getServer());
 		ctx.getSource().sendFeedback(
-			new TranslatableText("modid.customfog").formatted(Formatting.GOLD)
-				.append(new TranslatableText("chat.customfog.reloaded").formatted(Formatting.YELLOW)),
+				Text.translatable("modid.customfog").formatted(Formatting.GOLD)
+				.append(Text.translatable("chat.customfog.reloaded").formatted(Formatting.YELLOW)),
 			true);
 		return 0;
 	}
