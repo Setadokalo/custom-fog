@@ -48,17 +48,22 @@ public class DimensionConfigScreen extends Screen {
 		if (!CustomFogClient.config.hasClosedToast) {
 			WarningWidget w = this.addDrawable(new WarningWidget(
 					WarningWidget.Type.WARNING,
+					(btn) -> {
+						CustomFogClient.config.hasClosedToast = true;
+						CustomFogClient.config.saveConfig();
+						remove(WarningWidget.this);
+					},
 					this.width / 2 - 150, 20, 300,
 					new TranslatableText("notice.customfog.slidervalue1").formatted(Formatting.YELLOW, Formatting.BOLD),
 					new TranslatableText("notice.customfog.slidervalue2").formatted(Formatting.WHITE),
 					new TranslatableText("notice.customfog.slidervalue3").formatted(Formatting.WHITE)));
-			this.addDrawableChild(new TexturedButtonWidget(this.width / 2 + 142, 20, 8, 8, 0, 60, 8,
-					new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, (btn) -> {
-				CustomFogClient.config.hasClosedToast = true;
-				CustomFogClient.config.saveConfig();
-				remove(w);
-				remove(btn);
-			}));
+//			this.addDrawableChild(new TexturedButtonWidget(this.width / 2 + 142, 20, 8, 8, 0, 60, 8,
+//					new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, (btn) -> {
+//				CustomFogClient.config.hasClosedToast = true;
+//				CustomFogClient.config.saveConfig();
+//				remove(w);
+//				remove(btn);
+//			}));
 		}
 		this.addDrawableChild(new ButtonWidget(this.width - DONE_WIDTH - 9, this.height - 29, DONE_WIDTH, 20,
 				saveAndQuitText, btn -> {

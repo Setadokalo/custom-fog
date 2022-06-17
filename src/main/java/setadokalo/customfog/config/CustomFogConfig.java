@@ -75,7 +75,7 @@ public class CustomFogConfig extends BaseConfig {
 
 	public boolean videoOptionsButton = true;
 	public boolean hasClosedToast = false;
-
+	public boolean hasAcknowledgedSodium = false;
 
 	public enum FogType {
 		LINEAR,

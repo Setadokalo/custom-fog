@@ -74,6 +74,13 @@ public class CustomFogConfigScreen extends Screen {
 					new TranslatableText("notice.customfog.canvaspack1").formatted(Formatting.YELLOW, Formatting.BOLD),
 					new TranslatableText("notice.customfog.canvaspack2").formatted(Formatting.WHITE),
 					new TranslatableText("notice.customfog.canvaspack3").formatted(Formatting.WHITE)));
+		} else if (FabricLoader.getInstance().isModLoaded("sodium") && !CustomFogClient.config.hasAcknowledgedSodium) {
+			pushNotification(new WarningWidget(
+				270,
+				new TranslatableText("notice.customfog.sodiumfog1").formatted(Formatting.YELLOW, Formatting.BOLD),
+				new TranslatableText("notice.customfog.sodiumfog2").formatted(Formatting.WHITE),
+				new TranslatableText("notice.customfog.sodiumfog3").formatted(Formatting.WHITE)
+			));
 		}
 		// If a universal override is applied by the server, none of the configs the user sets will be visible outside
 		// the config gui. Warn them they can't change their fog on this server.

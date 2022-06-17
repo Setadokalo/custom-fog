@@ -6,16 +6,40 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.screen.narration.NarrationPart;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class WarningWidget implements Drawable, Element {
+public class WarningWidget implements Drawable, Element, Selectable {
+	@Override
+	public SelectionType getType() {
+		return SelectionType.NONE;
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		if (warningText.size() > 0) {
+			builder.put(NarrationPart.TITLE, warningText.get(0));
+			if (warningText.size() > 1) {
+				for (int i = 1; i < warningText.size(); i++)
+					builder.put(NarrationPart.USAGE, warningText.get(i));
+			}
+		}
+	}
+
 	public enum Type {
 		WARNING(0),
 		ERROR(40);
@@ -34,6 +58,11 @@ public class WarningWidget implements Drawable, Element {
 	protected int width, height;
 	@NotNull
 	protected Type type;
+
+	@Nullable
+	protected ButtonWidget.PressAction onClickFunc;
+
+	protected TexturedButtonWidget closeBtn;
 
 	public int getX() {
 		return x;
@@ -65,15 +94,22 @@ public class WarningWidget implements Drawable, Element {
 
 
 	public WarningWidget(@NotNull Type type, int x, int y, int width, Text... lines) {
-		this(type, width, lines);
+		this(type, null, width, lines);
 		this.x = x;
 		this.y = y;
 	}
 	public WarningWidget(int width, Text... lines) {
-		this(Type.WARNING, width, lines);
+		this(Type.WARNING, null, width, lines);
 	}
 
-	public WarningWidget(@NotNull Type type, int width, Text... lines) {
+	public WarningWidget(int width, @Nullable ButtonWidget.PressAction onClickFunc, Text... lines) {
+		this(Type.WARNING, onClickFunc, width, lines);
+	}
+
+	public WarningWidget(@NotNull Type type, @Nullable ButtonWidget.PressAction onClickFunc, int width, Text... lines) {
+		this.onClickFunc = onClickFunc;
+		closeBtn = new TexturedButtonWidget(292, 0, 8, 8, 0, 60, 8,
+			new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, this.onClickFunc);
 		this.type = type;
 		this.warningText = Arrays.asList(lines);
 		this.width = width;
@@ -85,6 +121,16 @@ public class WarningWidget implements Drawable, Element {
 			}
 		}
 		this.height = lines.length * (renderer.fontHeight + 1) + 16;
+	}
+
+	public void setOnClickFunc(ButtonWidget.PressAction onClickFunc) {
+		this.onClickFunc = onClickFunc;
+		if (onClickFunc == null) {
+			this.closeBtn = null;
+		} else {
+			this.closeBtn = new TexturedButtonWidget(292, 0, 8, 8, 0, 60, 8,
+				new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, this.onClickFunc);
+		}
 	}
 
 	public static void drawNinepatchRect(
@@ -176,5 +222,20 @@ public class WarningWidget implements Drawable, Element {
 			DrawableHelper.drawCenteredTextWithShadow(matrices, textRenderer, orderedText, this.x + 10 + width / 2, this.y + y, color);
 			y += textRenderer.fontHeight + 2;
 		}
+		if (closeBtn != null) {
+			matrices.push();
+			matrices.translate( this.x, this.y, 0.0);
+			closeBtn.render(matrices, mouseX, mouseY, delta);
+		}
+	}
+
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		return mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height;
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		return Element.super.mouseClicked(mouseX, mouseY, button);
 	}
 }

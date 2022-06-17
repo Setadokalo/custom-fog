@@ -32,6 +32,9 @@
   "notice.customfog.canvaspack1": "Canvas Detected!",
   "notice.customfog.canvaspack2": "For canvas compatibility, enable the",
   "notice.customfog.canvaspack3": "'customfog/canvasfog' resource pack!",
+  "notice.customfog.sodiumfog1": "Sodium Detected!",
+  "notice.customfog.sodiumfog2": "For Sodium compatibility, disable",
+  "notice.customfog.sodiumfog3": "Fog Occlusion in Sodium's Advanced settings!",
   "notice.customfog.slidervalue1": "Full Range Control!",
   "notice.customfog.slidervalue2": "To set a slider to a value outside its normal range,",
   "notice.customfog.slidervalue3": "click on it, then type in the new value!"
