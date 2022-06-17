@@ -15,8 +15,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import setadokalo.customfog.CustomFogLogger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -93,11 +95,18 @@ public class WarningWidget implements Drawable, Element, Selectable {
 	}
 
 
+	public WarningWidget(@NotNull Type type, @Nullable ButtonWidget.PressAction onClickFunc, int x, int y, int width, Text... lines) {
+		this(type, onClickFunc, width, lines);
+		this.x = x;
+		this.y = y;
+	}
+
 	public WarningWidget(@NotNull Type type, int x, int y, int width, Text... lines) {
 		this(type, null, width, lines);
 		this.x = x;
 		this.y = y;
 	}
+
 	public WarningWidget(int width, Text... lines) {
 		this(Type.WARNING, null, width, lines);
 	}
@@ -107,9 +116,7 @@ public class WarningWidget implements Drawable, Element, Selectable {
 	}
 
 	public WarningWidget(@NotNull Type type, @Nullable ButtonWidget.PressAction onClickFunc, int width, Text... lines) {
-		this.onClickFunc = onClickFunc;
-		closeBtn = new TexturedButtonWidget(292, 0, 8, 8, 0, 60, 8,
-			new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, this.onClickFunc);
+		setOnClickFunc(onClickFunc);
 		this.type = type;
 		this.warningText = Arrays.asList(lines);
 		this.width = width;
@@ -125,12 +132,14 @@ public class WarningWidget implements Drawable, Element, Selectable {
 
 	public void setOnClickFunc(ButtonWidget.PressAction onClickFunc) {
 		this.onClickFunc = onClickFunc;
-		if (onClickFunc == null) {
+		if (this.onClickFunc == null) {
 			this.closeBtn = null;
 		} else {
-			this.closeBtn = new TexturedButtonWidget(292, 0, 8, 8, 0, 60, 8,
+			this.closeBtn = new TexturedButtonWidget(0, 0, 8, 8, 0, 60, 8,
 				new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, this.onClickFunc);
+			CustomFogLogger.log(Level.INFO, "Close button created");
 		}
+		CustomFogLogger.log(Level.INFO, "Close button situation passed");
 	}
 
 	public static void drawNinepatchRect(
@@ -201,32 +210,38 @@ public class WarningWidget implements Drawable, Element, Selectable {
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		matrices.push();
+		matrices.translate( 0.0, 0.0, 2.5);
+		RenderSystem.enableDepthTest();
 //		CustomFog.log(Level.INFO, "hhhh");'
 		RenderSystem.setShaderTexture(0, new Identifier("custom-fog", "textures/gui/cfog-gui.png"));
+		// Background
 		drawNinepatchRect(matrices, this.x, this.y,
 				width, height,
 				0, 0,
 				5, 10);
+		// Type icon
 		DrawableHelper.drawTexture(matrices, this.x + 5, this.y + (this.height - 20)/2,
 				20, type.getTexturePos(),
 				20, 20,
 				256, 256);
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		int y = 7;
+		int ty = 7;
 		for (Text line : this.warningText) {
 			OrderedText orderedText = line.asOrderedText();
 			int color = 0xFFFFFFFF;
 			if (line.getStyle() != null && line.getStyle().getColor() != null)
 				color = line.getStyle().getColor().getRgb();
 //			textRenderer.drawWithShadow(matrices, orderedText, this.x + 20, this.y + y, color);
-			DrawableHelper.drawCenteredTextWithShadow(matrices, textRenderer, orderedText, this.x + 10 + width / 2, this.y + y, color);
-			y += textRenderer.fontHeight + 2;
+			DrawableHelper.drawCenteredTextWithShadow(matrices, textRenderer, orderedText, this.x + 10 + width / 2, this.y + ty, color);
+			ty += textRenderer.fontHeight + 2;
 		}
 		if (closeBtn != null) {
-			matrices.push();
-			matrices.translate( this.x, this.y, 0.0);
+			closeBtn.x = x + width - 8;
+			closeBtn.y = y;
 			closeBtn.render(matrices, mouseX, mouseY, delta);
 		}
+		matrices.pop();
 	}
 
 	@Override
@@ -236,6 +251,11 @@ public class WarningWidget implements Drawable, Element, Selectable {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (!isMouseOver(mouseX, mouseY)) return false;
+		if (mouseX - x > width - 8 && mouseY - y < 8) {
+			closeBtn.onPress();
+			return true;
+		}
 		return Element.super.mouseClicked(mouseX, mouseY, button);
 	}
 }

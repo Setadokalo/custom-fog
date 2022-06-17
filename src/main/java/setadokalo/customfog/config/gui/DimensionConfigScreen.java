@@ -1,5 +1,6 @@
 package setadokalo.customfog.config.gui;
 
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -46,17 +47,18 @@ public class DimensionConfigScreen extends Screen {
 		int modeRowHeight = addSliders() ? this.height - 57 : this.height - 86;
 
 		if (!CustomFogClient.config.hasClosedToast) {
-			WarningWidget w = this.addDrawable(new WarningWidget(
-					WarningWidget.Type.WARNING,
-					(btn) -> {
-						CustomFogClient.config.hasClosedToast = true;
-						CustomFogClient.config.saveConfig();
-						remove(WarningWidget.this);
-					},
-					this.width / 2 - 150, 20, 300,
-					new TranslatableText("notice.customfog.slidervalue1").formatted(Formatting.YELLOW, Formatting.BOLD),
-					new TranslatableText("notice.customfog.slidervalue2").formatted(Formatting.WHITE),
-					new TranslatableText("notice.customfog.slidervalue3").formatted(Formatting.WHITE)));
+			WarningWidget w = this.addDrawableChild(new WarningWidget(
+				WarningWidget.Type.WARNING,
+				this.width / 2 - 150, 20, 300,
+				new TranslatableText("notice.customfog.slidervalue1").formatted(Formatting.YELLOW, Formatting.BOLD),
+				new TranslatableText("notice.customfog.slidervalue2").formatted(Formatting.WHITE),
+				new TranslatableText("notice.customfog.slidervalue3").formatted(Formatting.WHITE)
+			));
+			w.setOnClickFunc((btn) -> {
+				CustomFogClient.config.hasClosedToast = true;
+				CustomFogClient.config.saveConfig();
+				remove(w);
+			});
 //			this.addDrawableChild(new TexturedButtonWidget(this.width / 2 + 142, 20, 8, 8, 0, 60, 8,
 //					new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, (btn) -> {
 //				CustomFogClient.config.hasClosedToast = true;

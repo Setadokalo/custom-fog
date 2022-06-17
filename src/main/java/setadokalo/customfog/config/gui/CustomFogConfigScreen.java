@@ -45,7 +45,7 @@ public class CustomFogConfigScreen extends Screen {
 	}
 
 	public void pushNotification(WarningWidget notification) {
-		this.addDrawable(notification);
+		this.addDrawableChild(notification);
 		notification.setX((width - notification.getWidth())/2);
 		nextNotifBottom = nextNotifBottom - notification.getHeight() - 2;
 		notification.setY(nextNotifBottom + 2);
@@ -60,7 +60,6 @@ public class CustomFogConfigScreen extends Screen {
 			createList();
 		} else {
 			lWidget.updateSize(width, height, HEADER_HEIGHT, height - FOOTER_HEIGHT);
-			this.addDrawableChild(lWidget);
 		}
 		// A couple "subtle" things can cause very unexpected behavior for users, so
 		// we show them these notifications in the main config screen to warn them.
@@ -75,12 +74,18 @@ public class CustomFogConfigScreen extends Screen {
 					new TranslatableText("notice.customfog.canvaspack2").formatted(Formatting.WHITE),
 					new TranslatableText("notice.customfog.canvaspack3").formatted(Formatting.WHITE)));
 		} else if (FabricLoader.getInstance().isModLoaded("sodium") && !CustomFogClient.config.hasAcknowledgedSodium) {
-			pushNotification(new WarningWidget(
+			WarningWidget w = new WarningWidget(
 				270,
 				new TranslatableText("notice.customfog.sodiumfog1").formatted(Formatting.YELLOW, Formatting.BOLD),
 				new TranslatableText("notice.customfog.sodiumfog2").formatted(Formatting.WHITE),
 				new TranslatableText("notice.customfog.sodiumfog3").formatted(Formatting.WHITE)
-			));
+			);
+			w.setOnClickFunc((btn) -> {
+				CustomFogClient.config.hasAcknowledgedSodium = true;
+				CustomFogClient.config.saveConfig();
+				remove(w);
+			});
+			pushNotification(w);
 		}
 		// If a universal override is applied by the server, none of the configs the user sets will be visible outside
 		// the config gui. Warn them they can't change their fog on this server.
@@ -91,6 +96,7 @@ public class CustomFogConfigScreen extends Screen {
 					new TranslatableText("notice.customfog.overridden2").formatted(Formatting.RED)
 			));
 		}
+		this.addDrawableChild(lWidget);
 
 		// Add load button.
 		this.addDrawableChild(new ButtonWidget(9, this.height - 29, 80, 20, new TranslatableText("button.customfog.load"),
@@ -167,7 +173,6 @@ public class CustomFogConfigScreen extends Screen {
 					this, // parent screen (of the widget)
 					this.textRenderer // text renderer to use
 			);
-			this.addDrawableChild(lWidget);
 		}
 
 		lWidget.children().clear();
