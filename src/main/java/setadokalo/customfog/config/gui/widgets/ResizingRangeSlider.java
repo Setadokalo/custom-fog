@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
@@ -31,7 +30,7 @@ public class ResizingRangeSlider extends SliderWidget {
 			double value, double defaultMax,
 			Consumer<Double> setter,
 			Function<Double, Text> display) {
-		super(x, y, width, height, new LiteralText(""), value / defaultMax);
+		super(x, y, width, height, Text.literal(""), value / defaultMax);
 		this.displayPercent = displayPercent;
 		this.defaultMax = defaultMax;
 		this.max = defaultMax;
@@ -266,7 +265,7 @@ public class ResizingRangeSlider extends SliderWidget {
 		if (!isTyping) {
 			this.setMessage(displayTextProducer.apply(getValue() * (displayPercent ? 100.0 : 1.0)));
 		} else {
-			this.setMessage(new LiteralText(""));
+			this.setMessage(Text.literal(""));
 		}
 	}
 
@@ -329,8 +328,7 @@ public class ResizingRangeSlider extends SliderWidget {
 						.color(255, 255, 255, 255).next();
 				bufferBuilder.vertex(mat, (float)startX,   (float)(this.y + ((this.height - 8)) / 2) - 1.0F, -40.0F)
 						.color(255, 255, 255, 255).next();
-				bufferBuilder.end();
-				BufferRenderer.draw(bufferBuilder);
+				BufferRenderer.drawWithoutShader(bufferBuilder.end());
 				textRenderer.draw(matrices, currentText.substring(sStart, sEnd), startX + 1, this.y + (float)(this.height / 2 - 3), 0x30000000);
 				textRenderer.draw(matrices, currentText.substring(sStart, sEnd), startX, this.y + (float)(this.height / 2 - 4), 0x0000FF);
 			}

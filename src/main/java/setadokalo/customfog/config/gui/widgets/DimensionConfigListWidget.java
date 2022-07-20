@@ -88,7 +88,6 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 
 	@Override
    public boolean changeFocus(boolean lookForwards) {
-		CustomFog.log(Level.INFO, "Focus Changed on list widget");
 		return super.changeFocus(lookForwards);
 	}
 

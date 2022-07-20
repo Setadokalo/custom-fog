@@ -122,7 +122,7 @@ public class WarningWidget implements Drawable, Element, Selectable {
 		this.width = width;
 		TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
 		for (Text line : lines) {
-			int sWidth = renderer.getWidth(line.asString()) + 28;
+			int sWidth = renderer.getWidth(line) + 28;
 			if (sWidth > width) {
 				width = sWidth;
 			}
@@ -137,9 +137,7 @@ public class WarningWidget implements Drawable, Element, Selectable {
 		} else {
 			this.closeBtn = new TexturedButtonWidget(0, 0, 8, 8, 0, 60, 8,
 				new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, this.onClickFunc);
-			CustomFogLogger.log(Level.INFO, "Close button created");
 		}
-		CustomFogLogger.log(Level.INFO, "Close button situation passed");
 	}
 
 	public static void drawNinepatchRect(
@@ -213,7 +211,6 @@ public class WarningWidget implements Drawable, Element, Selectable {
 		matrices.push();
 		matrices.translate( 0.0, 0.0, 2.5);
 		RenderSystem.enableDepthTest();
-//		CustomFog.log(Level.INFO, "hhhh");'
 		RenderSystem.setShaderTexture(0, new Identifier("custom-fog", "textures/gui/cfog-gui.png"));
 		// Background
 		drawNinepatchRect(matrices, this.x, this.y,
