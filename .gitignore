@@ -9,6 +9,7 @@
 .vscode
 .classpath
 .project
+.settings
 
 # IntelliJ
 out/
