@@ -14,7 +14,7 @@
   "tooltip.customfog.linearendslider": "Tỷ lệ phần trăm khoảng cách hiển thị của bạn để tại đó kết thúc việc sương mù tuyến tính mờ dần.",
   "option.customfog.expslider": "Mật độ hàm mũ: %.2f",
   "tooltip.customfog.expslider": "Mật độ sương mù khi ở chế độ sương mù hàm mũ.",
-  "option.customfog.exp2slider": "Hàm mũ 2 Mật độ: %.2f",
+  "option.customfog.exp2slider": "Mật độ hàm mũ 2: %.2f",
   "tooltip.customfog.exp2slider": "Mật độ sương mù khi ở chế độ sương mù hàm mũ 2.",
   "tooltip.customfog.pushtoserver": "Đẩy cấu hình lên máy chủ (yêu cầu op)",
   "tooltip.customfog.pushtouniversal": "Đẩy cấu hình đến máy chủ dưới dạng ghi đè chung (yêu cầu op)",
