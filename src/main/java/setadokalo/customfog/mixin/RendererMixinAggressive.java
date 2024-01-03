@@ -27,8 +27,8 @@ import setadokalo.customfog.config.ServerConfig;
 @Environment(EnvType.CLIENT)
 public class RendererMixinAggressive {
 
-	// I prefer to use the nicer inject-at-tail, but every other damn mod that messes with fog
-	// injects at head and cancels early unconditionally so HERE WE FUCKING ARE I GUESS
+	// I prefer to use the nicer inject-at-tail, but every other mod that messes with fog
+	// injects at head and cancels early unconditionally so HERE WE ARE I GUESS
 	@Inject(method = "applyFog", at=@At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
 	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
 		CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
