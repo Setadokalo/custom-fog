@@ -5,7 +5,6 @@ import java.util.Objects;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.VertexFormat;
-import org.apache.logging.log4j.Level;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -17,7 +16,6 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
-import setadokalo.customfog.CustomFog;
 
 public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<DimensionConfigEntry> {
 	private final Screen parent;

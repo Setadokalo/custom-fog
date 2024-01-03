@@ -2,11 +2,9 @@ package setadokalo.customfog.mixin;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.apache.logging.log4j.Level;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import setadokalo.customfog.CustomFogLogger;
 import setadokalo.customfog.config.CustomFogMixinConfig;
 
 import java.util.List;

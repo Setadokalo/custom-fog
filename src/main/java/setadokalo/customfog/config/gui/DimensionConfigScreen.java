@@ -1,10 +1,7 @@
 package setadokalo.customfog.config.gui;
 
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.screen.Screen;

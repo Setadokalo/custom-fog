@@ -17,7 +17,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import setadokalo.customfog.CustomFog;
 import setadokalo.customfog.CustomFogClient;
-import setadokalo.customfog.CustomFogLogger;
 import setadokalo.customfog.Utils;
 import setadokalo.customfog.config.CustomFogConfig;
 import setadokalo.customfog.config.DimensionConfig;

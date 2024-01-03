@@ -1,25 +1,15 @@
 package setadokalo.customfog.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.loader.api.FabricLoader;
 import setadokalo.customfog.CustomFogLogger;
 
 import java.io.*;
 import java.util.*;
 
 public class CustomFogConfig extends BaseConfig {
-	private static final Gson GSON = new GsonBuilder()
-		.registerTypeAdapter(Identifier.class, new Identifier.Serializer())
-		.enableComplexMapKeySerialization()
-		.setPrettyPrinting()
-		.create();
 
 	public CustomFogConfig(File file) {
 		super(file);
@@ -50,7 +40,6 @@ public class CustomFogConfig extends BaseConfig {
 		ConfigLoader.saveConfig(this);
 	}
 
-	private transient File file;
 	public static final float LINEAR_START = 0.25F;
 	public static final float LINEAR_END = 1.00F;
 	public static final float EXP = 3.00F;
