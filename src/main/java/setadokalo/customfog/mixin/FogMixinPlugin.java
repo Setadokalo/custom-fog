@@ -41,7 +41,7 @@ public class FogMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public List<String> getMixins() {
 		if (FabricLoader.getInstance().isModLoaded("sodium"))
-			return java.util.Arrays.asList(new String[] {"setadokalo.customfog.mixin.SodiumOptionsGUIMixin", "setadokalo.customfog.mixin.SodiumShaderLoadMixin"});
+			return java.util.Arrays.asList(new String[] {"SodiumOptionsGUIMixin", "SodiumShaderLoadMixin"});
 		return null;
 	}
 
