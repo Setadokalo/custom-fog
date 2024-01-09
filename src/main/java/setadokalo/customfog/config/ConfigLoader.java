@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Identifier;
 
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.NotNull;
@@ -14,8 +13,9 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 
 public class ConfigLoader {
-	private static final Gson GSON = new GsonBuilder()
-		.registerTypeAdapter(Identifier.class, new Identifier.Serializer())
+	// public and non-final to allow it to be overriden in the mod initializer,
+	// because after mixins have loaded this should support `Identifier`s.
+	public static Gson GSON = new GsonBuilder()
 		.enableComplexMapKeySerialization()
 		.serializeNulls()
 		.setPrettyPrinting()

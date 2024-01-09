@@ -2,6 +2,8 @@ package setadokalo.customfog.mixin;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
+
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -38,6 +40,8 @@ public class FogMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public List<String> getMixins() {
+		if (FabricLoader.getInstance().isModLoaded("sodium"))
+			return java.util.Arrays.asList(new String[] {"setadokalo.customfog.mixin.SodiumOptionsGUIMixin", "setadokalo.customfog.mixin.SodiumShaderLoadMixin"});
 		return null;
 	}
 

@@ -6,6 +6,10 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Level;
+
+import com.google.gson.GsonBuilder;
+
+import setadokalo.customfog.config.ConfigLoader;
 import setadokalo.customfog.config.gui.CustomFogConfigScreen;
 
 public class CustomFog implements ModInitializer {
@@ -21,6 +25,12 @@ public class CustomFog implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		log(Level.INFO, "Initializing Custom Fog");
+		ConfigLoader.GSON = new GsonBuilder()
+		.registerTypeAdapter(Identifier.class, new Identifier.Serializer())
+		.enableComplexMapKeySerialization()
+		.serializeNulls()
+		.setPrettyPrinting()
+		.create();
 	}
 
 	@Environment(EnvType.CLIENT)

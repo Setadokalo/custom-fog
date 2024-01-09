@@ -1,7 +1,5 @@
 package setadokalo.customfog.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;

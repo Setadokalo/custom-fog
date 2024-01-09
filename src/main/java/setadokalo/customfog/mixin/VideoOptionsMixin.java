@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
-import setadokalo.customfog.CustomFog;
+import setadokalo.customfog.config.gui.CustomFogConfigScreen;
 import setadokalo.customfog.CustomFogClient;
 
 // priority 1100 so we can fail-soft with BSVBP
@@ -34,7 +34,7 @@ public abstract class VideoOptionsMixin extends GameOptionsScreen {
 					100,
 					20,
 					Text.translatable("button.customfog.menu"),
-					btn -> client.setScreen(CustomFog.getConfigScreen(this))
+					btn -> client.setScreen(new CustomFogConfigScreen(parent))
 				)
 			);
 		}
