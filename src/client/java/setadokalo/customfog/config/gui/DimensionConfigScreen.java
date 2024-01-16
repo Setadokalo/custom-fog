@@ -2,11 +2,12 @@ package setadokalo.customfog.config.gui;
 
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.widget.TextWidget;
 import setadokalo.customfog.CustomFogClient;
 import setadokalo.customfog.config.CustomFogConfig;
 import setadokalo.customfog.config.gui.widgets.ResizingRangeSlider;
@@ -55,7 +56,7 @@ public class DimensionConfigScreen extends Screen {
 				CustomFogClient.config.saveConfig();
 				remove(w);
 			});
-//			this.addDrawableChild(new TexturedButtonWidget(this.width / 2 + 142, 20, 8, 8, 0, 60, 8,
+//			this.addDrawableChild(new FogButtonWidget(this.width / 2 + 142, 20, 8, 8, 0, 60, 8,
 //					new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, (btn) -> {
 //				CustomFogClient.config.hasClosedToast = true;
 //				CustomFogClient.config.saveConfig();
@@ -63,13 +64,13 @@ public class DimensionConfigScreen extends Screen {
 //				remove(btn);
 //			}));
 		}
-		this.addDrawableChild(new ButtonWidget(this.width - DONE_WIDTH - 9, this.height - 29, DONE_WIDTH, 20,
+		this.addDrawableChild(CustomFogClient.makeBtn(this.width - DONE_WIDTH - 9, this.height - 29, DONE_WIDTH, 20,
 				saveAndQuitText, btn -> {
 					CustomFogClient.config.overrideConfig = null;
 					if (this.client != null)
 						this.client.setScreen(this.parent);
 				}));
-		this.addDrawableChild(new ButtonWidget(9, modeRowHeight, 150, 20,
+		this.addDrawableChild(CustomFogClient.makeBtn(9, modeRowHeight, 150, 20,
 			Text.translatable(getKeyForType(this.entry.config.getType())), btn -> {
 				this.entry.config.setType(this.entry.config.getType().next());
 				btn.setMessage(Text.translatable(getKeyForType(this.entry.config.getType())));
@@ -77,12 +78,13 @@ public class DimensionConfigScreen extends Screen {
 				addSliders();
 			}
 		));
-		this.addDrawableChild(new ButtonWidget(18 + 150, modeRowHeight, 75, 20,
+		this.addDrawableChild(CustomFogClient.makeBtn(18 + 150, modeRowHeight, 75, 20,
 			enabledText, btn -> {
 				this.entry.config.setEnabled(!this.entry.config.getEnabled());
 				btn.setMessage(Text.translatable(getKeyForEnabled()));
 			}
 		));
+		this.addDrawable(new TextWidget(0, 8, this.width, 8, this.title, this.textRenderer).alignCenter());
 	}
 
 	private String getKeyForEnabled() {
@@ -174,15 +176,15 @@ public class DimensionConfigScreen extends Screen {
 		}
 	}
 
-
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		if (this.client == null || this.client.world == null) {
-			this.renderBackground(matrices);
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (this.client.world == null) {
+			this.renderBackgroundTexture(context);
 		}
-		super.render(matrices, mouseX, mouseY, delta);
-		// Draw the title text.
-		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 	}
 
+	@Override
+	public void close() {
+		client.setScreen(parent);
+	} 
 }

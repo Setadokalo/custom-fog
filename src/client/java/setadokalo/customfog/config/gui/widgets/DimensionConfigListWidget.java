@@ -2,45 +2,41 @@ package setadokalo.customfog.config.gui.widgets;
 
 import java.util.Objects;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.VertexFormat;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
+import setadokalo.customfog.CustomFogLogger;
 
 public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<DimensionConfigEntry> {
 	private final Screen parent;
-	private boolean renderSelection;
+	private boolean renderSelection = false;
 	private final TextRenderer textRenderer;
 	private boolean scrolling;
 
 	public DimensionConfigListWidget(MinecraftClient minecraftClient, int x, int y, int width, int height,
 			int itemHeight, Screen parent, TextRenderer textRenderer) {
-		super(minecraftClient, width, height, y, y + height, itemHeight);
-		this.left = x;
-		this.right = x + width;
-		this.top = y;
-		this.bottom = y + height;
-		this.height = parent.height;
-		this.setRenderSelection(false);
+		super(minecraftClient, width, height, y, itemHeight);
+		this.setPosition(x, y);
+		// this.right = x + width;
+		// this.top = y;
+		// this.bottom = y + height;
+		this.height = height;
 		this.parent = parent;
 		this.textRenderer = textRenderer;
 		//this.method_31323(false); // this disables rendering a background above and below the scroll list - useful for debugging
-	}
-
-	public void tick() {
-		for (DimensionConfigEntry entry : this.children()) {
-			entry.tick();
-		}
 	}
 
 	public TextRenderer getTextRenderer() {
@@ -77,37 +73,25 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 		}
 	}
 
-
 	@Override
-	public void setRenderSelection(boolean renderSelection) {
-		super.setRenderSelection(renderSelection);
-		this.renderSelection = renderSelection;
-	}
-
-	@Override
-   public boolean changeFocus(boolean lookForwards) {
-		return super.changeFocus(lookForwards);
-	}
-
-	@Override
-	protected void renderList(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
+	protected void renderList(DrawContext context, int mouseX, int mouseY, float delta) {
 		int itemCount = this.getEntryCount();
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
 		for (int index = 0; index < itemCount; ++index) {
 			int entryTop = this.getRowTop(index) + 2;
 			int entryBottom = this.getRowTop(index) + this.itemHeight;
-			if (entryBottom >= this.top && entryTop <= this.bottom) {
+			if (entryBottom >= this.getY() && entryTop <= this.getBottom()) {
 				int entryHeight = this.itemHeight - 4;
 				DimensionConfigEntry entry = this.getEntry(index);
 				int rowWidth = this.getRowWidth();
 				int entryLeft;
 				if (this.renderSelection && this.isSelectedEntry(index)) {
 					entryLeft = getRowLeft() - 2;
-					int selectionRight = x + rowWidth + 2;
-					RenderSystem.disableTexture();
+					int selectionRight = getX() + rowWidth + 2;
+					RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 					float bgIntensity = this.isFocused() ? 1.0F : 0.5F;
-					Matrix4f matrix = matrices.peek().getPositionMatrix();
+					Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
 					buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 					buffer.vertex(matrix, entryLeft, entryTop + entryHeight + 2, 0.0F)
 							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
@@ -128,11 +112,10 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 					buffer.vertex(matrix, entryLeft + 1, entryTop - 1, 0.0F)
 							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
 					tessellator.draw();
-					RenderSystem.enableTexture();
 				}
 
 				entryLeft = this.getRowLeft();
-				entry.render(matrices, index, entryTop, entryLeft, rowWidth, entryHeight, mouseX, mouseY, this.isMouseOver(mouseX, mouseY) && Objects.equals(this.getEntryAtPos(mouseX, mouseY), entry), delta);
+				entry.render(context, index, entryTop, entryLeft, rowWidth, entryHeight, mouseX, mouseY, this.isMouseOver(mouseX, mouseY) && Objects.equals(this.getEntryAtPos(mouseX, mouseY), entry), delta);
 			}
 		}
 
@@ -147,7 +130,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
       } else {
 			for (DimensionConfigEntry entry : this.children()) {
 				if (entry.dimNameWidget != null)
-					entry.dimNameWidget.setTextFieldFocused(false);
+					entry.dimNameWidget.setFocused(false);
 			}
 			DimensionConfigEntry entry = this.getEntryAtPosition(mouseX, mouseY);
          if (entry != null) {
@@ -158,7 +141,10 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
                return true;
             }
          } else if (button == 0) {
-            this.clickedHeader((int)(mouseX - (double)(this.left + this.width / 2 - this.getRowWidth() / 2)), (int)(mouseY - (double)this.top) + (int)this.getScrollAmount() - 4);
+            this.clickedHeader(
+					(int)(mouseX - (double)(this.getX() + this.width / 2 - this.getRowWidth() / 2)),
+					(int)(mouseY - (double)this.getY()) + (int)this.getScrollAmount() - 4
+				);
             return true;
          }
 
@@ -178,7 +164,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 	}
 */
 	public final DimensionConfigEntry getEntryAtPos(double x, double y) {
-		int heightInList = MathHelper.floor(y - (double) this.top) - this.headerHeight + (int) this.getScrollAmount() - 4;
+		int heightInList = MathHelper.floor(y - (double) this.getY()) - this.headerHeight + (int) this.getScrollAmount() - 4;
 		int index = heightInList / this.itemHeight;
 		return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && heightInList >= 0 && index < this.getEntryCount() ? this.children().get(index) : null;
 	}
@@ -191,17 +177,17 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 
 	@Override
    protected int getScrollbarPositionX() {
-      return this.right - 6;
+      return this.getRight() - 6;
 	}
 	
 
 	@Override
 	public int getRowWidth() {
-		return this.width - (Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4)) > 0 ? 18 : 12);
+		return this.width - (Math.max(0, this.getMaxPosition() - (this.getHeight() - 4)) > 0 ? 18 : 12);
 	}
 
 	@Override
 	public int getRowLeft() {
-		return left + 6;
+		return getX() + 6;
 	}
 }

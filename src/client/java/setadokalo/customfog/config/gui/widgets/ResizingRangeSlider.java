@@ -3,14 +3,15 @@ package setadokalo.customfog.config.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
@@ -92,7 +93,7 @@ public class ResizingRangeSlider extends SliderWidget {
 				setFocused(true);
 				startTyping();
 			} else {
-				int i = MathHelper.floor(mouseX) - this.x - 4;
+				int i = MathHelper.floor(mouseX) - this.getX() - 4;
 				selectedStart = (MinecraftClient.getInstance().textRenderer.trimToWidth(currentText, i).length());
 				if (!Screen.hasShiftDown()) {
 					selectedEnd = selectedStart;
@@ -127,7 +128,8 @@ public class ResizingRangeSlider extends SliderWidget {
 
 	@Override
 	public boolean charTyped(char chr, int modifiers) {
-		if (isNumericChar(chr, currentText.isEmpty()) && currentText.length() < 20) {
+		if (isNumericChar(chr, currentText.isEmpty() || selectedStart == 0) && currentText.length() < 20) {
+			isTyping = true;
 			typeString(String.valueOf(chr));
 			updateMessage();
 		}
@@ -235,21 +237,25 @@ public class ResizingRangeSlider extends SliderWidget {
 					selectedStart = currentText.length();
 					if (!Screen.hasShiftDown())
 						selectedEnd = selectedStart;
+					return true;
 				}
 				case GLFW.GLFW_KEY_HOME, GLFW.GLFW_KEY_PAGE_UP -> {
 					selectedStart = 0;
 					if (!Screen.hasShiftDown())
 						selectedEnd = selectedStart;
+					return true;
 				}
 				case GLFW.GLFW_KEY_LEFT -> {
 					selectedStart = Math.max(selectedStart - 1, 0);
 					if (!Screen.hasShiftDown())
 						selectedEnd = selectedStart;
+					return true;
 				}
 				case GLFW.GLFW_KEY_RIGHT -> {
 					selectedStart = Math.min(selectedStart + 1, currentText.length());
 					if (!Screen.hasShiftDown())
 						selectedEnd = selectedStart;
+					return true;
 				}
 			}
 			return false;
@@ -287,71 +293,69 @@ public class ResizingRangeSlider extends SliderWidget {
 	}
 
 	@Override
-	protected void setFocused(boolean focused) {
+	public void setFocused(boolean focused) {
 		super.setFocused(focused);
-	}
-
-	@Override
-	protected void onFocusedChanged(boolean newFocused) {
-		if (!newFocused && isTyping) {
+		if (!focused && isTyping) {
 			finishTyping();
 		}
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		super.renderButton(matrices, mouseX, mouseY, delta);
-		if (isTyping) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+		if (!isTyping) {
+			super.renderWidget(context, mouseX, mouseY, delta);
+		} else {
 			MinecraftClient minecraftClient = MinecraftClient.getInstance();
 			TextRenderer textRenderer = minecraftClient.textRenderer;
+			context.drawGuiTexture(new Identifier("widget/text_field_highlighted"), getX(), getY(), getWidth(), getHeight());
 			boolean isValid = true;
 			try {
 				Double.parseDouble(currentText);
 			} catch (NumberFormatException e) {
 				isValid = false;
 			}
-			textRenderer.draw(matrices, currentText, x + 4, this.y + (float)(this.height / 2 - 4), isValid ? 0xFFFFFF : 0xFF5555);
+			context.drawText(textRenderer, currentText, getX() + 4, getY() + (this.height / 2 - 4), isValid ? 0xFFFFFF : 0xFF5555, true);
 			if (selectedEnd != selectedStart) {
 				int sStart = Math.min(Math.min(selectedStart, selectedEnd), currentText.length());
 				int sEnd = Math.min(Math.max(selectedStart, selectedEnd), currentText.length());
-				int startX = this.x + 4 + textRenderer.getWidth(currentText.substring(0, sStart));
-				int endX = this.x + 4 + textRenderer.getWidth(currentText.substring(0, sEnd));
-				RenderSystem.setShader(GameRenderer::getPositionColorShader);
+				int startX = this.getX() + 4 + textRenderer.getWidth(currentText.substring(0, sStart));
+				int endX = this.getX() + 4 + textRenderer.getWidth(currentText.substring(0, sEnd));
+				RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 				BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 				bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-				Matrix4f mat = matrices.peek().getPositionMatrix();
-				bufferBuilder.vertex(mat, (float)startX, (float)(this.y + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)
+				Matrix4f mat = context.getMatrices().peek().getPositionMatrix();
+				bufferBuilder.vertex(mat, (float)startX, (float)(getY() + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)
 						.color(255, 255, 255, 255).next();
-				bufferBuilder.vertex(mat, (float)endX, (float)(this.y + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)
+				bufferBuilder.vertex(mat, (float)endX, (float)(getY() + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)
 						.color(255, 255 ,255, 255).next();
-				bufferBuilder.vertex(mat, (float)endX,   (float)(this.y + ((this.height - 8)) / 2) - 1.0F, -40.0F)
+				bufferBuilder.vertex(mat, (float)endX,   (float)(getY() + ((this.height - 8)) / 2) - 1.0F, -40.0F)
 						.color(255, 255, 255, 255).next();
-				bufferBuilder.vertex(mat, (float)startX,   (float)(this.y + ((this.height - 8)) / 2) - 1.0F, -40.0F)
+				bufferBuilder.vertex(mat, (float)startX,   (float)(getY() + ((this.height - 8)) / 2) - 1.0F, -40.0F)
 						.color(255, 255, 255, 255).next();
-				BufferRenderer.drawWithoutShader(bufferBuilder.end());
-				textRenderer.draw(matrices, currentText.substring(sStart, sEnd), startX + 1, this.y + (float)(this.height / 2 - 3), 0x30000000);
-				textRenderer.draw(matrices, currentText.substring(sStart, sEnd), startX, this.y + (float)(this.height / 2 - 4), 0x0000FF);
+				BufferRenderer.draw(bufferBuilder.end());
+				context.drawText(textRenderer, currentText.substring(sStart, sEnd), startX + 1, getY() + (this.height / 2 - 3), 0x30000000, true);
+				context.drawText(textRenderer, currentText.substring(sStart, sEnd), startX, getY() + (this.height / 2 - 4), 0x0000FF, true);
 			}
 
 			if (focusedTicks / 6 % 2 == 0) {
 				if (selectedStart != currentText.length() || selectedEnd != currentText.length()) {
 					int textWidth = textRenderer.getWidth(currentText.substring(0, selectedStart));
-					drawStringWithShadow(matrices, textRenderer, "|", x + 4 + textWidth, this.y + (this.height - 8) / 2, 0x888888);
+					context.drawTextWithShadow(textRenderer, "|", getX() + 4 + textWidth, getY() + (this.height - 8) / 2, 0x888888);
 				} else {
 					int textWidth = textRenderer.getWidth(currentText);
-					drawStringWithShadow(matrices, textRenderer, "_", x + 4 + textWidth, this.y + (this.height - 8) / 2, 0x888888);
+					context.drawTextWithShadow(textRenderer, "_", getX() + 4 + textWidth, getY() + (this.height - 8) / 2, 0x888888);
 				}
 			}
 		}
 	}
 
-	@Override
-	protected void renderBackground(MatrixStack matrices, MinecraftClient client, int mouseX, int mouseY) {
-		if (isTyping) {
-			fill(matrices, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, -1);
-			fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height, -16777216);
-		} else {
-			super.renderBackground(matrices, client, mouseX, mouseY);
-		}
-	}
+	// @Override
+	// protected void renderBackground(DrawContext context, MinecraftClient client, int mouseX, int mouseY) {
+	// 	if (isTyping) {
+	// 		fill(matrices, this.x - 1, getY() - 1, this.x + this.width + 1, getY() + this.height + 1, -1);
+	// 		fill(matrices, this.x, getY(), this.x + this.width, getY() + this.height, -16777216);
+	// 	} else {
+	// 		super.renderBackground(matrices, client, mouseX, mouseY);
+	// 	}
+	// }
 }

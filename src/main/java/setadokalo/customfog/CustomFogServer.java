@@ -13,7 +13,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.Level;
 import setadokalo.customfog.config.ConfigLoader;
 import setadokalo.customfog.config.CustomFogConfig;
 import setadokalo.customfog.config.DimensionConfig;
@@ -26,7 +25,7 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 
 	@Override
 	public void onInitializeServer() {
-		CustomFog.log(Level.INFO, "Initializing packet sender");
+		CustomFogLogger.info( "Initializing packet sender");
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			if (ServerPlayNetworking.canSend(handler, CustomFog.SERVER_CONFIG_PACKET_ID))
 				ServerPlayNetworking.send(
@@ -34,7 +33,7 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 					CustomFog.SERVER_CONFIG_PACKET_ID,
 					PacketByteBufs.create().writeString(ConfigLoader.serialize(config))
 				);
-			CustomFog.log(Level.INFO, "Sending packet");
+			CustomFogLogger.info( "Sending packet");
 		});
 		ServerPlayNetworking.registerGlobalReceiver(CustomFog.OP_UPDATE_CONFIG_PACKET_ID,
 			(server, player, handler, buf, responseSender) -> {
@@ -48,13 +47,13 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 						buf.readFloat(),
 						buf.readFloat()
 					);
-					if (Objects.equals(dimId.toString(), Utils.WATER_CONFIG)) {
+					if (Objects.equals(dimId.toString(), CustomFog.WATER_CONFIG)) {
 						config.waterOverride = dimConf;
-					} else if (Objects.equals(dimId.toString(), Utils.POWDER_SNOW_CONFIG)) {
+					} else if (Objects.equals(dimId.toString(), CustomFog.POWDER_SNOW_CONFIG)) {
 						config.snowOverride = dimConf;
-					} else if (Objects.equals(dimId.toString(), "_customfog_internal:__/default/__")) {
+					} else if (Objects.equals(dimId.toString(), CustomFog.DEFAULT_CONFIG)) {
 						config.defaultOverride = dimConf;
-					} else if (Objects.equals(dimId.toString(), "_customfog_internal:__/universal/__")) {
+					} else if (Objects.equals(dimId.toString(), CustomFog.UNIVERSAL_CONFIG)) {
 						config.universalOverride = dimConf;
 					} else {
 						config.overrides.put(dimId, dimConf);
@@ -75,7 +74,7 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 		config = ServerConfig.getConfig();
 		sendUpdatedConfig(ctx.getSource().getServer());
 		ctx.getSource().sendFeedback(
-				Text.translatable("modid.customfog").formatted(Formatting.GOLD)
+				() -> Text.translatable("modid.customfog").formatted(Formatting.GOLD)
 				.append(Text.translatable("chat.customfog.reloaded").formatted(Formatting.YELLOW)),
 			true);
 		return 0;

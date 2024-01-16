@@ -8,8 +8,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.Level;
 import setadokalo.customfog.config.ConfigLoader;
 import setadokalo.customfog.config.CustomFogConfig;
 import setadokalo.customfog.config.ServerConfig;
@@ -25,7 +26,7 @@ public class CustomFogClient implements ClientModInitializer {
 
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> serverConfig = null);
 		if (FabricLoader.getInstance().isModLoaded("canvas")) {
-			CustomFogLogger.log(Level.INFO, "Canvas Renderer detected, adding canvas fog shader resource pack");
+			CustomFogLogger.info( "Canvas Renderer detected, adding canvas fog shader resource pack");
 			FabricLoader.getInstance().getModContainer(CustomFog.MOD_ID).ifPresent(modContainer ->
 					ResourceManagerHelper.registerBuiltinResourcePack(
 							new Identifier("customfog:canvasfog"),
@@ -34,5 +35,11 @@ public class CustomFogClient implements ClientModInitializer {
 					)
 			);
 		}
+	}
+	
+	public static ButtonWidget makeBtn(int x, int y, int width, int height, Text title, ButtonWidget.PressAction action) {
+		return ButtonWidget.builder(title, action)
+			.dimensions(x, y, width, height)
+			.build();
 	}
 }

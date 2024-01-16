@@ -12,11 +12,11 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import setadokalo.customfog.CustomFog;
 import setadokalo.customfog.CustomFogClient;
+import setadokalo.customfog.CustomFogLogger;
 import setadokalo.customfog.Utils;
 import setadokalo.customfog.config.CustomFogConfig;
 import setadokalo.customfog.config.DimensionConfig;
@@ -59,7 +59,9 @@ public class CustomFogConfigScreen extends Screen {
 		if (lWidget == null) {
 			createList();
 		} else {
-			lWidget.updateSize(width, height, HEADER_HEIGHT, height - FOOTER_HEIGHT);
+			lWidget.setDimensions(width, height - HEADER_HEIGHT - FOOTER_HEIGHT);
+			lWidget.setPosition(0, HEADER_HEIGHT);
+			// lWidget.updateSize(width, height, HEADER_HEIGHT, height - FOOTER_HEIGHT);
 		}
 		// We add this to the drawable list *before* notifications so they draw on top of it,
 		// but add it to the *selectable* list *after* the notifications so they can receive input first
@@ -102,20 +104,21 @@ public class CustomFogConfigScreen extends Screen {
 		this.addSelectableChild(lWidget);
 
 		// Add load button.
-		this.addDrawableChild(new ButtonWidget(9, this.height - 29, 80, 20, Text.translatable("button.customfog.load"),
+		this.addDrawableChild(CustomFogClient.makeBtn(9, this.height - 29, 80, 20, Text.translatable("button.customfog.load"),
 				  btn -> {
 					  CustomFogClient.config = CustomFogConfig.getConfig();
 					  createList();
-				  }));
+				  }
+				  ));
 		// Add done button.
 		int saveBtnX = Math.max(this.width / 2 - 100, 94);
 		int saveBtnWidth = Math.min(200, this.width - (saveBtnX + 5 + 160 + 8));
-		this.addDrawableChild(new ButtonWidget(
+		this.addDrawableChild(CustomFogClient.makeBtn(
 				saveBtnX, this.height - 29,
 				saveBtnWidth, 20,
 				Text.translatable("button.customfog.saveandquit"),
 			btn -> saveDimensions()));
-		this.addDrawableChild(new ButtonWidget(
+		this.addDrawableChild(CustomFogClient.makeBtn(
 				this.width - 165, this.height - 29,
 				160, 20,
 				Text.translatable("button.customfog.toggleVOptions", boolToEnabled(CustomFogClient.config.videoOptionsButton)),
@@ -146,15 +149,15 @@ public class CustomFogConfigScreen extends Screen {
 			// We do water/powdered snow fog config with a hack, by pretending it's a dimension with
 			// a weird identifier. Here we check for the special identifiers and write their configs where they
 			// actually belong.
-			if (entry.dimensionId.toString().equals(Utils.WATER_CONFIG)) {
+			if (entry.dimensionId.toString().equals(CustomFog.WATER_CONFIG)) {
 				CustomFogClient.config.waterConfig = entry.config;
-			} else if (entry.dimensionId.toString().equals(Utils.POWDER_SNOW_CONFIG)) {
+			} else if (entry.dimensionId.toString().equals(CustomFog.POWDER_SNOW_CONFIG)) {
 				CustomFogClient.config.snowConfig = entry.config;
 			} else if (entry.originalDimId != null) {
 				try {
 					CustomFogConfig.changeKey(CustomFogClient.config, entry.originalDimId, entry.dimensionId);
 				} catch (NullPointerException e) {
-					CustomFog.log(Level.ERROR, "Failed to update key - invalid original key " + entry.originalDimId);
+					CustomFogLogger.log(Level.ERROR, "Failed to update key - invalid original key " + entry.originalDimId);
 				}
 			} else {
 				CustomFogConfig.add(CustomFogClient.config, entry.dimensionId, entry.config);
@@ -180,8 +183,8 @@ public class CustomFogConfigScreen extends Screen {
 
 		lWidget.children().clear();
 		lWidget.add(new DimensionConfigEntry(lWidget, CustomFogClient.config.defaultConfig));
-		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(Utils.WATER_CONFIG), CustomFogClient.config.waterConfig, Text.translatable("config.customfog.water")));
-		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(Utils.POWDER_SNOW_CONFIG), CustomFogClient.config.snowConfig, Text.translatable("config.customfog.snow")));
+		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(CustomFog.WATER_CONFIG), CustomFogClient.config.waterConfig, Text.translatable("config.customfog.water")));
+		lWidget.add(new DimensionConfigEntry(lWidget, false, new Identifier(CustomFog.POWDER_SNOW_CONFIG), CustomFogClient.config.snowConfig, Text.translatable("config.customfog.snow")));
 		for (Map.Entry<Identifier, DimensionConfig> config : CustomFogClient.config.dimensions.entrySet()) {
 			lWidget.add(new DimensionConfigEntry(lWidget, true, config.getKey(), config.getValue()));
 		}
@@ -192,22 +195,25 @@ public class CustomFogConfigScreen extends Screen {
 	public void tick() {
 		super.tick();
 		// lWidget ticks so the text boxes can have a blinking cursor
-		this.lWidget.tick();
 	}
 
   @Override
-  public void render(MatrixStack matrices, int mouseX, int mouseY, float delta)
+  public void render(DrawContext context, int mouseX, int mouseY, float delta)
   {
-		this.renderBackground(matrices);
-		super.render(matrices, mouseX, mouseY, delta);
+		this.renderBackground(context, mouseX, mouseY, delta);
+		super.render(context, mouseX, mouseY, delta);
 		// Draw the title text.
-		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
   }
 
-public void openScreen(DimensionConfigScreen dimensionConfigScreen) {
-	if (client != null) {
-		client.setScreen(dimensionConfigScreen);
+	public void openScreen(DimensionConfigScreen dimensionConfigScreen) {
+		if (client != null) {
+			client.setScreen(dimensionConfigScreen);
+		}
 	}
-}
 
+	@Override
+	public void close() {
+		client.setScreen(parent);
+	} 
 }

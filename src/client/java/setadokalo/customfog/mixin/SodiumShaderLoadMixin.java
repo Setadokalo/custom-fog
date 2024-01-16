@@ -5,7 +5,6 @@ import net.minecraft.util.Identifier;
 import setadokalo.customfog.CustomFogLogger;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import me.jellysquid.mods.sodium.client.gl.shader.ShaderLoader;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,7 +21,7 @@ public class SodiumShaderLoadMixin {
 	@Inject(method = "getShaderSource(Lnet/minecraft/util/Identifier;)Ljava/lang/String;", at = @At(value = "HEAD"), cancellable = true)
 	private static void loadCustomFogShader(Identifier name, CallbackInfoReturnable<String> cir) {
 		if (name.toString().equals("sodium:include/fog.glsl")) {
-			CustomFogLogger.log(Level.INFO, "Overwriting sodium fog shader");
+			CustomFogLogger.info( "Overwriting sodium fog shader");
 
 			String path = "sodium-include/fog.glsl";
 			try (InputStream in = MinecraftClient.getInstance().getResourceManager()

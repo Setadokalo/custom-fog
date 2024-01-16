@@ -1,9 +1,9 @@
 package setadokalo.customfog.config;
 
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import setadokalo.customfog.CustomFog;
+import setadokalo.customfog.CustomFogLogger;
 
 import java.io.*;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ public class ServerConfig extends BaseConfig {
 	}
 
 	public static ServerConfig getConfig() {
-		CustomFog.log(Level.INFO, "Loading server config file");
+		CustomFogLogger.info( "Loading server config file");
 		return ConfigLoader.getConfig(ServerConfig.class, CONFIG_NAME);
 	}
 
