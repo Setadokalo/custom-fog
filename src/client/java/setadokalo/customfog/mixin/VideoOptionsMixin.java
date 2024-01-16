@@ -28,7 +28,7 @@ public abstract class VideoOptionsMixin extends GameOptionsScreen {
 		if (!FabricLoader.getInstance().isModLoaded("bettersodiumvideosettingsbutton") &&
 				CustomFogClient.config.videoOptionsButton && client != null) {
 			this.addDrawableChild(
-				ButtonWidget.builder(Text.translatable("button.customfog.menu"), btn -> client.setScreen(new CustomFogConfigScreen(parent)))
+				ButtonWidget.builder(Text.translatable("button.customfog.menu"), btn -> client.setScreen(new CustomFogConfigScreen(this)))
 				.dimensions(this.width - 108, this.height - 27, 100, 20)
 				.build()
 			);
