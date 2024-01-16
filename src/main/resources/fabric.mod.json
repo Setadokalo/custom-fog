@@ -28,13 +28,13 @@
   },
   "mixins": [
 		{
-			"config": "custom-fog.mixins.json",
+			"config": "custom-fog.client.mixins.json",
 			"environment": "client"
 		}
   ],
   "depends": {
-    "fabricloader": ">=0.15.0",
-    "fabric": ">=0.91.1+1.20.4",
-    "minecraft": "^1.20"
+    "fabricloader": ">=${loader_version}",
+    "fabric": ">=${fabric_version}",
+    "minecraft": "^${minecraft_version}"
   }
 }

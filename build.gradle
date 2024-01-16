@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.mod_version
+version = project.mod_version + "-" + project.minecraft_version
 group = project.maven_group
 
 base {
@@ -29,7 +29,7 @@ loom {
     splitEnvironmentSourceSets()
 
 	mods {
-		"modid" {
+		"custom-fog" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
@@ -38,27 +38,28 @@ loom {
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     // Compile only so it's not present when running in dev env by default;
     // allows testing with canvas/indigo renderers
     modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
-    // This is supposed to load with sodium, but doesn't seem to want to in the dev environment
-    // runtimeOnly 'org.joml:joml:1.10.2'
 }
 
 processResources {
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand(
+            "minecraft_version": project.minecraft_version, 
+            "loader_version": project.loader_version,
+            "fabric_version": project.fabric_version,
+            "version": project.version
+        )
     }
 }
 
