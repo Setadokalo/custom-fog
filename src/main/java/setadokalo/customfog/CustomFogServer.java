@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
@@ -26,14 +26,17 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 	@Override
 	public void onInitializeServer() {
 		CustomFogLogger.info( "Initializing packet sender");
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			if (ServerPlayNetworking.canSend(handler, CustomFog.SERVER_CONFIG_PACKET_ID))
+		S2CPlayChannelEvents.REGISTER.register((handler, sender, server, channels) -> {
+			if (channels.contains(CustomFog.SERVER_CONFIG_PACKET_ID)) {
 				ServerPlayNetworking.send(
 					handler.player,
 					CustomFog.SERVER_CONFIG_PACKET_ID,
 					PacketByteBufs.create().writeString(ConfigLoader.serialize(config))
 				);
-			CustomFogLogger.info( "Sending packet");
+				CustomFogLogger.info( "Sending packet");
+			} else {
+				CustomFogLogger.info("Client does not support customfog");
+			}
 		});
 		ServerPlayNetworking.registerGlobalReceiver(CustomFog.OP_UPDATE_CONFIG_PACKET_ID,
 			(server, player, handler, buf, responseSender) -> {
