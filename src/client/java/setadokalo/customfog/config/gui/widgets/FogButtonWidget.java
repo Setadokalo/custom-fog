@@ -56,4 +56,7 @@ public class FogButtonWidget extends TexturedButtonWidget {
         int v = this.coords.getV(this.isNarratable(), this.isSelected());
         context.drawTexture(GUI_TEX, this.getX(), this.getY(), u, v, this.width, this.height);
     }
+    
+    @Override
+    public void setFocused(boolean focused) {}
 }
