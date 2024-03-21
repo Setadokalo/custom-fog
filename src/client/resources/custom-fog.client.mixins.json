@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "RendererMixin",
-    "RendererMixinAggressive",
     "VideoOptionsMixin"
   ],
   "injectors": {
