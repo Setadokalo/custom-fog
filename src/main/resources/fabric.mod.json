@@ -32,6 +32,7 @@
 			"environment": "client"
 		}
   ],
+  "accessWidener": "custom-fog.accesswidener",
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": ">=${fabric_version}",

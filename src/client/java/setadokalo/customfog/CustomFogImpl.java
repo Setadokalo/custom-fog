@@ -14,7 +14,7 @@ import setadokalo.customfog.config.ServerConfig;
 import setadokalo.customfog.config.CustomFogConfig;
 
 public class CustomFogImpl {
-	public static boolean setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance) {
+	public static boolean setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, BackgroundRenderer.FogData fogData) {
 		CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
 		Entity entity = camera.getFocusedEntity();
 	//	if (true) return;
@@ -25,8 +25,8 @@ public class CustomFogImpl {
 
 		// Try applying fog for sky, otherwise apply custom terrain fog
 		if (fogType == BackgroundRenderer.FogType.FOG_SKY) {
-			RenderSystem.setShaderFogStart(0.0f);
-			RenderSystem.setShaderFogEnd(viewDistance);
+			fogData.fogStart = 0.0f;
+			fogData.fogEnd = viewDistance;
 			return true;
 //			RenderSystem.setShaderFogMode(GlStateManager.FogMode.LINEAR);
 		} else if (cameraSubmersionType != CameraSubmersionType.LAVA && !((entity instanceof LivingEntity) && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
@@ -39,27 +39,26 @@ public class CustomFogImpl {
 			} else {
 				config = Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
 			}
-			changeFalloff(viewDistance, config);
+			changeFalloff(viewDistance, config, fogData);
 			return true;
 		}
 		return false;
 	}
 
-	private static void changeFalloff(float viewDistance, DimensionConfig config) {
+	private static void changeFalloff(float viewDistance, DimensionConfig config, BackgroundRenderer.FogData fogData) {
 		if (config.getEnabled()) {
 			if (config.getType() == CustomFogConfig.FogType.LINEAR) {
-				RenderSystem.setShaderFogStart(viewDistance * config.getLinearStart());
-				RenderSystem.setShaderFogEnd(viewDistance * config.getLinearEnd());
-//				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
+				fogData.fogStart = (viewDistance * config.getLinearStart());
+				fogData.fogEnd = (viewDistance * config.getLinearEnd());
 			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
-				RenderSystem.setShaderFogStart(-512.0F);
-				RenderSystem.setShaderFogEnd(config.getExp() / (0.3F * viewDistance));
+				fogData.fogStart = (-512.0F);
+				fogData.fogEnd = (config.getExp() / (0.3F * viewDistance));
 			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
-				RenderSystem.setShaderFogStart(-1024.0F);
-				RenderSystem.setShaderFogEnd(config.getExp2() / (50.0F * viewDistance));
+				fogData.fogStart = (-1024.0F);
+				fogData.fogEnd = (config.getExp2() / (50.0F * viewDistance));
 			} else {
-				RenderSystem.setShaderFogStart(990000.0F);
-				RenderSystem.setShaderFogEnd( 1000000.0F);
+				fogData.fogStart = (990000.0F);
+				fogData.fogEnd = ( 1000000.0F);
 			}
 		}
 	}

@@ -9,7 +9,6 @@ public class CustomFogMixinConfig extends BaseConfig {
 	public CustomFogMixinConfig(File file) {
 		super(file);
 	}
-	public boolean useAggressiveFog = false;
 	private static transient CustomFogMixinConfig config;
 
 	@NotNull
