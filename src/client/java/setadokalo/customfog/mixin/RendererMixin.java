@@ -1,5 +1,6 @@
 package setadokalo.customfog.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.BackgroundRenderer;
@@ -19,8 +20,8 @@ public class RendererMixin {
 
 
 
-	@Inject(method = "applyFog", at=@At("RETURN"))
-	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
-		CustomFogImpl.setFogFalloff(camera, fogType, viewDistance);
+	@Inject(method = "applyFog", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogStart(F)V", remap = false))
+	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, @Local BackgroundRenderer.FogData fogData) {
+		CustomFogImpl.setFogFalloff(camera, fogType, viewDistance, fogData);
 	}
 }

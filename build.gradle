@@ -35,6 +35,7 @@ loom {
 		}
 	}
 
+    accessWidenerPath = file("src/main/resources/custom-fog.accesswidener")
 }
 
 dependencies {

@@ -26,11 +26,7 @@ public class FogMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	@Environment(EnvType.CLIENT)
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return switch (mixinClassName) {
-			case "setadokalo.customfog.mixin.RendererMixin" -> !CustomFogMixinConfig.getConfig().useAggressiveFog;
-			case "setadokalo.customfog.mixin.RendererMixinAggressive" -> CustomFogMixinConfig.getConfig().useAggressiveFog;
-			default -> true;
-		};
+		return true;
 	}
 
 	@Override
