@@ -34,7 +34,7 @@ public class FogButtonWidget extends TexturedButtonWidget {
         }
     }
 
-    private static final Identifier GUI_TEX = new Identifier("custom-fog", "textures/gui/cfog-gui.png");
+    private static final Identifier GUI_TEX = Identifier.of("custom-fog", "textures/gui/cfog-gui.png");
     protected FogButtonCoords coords;
 
     public FogButtonWidget(int x, int y, int width, int height, FogButtonCoords coords, ButtonWidget.PressAction pressAction) {

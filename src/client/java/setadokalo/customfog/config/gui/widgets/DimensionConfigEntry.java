@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKeys;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +25,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import setadokalo.customfog.CustomFog;
 import setadokalo.customfog.CustomFogClient;
-import setadokalo.customfog.CustomFogLogger;
 import setadokalo.customfog.Utils;
 import setadokalo.customfog.config.DimensionConfig;
 import setadokalo.customfog.config.gui.CustomFogConfigScreen;
@@ -60,8 +57,6 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	protected ButtonWidget configureWidget;
 	protected ButtonWidget pushToServerWidget;
 	protected ButtonWidget pushAsOverrideWidget;
-
-	private TextFieldWidget focusedTextField = null;
 
 	public DimensionConfigEntry(DimensionConfigListWidget parent, boolean removable, @Nullable Identifier dimId,
 										 DimensionConfig config) {
@@ -115,7 +110,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	private void sendToServer(@Nullable Identifier as) {
 		// PacketByteBuf buf = PacketByteBufs.create();
 		// buf.writeIdentifier(as != null ? as : (
-		// 	this.dimensionId != null ? this.dimensionId : new Identifier("_customfog_internal:__/default/__")
+		// 	this.dimensionId != null ? this.dimensionId : Identifier.of("_customfog_internal:__/default/__")
 		// ));
 		// buf.writeBoolean(config.getEnabled());
 		// buf.writeEnumConstant(config.getType());
@@ -123,7 +118,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 		// buf.writeFloat(config.getLinearEnd());
 		// buf.writeFloat(config.getExp());
 		// buf.writeFloat(config.getExp2());
-		var dimId = Objects.requireNonNullElse(as, Objects.requireNonNullElse(this.dimensionId, new Identifier("_customfog_internal:__/default/__")));
+		var dimId = Objects.requireNonNullElse(as, Objects.requireNonNullElse(this.dimensionId, Identifier.of("_customfog_internal", "__/default/__")));
 		ClientPlayNetworking.send(
 			new CustomFog.UpdateServerConfigPayload(
 				dimId,
@@ -182,7 +177,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 				-20000, -20000,
 				20, 20,
 				new FogButtonCoords(60, 0, 60, 20),
-				btn -> { sendToServer(new Identifier("_customfog_internal:__/universal/__")); }
+				btn -> { sendToServer(Identifier.of("_customfog_internal", "__/universal/__")); }
 			);
 			pushAsOverrideWidget.setTooltip(Tooltip.of(Text.translatable("tooltip.customfog.pushtouniversal")));
 			children.add(pushAsOverrideWidget);

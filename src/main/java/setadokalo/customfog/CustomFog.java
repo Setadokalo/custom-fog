@@ -2,20 +2,14 @@ package setadokalo.customfog;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.codec.PacketDecoder;
-import net.minecraft.network.codec.PacketEncoder;
-import net.minecraft.network.codec.ValueFirstEncoder;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 
 import com.google.gson.GsonBuilder;
 
-import io.netty.buffer.ByteBuf;
 import setadokalo.customfog.config.ConfigLoader;
 import setadokalo.customfog.config.CustomFogConfig.FogType;
 import setadokalo.customfog.config.DimensionConfig;
@@ -23,8 +17,8 @@ import setadokalo.customfog.config.DimensionConfig;
 public class CustomFog implements ModInitializer {
 	public static final String MOD_ID = CustomFogLogger.MOD_ID;
 
-	public static final Identifier SERVER_CONFIG_PACKET_ID = new Identifier(CustomFog.MOD_ID, "server_config");
-	public static final Identifier OP_UPDATE_CONFIG_PACKET_ID = new Identifier(CustomFog.MOD_ID, "op_update_config");
+	public static final Identifier SERVER_CONFIG_PACKET_ID = Identifier.of(CustomFog.MOD_ID, "server_config");
+	public static final Identifier OP_UPDATE_CONFIG_PACKET_ID = Identifier.of(CustomFog.MOD_ID, "op_update_config");
 
 	public static final String WATER_CONFIG = "_customfog_internal:__/water/__";
 	public static final String POWDER_SNOW_CONFIG = "_customfog_internal:__/snow/__";

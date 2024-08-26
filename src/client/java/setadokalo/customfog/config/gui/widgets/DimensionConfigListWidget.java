@@ -14,11 +14,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.BuiltBuffer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.MathHelper;
-import setadokalo.customfog.CustomFogLogger;
 
 public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<DimensionConfigEntry> {
 	private final Screen parent;
@@ -77,7 +78,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 	protected void renderList(DrawContext context, int mouseX, int mouseY, float delta) {
 		int itemCount = this.getEntryCount();
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder buffer = tessellator.getBuffer();
+		// BufferBuilder buffer = tessellator.getBuffer();
 		for (int index = 0; index < itemCount; ++index) {
 			int entryTop = this.getRowTop(index) + 2;
 			int entryBottom = this.getRowTop(index) + this.itemHeight;
@@ -92,26 +93,38 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 					RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 					float bgIntensity = this.isFocused() ? 1.0F : 0.5F;
 					Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-					buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+					BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 					buffer.vertex(matrix, entryLeft, entryTop + entryHeight + 2, 0.0F)
-							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
+							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F);
 					buffer.vertex(matrix, selectionRight, entryTop + entryHeight + 2, 0.0F)
-							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
+							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F);
 					buffer.vertex(matrix, selectionRight, entryTop - 2, 0.0F)
-							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
+							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F);
 					buffer.vertex(matrix, entryLeft, entryTop - 2, 0.0F)
-							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F).next();
-					tessellator.draw();
-					buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+							.color(bgIntensity, bgIntensity, bgIntensity, 1.0F);
+					try {
+						BuiltBuffer builtBuf = buffer.end();
+						BufferRenderer.draw(builtBuf);
+						builtBuf.close();
+					} catch (Exception e) {
+						// Ignored
+					}
+					buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 					buffer.vertex(matrix, entryLeft + 1, entryTop + entryHeight + 1, 0.0F)
-							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
+							.color(0.0F, 0.0F, 0.0F, 1.0F);
 					buffer.vertex(matrix, selectionRight - 1, entryTop + entryHeight + 1, 0.0F)
-							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
+							.color(0.0F, 0.0F, 0.0F, 1.0F);
 					buffer.vertex(matrix, selectionRight - 1, entryTop - 1, 0.0F)
-							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
+							.color(0.0F, 0.0F, 0.0F, 1.0F);
 					buffer.vertex(matrix, entryLeft + 1, entryTop - 1, 0.0F)
-							.color(0.0F, 0.0F, 0.0F, 1.0F).next();
-					tessellator.draw();
+							.color(0.0F, 0.0F, 0.0F, 1.0F);
+					try {
+						BuiltBuffer builtBuf = buffer.end();
+						BufferRenderer.draw(builtBuf);
+						builtBuf.close();
+					} catch (Exception e) {
+						// Ignored
+					}
 				}
 
 				entryLeft = this.getRowLeft();

@@ -217,12 +217,12 @@ public class WarningWidget implements Drawable, Element, Selectable {
 		matrices.translate( 0.0, 0.0, 2.5);
 		RenderSystem.enableDepthTest();
 		// Background
-		drawNinepatchRect(ctx, new Identifier("custom-fog", "textures/gui/toast_background.png"), this.x, this.y,
+		drawNinepatchRect(ctx, Identifier.of("custom-fog", "textures/gui/toast_background.png"), this.x, this.y,
 				width, height,
 				0, 0,
 				5, 10);
 		// Type icon
-		ctx.drawTexture(new Identifier("custom-fog", "textures/gui/cfog-gui.png"), this.x + 5, this.y + (this.height - 20)/2,
+		ctx.drawTexture(Identifier.of("custom-fog", "textures/gui/cfog-gui.png"), this.x + 5, this.y + (this.height - 20)/2,
 				20, type.getTexturePos(),
 				20, 20,
 				256, 256);

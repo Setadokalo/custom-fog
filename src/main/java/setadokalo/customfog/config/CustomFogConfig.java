@@ -13,7 +13,7 @@ public class CustomFogConfig extends BaseConfig {
 
 	public CustomFogConfig(File file) {
 		super(file);
-		dimensions.put(new Identifier("minecraft:the_nether"),
+		dimensions.put(Identifier.of("minecraft:the_nether"),
 			new DimensionConfig(false, FogType.LINEAR, LINEAR_START, LINEAR_END, EXP, EXP2));
 		saveConfig();
 	}

@@ -57,7 +57,7 @@ public class DimensionConfigScreen extends Screen {
 				remove(w);
 			});
 //			this.addDrawableChild(new FogButtonWidget(this.width / 2 + 142, 20, 8, 8, 0, 60, 8,
-//					new Identifier("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, (btn) -> {
+//					Identifier.of("custom-fog", "textures/gui/cfog-gui.png"), 256, 256, (btn) -> {
 //				CustomFogClient.config.hasClosedToast = true;
 //				CustomFogClient.config.saveConfig();
 //				remove(w);

@@ -307,7 +307,7 @@ public class ResizingRangeSlider extends SliderWidget {
 		} else {
 			MinecraftClient minecraftClient = MinecraftClient.getInstance();
 			TextRenderer textRenderer = minecraftClient.textRenderer;
-			context.drawGuiTexture(new Identifier("widget/text_field_highlighted"), getX(), getY(), getWidth(), getHeight());
+			context.drawGuiTexture(Identifier.ofVanilla("widget/text_field_highlighted"), getX(), getY(), getWidth(), getHeight());
 			boolean isValid = true;
 			try {
 				Double.parseDouble(currentText);
@@ -321,18 +321,23 @@ public class ResizingRangeSlider extends SliderWidget {
 				int startX = this.getX() + 4 + textRenderer.getWidth(currentText.substring(0, sStart));
 				int endX = this.getX() + 4 + textRenderer.getWidth(currentText.substring(0, sEnd));
 				RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-				BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-				bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+				BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 				Matrix4f mat = context.getMatrices().peek().getPositionMatrix();
 				bufferBuilder.vertex(mat, (float)startX, (float)(getY() + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)
-						.color(255, 255, 255, 255).next();
+						.color(255, 255, 255, 255);
 				bufferBuilder.vertex(mat, (float)endX, (float)(getY() + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)
-						.color(255, 255 ,255, 255).next();
+						.color(255, 255 ,255, 255);
 				bufferBuilder.vertex(mat, (float)endX,   (float)(getY() + ((this.height - 8)) / 2) - 1.0F, -40.0F)
-						.color(255, 255, 255, 255).next();
+						.color(255, 255, 255, 255);
 				bufferBuilder.vertex(mat, (float)startX,   (float)(getY() + ((this.height - 8)) / 2) - 1.0F, -40.0F)
-						.color(255, 255, 255, 255).next();
-				BufferRenderer.draw(bufferBuilder.end());
+						.color(255, 255, 255, 255);
+				try {
+					BuiltBuffer builtBuf = bufferBuilder.end();
+					BufferRenderer.draw(builtBuf);
+					builtBuf.close();
+				} catch (Exception e) {
+					// Ignored
+				}
 				context.drawText(textRenderer, currentText.substring(sStart, sEnd), startX + 1, getY() + (this.height / 2 - 3), 0x30000000, true);
 				context.drawText(textRenderer, currentText.substring(sStart, sEnd), startX, getY() + (this.height / 2 - 4), 0x0000FF, true);
 			}

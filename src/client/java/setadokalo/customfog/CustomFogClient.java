@@ -33,7 +33,7 @@ public class CustomFogClient implements ClientModInitializer {
 			CustomFogLogger.info( "Canvas Renderer detected, adding canvas fog shader resource pack");
 			FabricLoader.getInstance().getModContainer(CustomFog.MOD_ID).ifPresent(modContainer ->
 					ResourceManagerHelper.registerBuiltinResourcePack(
-							new Identifier("customfog:canvasfog"),
+							Identifier.of("customfog","canvasfog"),
 							modContainer,
 							ResourcePackActivationType.DEFAULT_ENABLED
 					)

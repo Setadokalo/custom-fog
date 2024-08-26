@@ -25,7 +25,7 @@ public class SodiumShaderLoadMixin {
 
 			String path = "sodium-include/fog.glsl";
 			try (InputStream in = MinecraftClient.getInstance().getResourceManager()
-							.getResource(new Identifier("custom-fog", path))
+							.getResource(Identifier.of("custom-fog", path))
 							.get().getInputStream()) {
 				if (in == null) {
 					throw new RuntimeException("Shader not found: " + path);
