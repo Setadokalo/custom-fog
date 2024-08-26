@@ -7,12 +7,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.render.*;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -189,11 +189,11 @@ public class ResizingRangeSlider extends SliderWidget {
 			return super.keyPressed(keyCode, scanCode, modifiers);
 		} else {
 			switch (keyCode) {
-				case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> {
+				case InputUtil.GLFW_KEY_ENTER, InputUtil.GLFW_KEY_KP_ENTER -> {
 					finishTyping();
 					return true;
 				}
-				case GLFW.GLFW_KEY_BACKSPACE -> {
+				case InputUtil.GLFW_KEY_BACKSPACE -> {
 					if (currentText.length() > 0) {
 						if (selectedStart != currentText.length() || selectedEnd != currentText.length()) {
 							if (selectedStart != selectedEnd) {
@@ -216,7 +216,7 @@ public class ResizingRangeSlider extends SliderWidget {
 					}
 					return true;
 				}
-				case GLFW.GLFW_KEY_DELETE -> {
+				case InputUtil.GLFW_KEY_DELETE -> {
 					if (currentText.length() > 0) {
 						if (selectedStart != currentText.length() || selectedEnd != currentText.length()) {
 							if (selectedStart != selectedEnd) {
@@ -233,25 +233,25 @@ public class ResizingRangeSlider extends SliderWidget {
 					}
 					return true;
 				}
-				case GLFW.GLFW_KEY_END, GLFW.GLFW_KEY_PAGE_DOWN -> {
+				case InputUtil.GLFW_KEY_END, InputUtil.GLFW_KEY_PAGE_DOWN -> {
 					selectedStart = currentText.length();
 					if (!Screen.hasShiftDown())
 						selectedEnd = selectedStart;
 					return true;
 				}
-				case GLFW.GLFW_KEY_HOME, GLFW.GLFW_KEY_PAGE_UP -> {
+				case InputUtil.GLFW_KEY_HOME, InputUtil.GLFW_KEY_PAGE_UP -> {
 					selectedStart = 0;
 					if (!Screen.hasShiftDown())
 						selectedEnd = selectedStart;
 					return true;
 				}
-				case GLFW.GLFW_KEY_LEFT -> {
+				case InputUtil.GLFW_KEY_LEFT -> {
 					selectedStart = Math.max(selectedStart - 1, 0);
 					if (!Screen.hasShiftDown())
 						selectedEnd = selectedStart;
 					return true;
 				}
-				case GLFW.GLFW_KEY_RIGHT -> {
+				case InputUtil.GLFW_KEY_RIGHT -> {
 					selectedStart = Math.min(selectedStart + 1, currentText.length());
 					if (!Screen.hasShiftDown())
 						selectedEnd = selectedStart;

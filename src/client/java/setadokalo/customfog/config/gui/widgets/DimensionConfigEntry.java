@@ -12,6 +12,8 @@ import net.minecraft.registry.RegistryKeys;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -58,6 +60,8 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	protected ButtonWidget configureWidget;
 	protected ButtonWidget pushToServerWidget;
 	protected ButtonWidget pushAsOverrideWidget;
+
+	private TextFieldWidget focusedTextField = null;
 
 	public DimensionConfigEntry(DimensionConfigListWidget parent, boolean removable, @Nullable Identifier dimId,
 										 DimensionConfig config) {
@@ -109,19 +113,22 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	}
 
 	private void sendToServer(@Nullable Identifier as) {
-		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeIdentifier(as != null ? as : (
-			this.dimensionId != null ? this.dimensionId : new Identifier("_customfog_internal:__/default/__")
-		));
-		buf.writeBoolean(config.getEnabled());
-		buf.writeEnumConstant(config.getType());
-		buf.writeFloat(config.getLinearStart());
-		buf.writeFloat(config.getLinearEnd());
-		buf.writeFloat(config.getExp());
-		buf.writeFloat(config.getExp2());
+		// PacketByteBuf buf = PacketByteBufs.create();
+		// buf.writeIdentifier(as != null ? as : (
+		// 	this.dimensionId != null ? this.dimensionId : new Identifier("_customfog_internal:__/default/__")
+		// ));
+		// buf.writeBoolean(config.getEnabled());
+		// buf.writeEnumConstant(config.getType());
+		// buf.writeFloat(config.getLinearStart());
+		// buf.writeFloat(config.getLinearEnd());
+		// buf.writeFloat(config.getExp());
+		// buf.writeFloat(config.getExp2());
+		var dimId = Objects.requireNonNullElse(as, Objects.requireNonNullElse(this.dimensionId, new Identifier("_customfog_internal:__/default/__")));
 		ClientPlayNetworking.send(
-			CustomFog.OP_UPDATE_CONFIG_PACKET_ID,
-			buf
+			new CustomFog.UpdateServerConfigPayload(
+				dimId,
+				config
+			)
 		);
 	}
 
@@ -268,6 +275,20 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 	@Override
 	public List<? extends Element> children() {
 		return this.children;
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		return ParentElement.super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		return ParentElement.super.mouseReleased(mouseX, mouseY, button);
+	}
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		return ParentElement.super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
 	}
 
 	@Override

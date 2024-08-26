@@ -72,7 +72,7 @@ public class CustomFogConfigScreen extends Screen {
 		// If canvas is loaded without the canvas-specific compatibility pack, EXP and EXP2 fog can't work right.
 		// Warn the user to enable the canvasfog pack or only use linear/disabled.
 		if (FabricLoader.getInstance().isModLoaded("canvas")
-				&& !MinecraftClient.getInstance().getResourcePackManager().getEnabledNames().contains("customfog/canvasfog")) {
+				&& !MinecraftClient.getInstance().getResourcePackManager().getEnabledIds().contains("customfog/canvasfog")) {
 			pushNotification(new WarningWidget(
 					235,
 					Text.translatable("notice.customfog.canvaspack1").formatted(Formatting.YELLOW, Formatting.BOLD),

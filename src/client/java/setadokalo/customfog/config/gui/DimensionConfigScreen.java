@@ -87,6 +87,14 @@ public class DimensionConfigScreen extends Screen {
 		this.addDrawable(new TextWidget(0, 8, this.width, 8, this.title, this.textRenderer).alignCenter());
 	}
 
+	// Disable blurring the background when in-game
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+      if (this.client.world == null) {
+         this.renderPanoramaBackground(context, delta);
+      }
+   }
+
 	private String getKeyForEnabled() {
 
 		return "button.customfog." + (this.entry.config.getEnabled() ? "enabled" : "disabled");
@@ -176,12 +184,12 @@ public class DimensionConfigScreen extends Screen {
 		}
 	}
 
-	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		if (this.client.world == null) {
-			this.renderBackgroundTexture(context);
-		}
-	}
+	// @Override
+	// public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+	// 	if (this.client.world == null) {
+	// 		this.renderBackgroundTexture(context);
+	// 	}
+	// }
 
 	@Override
 	public void close() {

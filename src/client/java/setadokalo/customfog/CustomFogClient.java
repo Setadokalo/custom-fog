@@ -21,8 +21,12 @@ public class CustomFogClient implements ClientModInitializer {
 	public static ServerConfig serverConfig = null;
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(CustomFog.SERVER_CONFIG_PACKET_ID, (client, net, buf, sdr) ->
-				serverConfig = ConfigLoader.deserialize(ServerConfig.class, buf.readString()));
+		ClientPlayNetworking.registerGlobalReceiver(CustomFog.CFServerConfigPayload.ID, (payload, context) ->
+			context.client().execute(() -> {
+				serverConfig = ConfigLoader.deserialize(ServerConfig.class, payload.json());
+				CustomFogLogger.info(serverConfig.toString());
+			})
+		);
 
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> serverConfig = null);
 		if (FabricLoader.getInstance().isModLoaded("canvas")) {

@@ -3,7 +3,7 @@ package setadokalo.customfog;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
@@ -13,12 +13,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import setadokalo.customfog.CustomFog.CFServerConfigPayload;
 import setadokalo.customfog.config.ConfigLoader;
-import setadokalo.customfog.config.CustomFogConfig;
 import setadokalo.customfog.config.DimensionConfig;
 import setadokalo.customfog.config.ServerConfig;
-
-import java.util.Objects;
 
 public class CustomFogServer implements DedicatedServerModInitializer {
 	public static ServerConfig config = ServerConfig.getConfig();
@@ -30,39 +28,33 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 			if (channels.contains(CustomFog.SERVER_CONFIG_PACKET_ID)) {
 				ServerPlayNetworking.send(
 					handler.player,
-					CustomFog.SERVER_CONFIG_PACKET_ID,
-					PacketByteBufs.create().writeString(ConfigLoader.serialize(config))
+					new CustomFog.CFServerConfigPayload(ConfigLoader.serialize(config))
 				);
 				CustomFogLogger.info( "Sending packet");
 			} else {
 				CustomFogLogger.info("Client does not support customfog");
 			}
 		});
-		ServerPlayNetworking.registerGlobalReceiver(CustomFog.OP_UPDATE_CONFIG_PACKET_ID,
-			(server, player, handler, buf, responseSender) -> {
+		ServerPlayNetworking.registerGlobalReceiver(CustomFog.UpdateServerConfigPayload.ID,
+			(payload, context) -> {
+				ServerPlayerEntity player = context.player();
 				if (player.hasPermissionLevel(3)) {
-					Identifier dimId = buf.readIdentifier();
-					DimensionConfig dimConf = new DimensionConfig(
-						buf.readBoolean(),
-						buf.readEnumConstant(CustomFogConfig.FogType.class),
-						buf.readFloat(),
-						buf.readFloat(),
-						buf.readFloat(),
-						buf.readFloat()
-					);
-					if (Objects.equals(dimId.toString(), CustomFog.WATER_CONFIG)) {
-						config.waterOverride = dimConf;
-					} else if (Objects.equals(dimId.toString(), CustomFog.POWDER_SNOW_CONFIG)) {
-						config.snowOverride = dimConf;
-					} else if (Objects.equals(dimId.toString(), CustomFog.DEFAULT_CONFIG)) {
-						config.defaultOverride = dimConf;
-					} else if (Objects.equals(dimId.toString(), CustomFog.UNIVERSAL_CONFIG)) {
-						config.universalOverride = dimConf;
-					} else {
-						config.overrides.put(dimId, dimConf);
-					}
+					Identifier dimId = payload.dimId();
+					DimensionConfig dimConf = payload.config();
+					switch (dimId.toString()) {
+						case CustomFog.WATER_CONFIG ->
+							config.waterOverride = dimConf;
+						case CustomFog.POWDER_SNOW_CONFIG ->
+							config.snowOverride = dimConf;
+						case CustomFog.DEFAULT_CONFIG ->
+							config.defaultOverride = dimConf;
+						case CustomFog.UNIVERSAL_CONFIG ->
+							config.universalOverride = dimConf;
+						default ->
+							config.overrides.put(dimId, dimConf);
+					};
 					config.saveConfig();
-					sendUpdatedConfig(server);
+					sendUpdatedConfig(player.server);
 				}
 			}
 		);
@@ -85,9 +77,9 @@ public class CustomFogServer implements DedicatedServerModInitializer {
 
 	private static void sendUpdatedConfig(MinecraftServer server) {
 		String serialized = ConfigLoader.serialize(config);
-		for (ServerPlayerEntity entity : server.getPlayerManager().getPlayerList()) {
+		for (ServerPlayerEntity entity : PlayerLookup.all(server)) {
 			if (ServerPlayNetworking.canSend(entity, CustomFog.SERVER_CONFIG_PACKET_ID))
-				ServerPlayNetworking.send(entity, CustomFog.SERVER_CONFIG_PACKET_ID, PacketByteBufs.create().writeString(serialized));
+				ServerPlayNetworking.send(entity, new CFServerConfigPayload(serialized));
 		}
 	}
 }

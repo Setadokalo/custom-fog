@@ -166,17 +166,17 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 	public final DimensionConfigEntry getEntryAtPos(double x, double y) {
 		int heightInList = MathHelper.floor(y - (double) this.getY()) - this.headerHeight + (int) this.getScrollAmount() - 4;
 		int index = heightInList / this.itemHeight;
-		return x < (double) this.getScrollbarPositionX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && heightInList >= 0 && index < this.getEntryCount() ? this.children().get(index) : null;
+		return x < (double) this.getScrollbarX() && x >= (double) getRowLeft() && x <= (double) (getRowLeft() + getRowWidth()) && index >= 0 && heightInList >= 0 && index < this.getEntryCount() ? this.children().get(index) : null;
 	}
 
 	@Override
    protected void updateScrollingState(double mouseX, double mouseY, int button) {
-		this.scrolling = button == 0 && mouseX >= (double)this.getScrollbarPositionX() && mouseX < (double)(this.getScrollbarPositionX() + 6);
+		this.scrolling = button == 0 && mouseX >= (double)this.getScrollbarX() && mouseX < (double)(this.getScrollbarX() + 6);
 		super.updateScrollingState(mouseX, mouseY, button);
 	}
 
 	@Override
-   protected int getScrollbarPositionX() {
+   protected int getScrollbarX() {
       return this.getRight() - 6;
 	}
 	
