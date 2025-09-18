@@ -22,6 +22,6 @@ public class RendererMixin {
 
 	@ModifyReturnValue(method = "applyFog", at = @At("RETURN"))
 	private static Fog setFogFalloff(Fog fog, Camera camera, BackgroundRenderer.FogType fogType, Vector4f color, float viewDistance, boolean thickFog, float tickDelta) {
-		return CustomFogImpl.setFogFalloff(fog, camera, fogType, viewDistance);
+		return CustomFogImpl.setFogFalloff(fog, camera, fogType, color, viewDistance);
 	}
 }

@@ -1,11 +1,13 @@
 package setadokalo.customfog;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector4f;
 
 import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Fog;
+import net.minecraft.client.render.FogShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
@@ -15,7 +17,7 @@ import setadokalo.customfog.config.ServerConfig;
 import setadokalo.customfog.config.CustomFogConfig;
 
 public class CustomFogImpl {
-	public static @Nullable Fog setFogFalloff(Fog fog, Camera camera, BackgroundRenderer.FogType fogType, float viewDistance) {
+	public static @Nullable Fog setFogFalloff(Fog fog, Camera camera, BackgroundRenderer.FogType fogType, Vector4f color, float viewDistance) {
 		CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
 		Entity entity = camera.getFocusedEntity();
 	//	if (true) return;
@@ -26,6 +28,19 @@ public class CustomFogImpl {
 
 		// Try applying fog for sky, otherwise apply custom terrain fog
 		if (cameraSubmersionType == CameraSubmersionType.NONE && fogType == BackgroundRenderer.FogType.FOG_SKY) {
+			// Kinda hacky way to allow the Aggressive mixin to work.
+			// The aggressive mixin almost certainly fails to match vanilla behaviour, though.
+			if (fog == null) {
+				return new Fog(
+					0.0f,
+					viewDistance,
+					FogShape.CYLINDER,
+					color.x,
+					color.y,
+					color.z,
+					color.w
+				);
+			}
 			return new Fog(
 				0.0f,
 				viewDistance,
@@ -46,14 +61,27 @@ public class CustomFogImpl {
 			} else {
 				config = Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
 			}
-			fog = changeFalloff(fog, viewDistance, config);
+			fog = changeFalloff(fog, color, viewDistance, config);
 			return fog;
 		}
 		return fog;
 	}
 
-	private static Fog changeFalloff(Fog fog, float viewDistance, DimensionConfig config) {
+	private static Fog changeFalloff(Fog fog, Vector4f color, float viewDistance, DimensionConfig config) {
 		if (config.getEnabled()) {
+			// Kinda hacky way to allow the Aggressive mixin to work.
+			// The aggressive mixin almost certainly fails to match vanilla behaviour, though.
+			if (fog == null) {
+				fog = new Fog(
+					0.0f,
+					viewDistance,
+					FogShape.CYLINDER,
+					color.x,
+					color.y,
+					color.z,
+					color.w
+				);
+			}
 			if (config.getType() == CustomFogConfig.FogType.LINEAR) {
 				return new Fog(
 					viewDistance * config.getLinearStart(),
