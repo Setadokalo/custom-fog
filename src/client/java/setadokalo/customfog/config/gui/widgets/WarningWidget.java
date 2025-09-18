@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
@@ -148,62 +149,81 @@ public class WarningWidget implements Drawable, Element, Selectable {
 			Identifier texture,
 			int x, int y,
 			int width, int height,
-			int u, int v,
+			int iu, int iv,
 			int edgeSize, int centerSize) {
+		float u = (float)iu, v = (float) iv;
 		// left to right, then top to bottom
 		/* Top row */
-		ctx.drawTexture(texture,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture,
 				x, y,                            /* x, y */
 				u, v,                            /* u, v */
 				edgeSize, edgeSize,              /* width, height */
 				20, 20); /* textureWidth, textureHeight */
 
-		ctx.drawTexture(texture,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture,
 				x + edgeSize, y,                   /* x, y */
-				width - edgeSize * 2, edgeSize, /* width, height */
 				u + edgeSize, v,                   /* u, v */
+				width - edgeSize * 2, edgeSize, /* width, height */
 				centerSize, edgeSize,                 /* regionWidth, regionHeight */
 				20, 20);      /* textureWidth, textureHeight */
 
-		ctx.drawTexture(texture, x + width - edgeSize, y,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture, x + width - edgeSize, y,
 				u + edgeSize + centerSize, v,
 				edgeSize, edgeSize,
 				20, 20);
 		/* Middle row */
-		ctx.drawTexture(texture,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture,
 				x, y + edgeSize,                   /* x, y */
-				edgeSize, height - edgeSize * 2, /* width, height */
 				u, v + edgeSize,     /* u, v */
+				edgeSize, height - edgeSize * 2, /* width, height */
 				edgeSize, centerSize,                /* regionWidth, regionHeight */
 				20, 20);      /* textureWidth, textureHeight */
-		ctx.drawTexture(texture,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture,
 				x + edgeSize, y + edgeSize,                   /* x, y */
-				width - edgeSize * 2, height - edgeSize * 2, /* width, height */
 				u + edgeSize, v + edgeSize,     /* u, v */
+				width - edgeSize * 2, height - edgeSize * 2, /* width, height */
 				centerSize, centerSize,                /* regionWidth, regionHeight */
 				20, 20);      /* textureWidth, textureHeight */
 
-		ctx.drawTexture(texture,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture,
 				x + width - edgeSize, y + edgeSize,                   /* x, y */
-				edgeSize, height - edgeSize * 2, /* width, height */
 				u + edgeSize + centerSize, v + edgeSize,     /* u, v */
+				edgeSize, height - edgeSize * 2, /* width, height */
 				edgeSize, centerSize,                /* regionWidth, regionHeight */
 				20, 20);      /* textureWidth, textureHeight */
 		/* Bottom row */
-		ctx.drawTexture(texture,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture,
 				x, y + height - edgeSize, /* x, y */
 				u, v + edgeSize + centerSize, /* u, v */
 				edgeSize, edgeSize, /* width, height */
 				20, 20); /* textureWidth, textureHeight */
 
-		ctx.drawTexture(texture,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture,
 				x + edgeSize, y + height - edgeSize,                   /* x, y */
-				width - edgeSize * 2, edgeSize, /* width, height */
 				u + edgeSize, v + edgeSize + centerSize,     /* u, v */
+				width - edgeSize * 2, edgeSize, /* width, height */
 				centerSize, edgeSize,                /* regionWidth, regionHeight */
 				20, 20);      /* textureWidth, textureHeight */
 
-		ctx.drawTexture(texture, x + width - edgeSize, y + height - edgeSize,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				texture, x + width - edgeSize, y + height - edgeSize,
 				u + edgeSize + centerSize, v + edgeSize + centerSize,
 				edgeSize, edgeSize,
 				20, 20);
@@ -222,7 +242,9 @@ public class WarningWidget implements Drawable, Element, Selectable {
 				0, 0,
 				5, 10);
 		// Type icon
-		ctx.drawTexture(Identifier.of("custom-fog", "textures/gui/cfog-gui.png"), this.x + 5, this.y + (this.height - 20)/2,
+		ctx.drawTexture(
+				RenderLayer::getGuiTextured,
+				Identifier.of("custom-fog", "textures/gui/cfog-gui.png"), this.x + 5, this.y + (this.height - 20)/2,
 				20, type.getTexturePos(),
 				20, 20,
 				256, 256);

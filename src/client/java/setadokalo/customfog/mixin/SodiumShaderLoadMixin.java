@@ -1,12 +1,12 @@
 package setadokalo.customfog.mixin;
 
+import net.caffeinemc.mods.sodium.client.gl.shader.ShaderLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import setadokalo.customfog.CustomFogLogger;
 
 import org.apache.commons.io.IOUtils;
 import org.spongepowered.asm.mixin.Mixin;
-import me.jellysquid.mods.sodium.client.gl.shader.ShaderLoader;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;

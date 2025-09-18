@@ -4,6 +4,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Fog;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,7 +24,8 @@ public class RendererMixinAggressive {
 	// injects at head and cancels early unconditionally so HERE WE ARE I GUESS
 	@Inject(method = "applyFog", at=@At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
 	private static void setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
-		if (CustomFogImpl.setFogFalloff(camera, fogType, viewDistance)) ci.cancel();
+		Fog newFog = CustomFogImpl.setFogFalloff(null, camera, fogType, viewDistance);
+		if (true) ci.cancel();
 	}
 
 }

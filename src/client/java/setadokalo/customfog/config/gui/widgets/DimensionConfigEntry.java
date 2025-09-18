@@ -212,7 +212,7 @@ public class DimensionConfigEntry extends AlwaysSelectedEntryListWidget.Entry<Di
 		if (dimNameWidget == null) return;
 		if (MinecraftClient.getInstance().world != null) {
 			if (
-				!MinecraftClient.getInstance().world.getRegistryManager().get(RegistryKeys.DIMENSION_TYPE).containsId(
+				!MinecraftClient.getInstance().world.getRegistryManager().getOrThrow(RegistryKeys.DIMENSION_TYPE).containsId(
 					Identifier.tryParse(dimNameWidget.getText())
 				)
 			)

@@ -3,6 +3,7 @@ package setadokalo.customfog.config.gui.widgets;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -54,7 +55,9 @@ public class FogButtonWidget extends TexturedButtonWidget {
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         int u = this.coords.getU(this.isNarratable(), this.isSelected());
         int v = this.coords.getV(this.isNarratable(), this.isSelected());
-        context.drawTexture(GUI_TEX, this.getX(), this.getY(), u, v, this.width, this.height);
+        context.drawTexture(
+				RenderLayer::getGuiTextured,
+				GUI_TEX, this.getX(), this.getY(), (float)u, (float)v, this.width, this.height, 256, 256);
     }
     
     @Override

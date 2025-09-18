@@ -1,10 +1,11 @@
 package setadokalo.customfog;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Fog;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
@@ -14,20 +15,26 @@ import setadokalo.customfog.config.ServerConfig;
 import setadokalo.customfog.config.CustomFogConfig;
 
 public class CustomFogImpl {
-	public static boolean setFogFalloff(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance) {
+	public static @Nullable Fog setFogFalloff(Fog fog, Camera camera, BackgroundRenderer.FogType fogType, float viewDistance) {
 		CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
 		Entity entity = camera.getFocusedEntity();
 	//	if (true) return;
 		ServerConfig serverConfig = CustomFogClient.serverConfig;
 		if (serverConfig != null && !serverConfig.baseModAllowed) {
-			return false;
+			return fog;
 		}
 
 		// Try applying fog for sky, otherwise apply custom terrain fog
-		if (fogType == BackgroundRenderer.FogType.FOG_SKY) {
-			RenderSystem.setShaderFogStart(0.0f);
-			RenderSystem.setShaderFogEnd(viewDistance);
-			return true;
+		if (cameraSubmersionType == CameraSubmersionType.NONE && fogType == BackgroundRenderer.FogType.FOG_SKY) {
+			return new Fog(
+				0.0f,
+				viewDistance,
+				fog.shape(),
+				fog.red(),
+				fog.green(),
+				fog.blue(),
+				fog.alpha()
+			);
 //			RenderSystem.setShaderFogMode(GlStateManager.FogMode.LINEAR);
 		} else if (cameraSubmersionType != CameraSubmersionType.LAVA && !((entity instanceof LivingEntity) && ((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS))) {
 			// If the dimensions list contains a special config for this dimension, use it; otherwise use the default
@@ -39,28 +46,57 @@ public class CustomFogImpl {
 			} else {
 				config = Utils.getDimensionConfigFor(entity.getEntityWorld().getRegistryKey().getValue());
 			}
-			changeFalloff(viewDistance, config);
-			return true;
+			fog = changeFalloff(fog, viewDistance, config);
+			return fog;
 		}
-		return false;
+		return fog;
 	}
 
-	private static void changeFalloff(float viewDistance, DimensionConfig config) {
+	private static Fog changeFalloff(Fog fog, float viewDistance, DimensionConfig config) {
 		if (config.getEnabled()) {
 			if (config.getType() == CustomFogConfig.FogType.LINEAR) {
-				RenderSystem.setShaderFogStart(viewDistance * config.getLinearStart());
-				RenderSystem.setShaderFogEnd(viewDistance * config.getLinearEnd());
+				return new Fog(
+					viewDistance * config.getLinearStart(),
+					viewDistance * config.getLinearEnd(),
+					fog.shape(),
+					fog.red(),
+					fog.green(),
+					fog.blue(),
+					fog.alpha()
+				);
 //				RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
 			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL) {
-				RenderSystem.setShaderFogStart(-512.0F);
-				RenderSystem.setShaderFogEnd(config.getExp() / (0.3F * viewDistance));
+				return new Fog(
+					-512.0F,
+					config.getExp() / (0.3F * viewDistance),
+					fog.shape(),
+					fog.red(),
+					fog.green(),
+					fog.blue(),
+					fog.alpha()
+				);
 			} else if (config.getType() == CustomFogConfig.FogType.EXPONENTIAL_TWO) {
-				RenderSystem.setShaderFogStart(-1024.0F);
-				RenderSystem.setShaderFogEnd(config.getExp2() / (50.0F * viewDistance));
+				return new Fog(
+					-1024.0F,
+					config.getExp2() / (50.0F * viewDistance),
+					fog.shape(),
+					fog.red(),
+					fog.green(),
+					fog.blue(),
+					fog.alpha()
+				);
 			} else {
-				RenderSystem.setShaderFogStart(990000.0F);
-				RenderSystem.setShaderFogEnd( 1000000.0F);
+				return new Fog(
+					990000.0F,
+					1000000.0F,
+					fog.shape(),
+					fog.red(),
+					fog.green(),
+					fog.blue(),
+					fog.alpha()
+				);
 			}
 		}
+		return fog;
 	}
 }

@@ -3,6 +3,7 @@ package setadokalo.customfog.config.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.SliderWidget;
@@ -307,7 +308,9 @@ public class ResizingRangeSlider extends SliderWidget {
 		} else {
 			MinecraftClient minecraftClient = MinecraftClient.getInstance();
 			TextRenderer textRenderer = minecraftClient.textRenderer;
-			context.drawGuiTexture(Identifier.ofVanilla("widget/text_field_highlighted"), getX(), getY(), getWidth(), getHeight());
+			context.drawGuiTexture(
+				RenderLayer::getGuiTextured,
+				Identifier.ofVanilla("widget/text_field_highlighted"), getX(), getY(), getWidth(), getHeight());
 			boolean isValid = true;
 			try {
 				Double.parseDouble(currentText);
@@ -320,7 +323,7 @@ public class ResizingRangeSlider extends SliderWidget {
 				int sEnd = Math.min(Math.max(selectedStart, selectedEnd), currentText.length());
 				int startX = this.getX() + 4 + textRenderer.getWidth(currentText.substring(0, sStart));
 				int endX = this.getX() + 4 + textRenderer.getWidth(currentText.substring(0, sEnd));
-				RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+				RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
 				BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 				Matrix4f mat = context.getMatrices().peek().getPositionMatrix();
 				bufferBuilder.vertex(mat, (float)startX, (float)(getY() + ((this.height - 8)) / 2) + textRenderer.fontHeight + 1.0F, -40.0F)

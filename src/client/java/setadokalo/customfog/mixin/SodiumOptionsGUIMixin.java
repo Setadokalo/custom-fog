@@ -5,9 +5,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import me.jellysquid.mods.sodium.client.gui.SodiumOptionsGUI;
-import me.jellysquid.mods.sodium.client.gui.widgets.FlatButtonWidget;
-import me.jellysquid.mods.sodium.client.util.Dim2i;
+import net.caffeinemc.mods.sodium.client.gui.SodiumOptionsGUI;
+import net.caffeinemc.mods.sodium.client.gui.widgets.FlatButtonWidget;
+import net.caffeinemc.mods.sodium.client.util.Dim2i;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import setadokalo.customfog.CustomFogClient;

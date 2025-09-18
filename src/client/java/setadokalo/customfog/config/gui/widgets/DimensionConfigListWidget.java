@@ -10,13 +10,13 @@ import net.minecraft.client.render.VertexFormat;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.BuiltBuffer;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.MathHelper;
@@ -90,7 +90,7 @@ public class DimensionConfigListWidget extends AlwaysSelectedEntryListWidget<Dim
 				if (this.renderSelection && this.isSelectedEntry(index)) {
 					entryLeft = getRowLeft() - 2;
 					int selectionRight = getX() + rowWidth + 2;
-					RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+					RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
 					float bgIntensity = this.isFocused() ? 1.0F : 0.5F;
 					Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
 					BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
